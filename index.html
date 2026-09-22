@@ -1,210 +1,197 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>منصة إقرا - المكتبة الرقمية التفاعلية</title>
-  <!-- استيراد خط كايو العربي المريح للقراءة -->
-  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-  <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
-    body { background-color: #fbfaf7; color: #2c3e50; line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; }
-    header { background: linear-gradient(135deg, #1b4d3e, #2a7a62); color: #fff; padding: 30px 20px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-    header h1 { font-size: 2.2rem; margin-bottom: 5px; font-weight: 700; }
-    header p { color: #d8f3dc; font-size: 1.1rem; }
-    
-    .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; width: 100%; flex: 1; }
-    
-    .search-box {
-      width: 100%;
-      padding: 14px 20px;
-      font-size: 1.1rem;
-      border: 2px solid #e2e8f0;
-      border-radius: 14px;
-      margin-bottom: 30px;
-      outline: none;
-      background: #fff;
-      transition: all 0.3s ease;
-      box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-    }
-    .search-box:focus { border-color: #1b4d3e; box-shadow: 0 0 0 4px rgba(27,77,62,0.1); }
-
-    .books-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-      gap: 20px;
-    }
-
-    .book-card {
-      background: #fff;
-      padding: 25px;
-      border-radius: 16px;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.04);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      transition: all 0.3s ease;
-      border-top: 5px solid #1b4d3e;
-      border: 1px solid #eaeaea;
-    }
-    .book-card:hover { transform: translateY(-5px); box-shadow: 0 8px 25px rgba(0,0,0,0.08); }
-    
-    .book-card h3 { font-size: 1.3rem; color: #1b4d3e; margin-bottom: 10px; font-weight: 700; }
-    .book-card p { font-size: 0.95rem; color: #64748b; margin-bottom: 20px; }
-
-    .btn {
-      display: inline-block;
-      background: #1b4d3e;
-      color: #fff;
-      padding: 10px 20px;
-      text-align: center;
-      border-radius: 10px;
-      text-decoration: none;
-      font-weight: 600;
-      transition: background 0.2s;
-      cursor: pointer;
-      border: none;
-    }
-    .btn:hover { background: #163f33; }
-
-    .back-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      background: #e2e8f0;
-      color: #334155;
-      padding: 8px 16px;
-      border-radius: 8px;
-      text-decoration: none;
-      font-weight: 600;
-      margin-bottom: 20px;
-      transition: background 0.2s;
-    }
-    .back-btn:hover { background: #cbd5e1; }
-
-    .reader-container {
-      background: #fff;
-      padding: 40px;
-      border-radius: 16px;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.05);
-      max-width: 900px;
-      margin: 0 auto;
-    }
-    .reader-container h2 { color: #1b4d3e; font-size: 1.8rem; margin-bottom: 15px; border-bottom: 2px solid #f1f5f9; padding-bottom: 15px; }
-    .chapter-box { margin-bottom: 30px; }
-    .chapter-box h3 { color: #2c3e50; font-size: 1.2rem; margin-bottom: 10px; }
-    .chapter-content { font-size: 1.1rem; color: #334155; line-height: 1.9; }
-    .chapter-content p { margin-bottom: 15px; }
-
-    .loading, .error-msg { text-align: center; grid-column: 1 / -1; padding: 50px; font-size: 1.2rem; color: #64748b; }
-    .error-msg { color: #e74c3c; }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>منصة إقرأ | إقرأ باسم ربك</title>
+    <style>
+        :root {
+            --primary-color: #1b4d3e;
+            --secondary-color: #d4af37;
+            --bg-color: #fcfbfa;
+            --card-bg: #ffffff;
+            --text-color: #2c3e50;
+            --border-color: #e2d9c5;
+        }
+        body {
+            font-family: 'Amiri', 'Traditional Arabic', serif, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.8;
+        }
+        header {
+            background: linear-gradient(135deg, var(--primary-color), #0f2e24);
+            color: white;
+            text-align: center;
+            padding: 3rem 1rem;
+            border-bottom: 4px solid var(--secondary-color);
+        }
+        header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+            color: #f3e5ab;
+        }
+        header p {
+            margin: 0.5rem 0 0;
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+        .container {
+            max-width: 1100px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+        .search-box {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        .search-box input {
+            width: 100%;
+            max-width: 500px;
+            padding: 0.8rem 1.2rem;
+            font-size: 1.1rem;
+            font-family: inherit;
+            border: 2px solid var(--border-color);
+            border-radius: 30px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        .search-box input:focus {
+            border-color: var(--primary-color);
+        }
+        .books-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        .book-card {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .book-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+        }
+        .book-title {
+            color: var(--primary-color);
+            font-size: 1.3rem;
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+        }
+        .book-author {
+            font-size: 0.95rem;
+            color: #666;
+            margin-bottom: 1rem;
+        }
+        .book-desc {
+            font-size: 1rem;
+            color: #444;
+            margin-bottom: 1.5rem;
+            flex-grow: 1;
+        }
+        .read-btn {
+            background-color: var(--primary-color);
+            color: white;
+            text-align: center;
+            padding: 0.6rem 1rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+        .read-btn:hover {
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+        }
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background: #2c3e50;
+            color: white;
+            margin-top: 3rem;
+        }
+    </style>
 </head>
 <body>
 
-  <header>
-    <h1>منصة إقرأ</h1>
-    <p>إقرأ باسم ربك | مكتبة إلكترونية تفاعلية متكاملة</p>
-  </header>
+    <header>
+        <h1>منصة إقرأ</h1>
+        <p>إقرأ باسم ربك | مكتبة إلكترونية تفاعلية متكاملة</p>
+    </header>
 
-  <div class="container" id="app">
-    <!-- سيتم حقن المحتوى هنا تلقائياً بناءً على اختيار المستخدم -->
-  </div>
-
-  <script>
-    // نظام التوجيه البسيط (Router) المعتمد على رابط الصفحة لعرض القائمة أو قراءة الكتاب مباشرة
-    async function initApp() {
-      const app = document.getElementById('app');
-      const urlParams = new URLSearchParams(window.location.search);
-      const bookFile = urlParams.get('file');
-
-      if (!bookFile) {
-        // --- عرض الواجهة الرئيسية وقائمة الكتب ---
-        app.innerHTML = `
-          <input type="text" id="search-input" class="search-box" placeholder="ابحث عن كتاب أو مصباح...">
-          <div class="books-grid" id="books-container">
-            <div class="loading">جاري تحميل قائمة الكتب...</div>
-          </div>
-        `;
-
-        try {
-          const response = await fetch('data/books-list.json');
-          if (!response.ok) throw new Error('تعذر تحميل قائمة الكتب');
-          const books = await response.json();
-          
-          renderBooks(books);
-
-          // تفعيل البحث الفوري
-          document.getElementById('search-input').addEventListener('input', (e) => {
-            const term = e.target.value.toLowerCase().trim();
-            const filtered = books.filter(b => b.title.toLowerCase().includes(term));
-            renderBooks(filtered);
-          });
-
-        } catch (error) {
-          document.getElementById('books-container').innerHTML = `
-            <div class="error-msg">تعذر جلب ملف الكتب. تأكد من وجود مجلد <code>data</code> وداخلها <code>books-list.json</code>.</div>
-          `;
-        }
-
-      } else {
-        // --- عرض صفحة قراءة الكتاب المختار ---
-        app.innerHTML = `<div class="loading">جاري فتح الكتاب وتحميل محتواه...</div>`;
-
-        try {
-          const response = await fetch(`data/${bookFile}`);
-          if (!response.ok) throw new Error('ملف الكتاب غير موجود');
-          const bookData = await response.json();
-
-          let chaptersHtml = '';
-          if (bookData.chapters && Array.isArray(bookData.chapters)) {
-            chaptersHtml = bookData.chapters.map(chap => `
-              <div class="chapter-box">
-                <h3>${chap.title || ''}</h3>
-                <div class="chapter-content">${chap.content || ''}</div>
-              </div>
-            `).join('');
-          }
-
-          app.innerHTML = `
-            <a href="index.html" class="back-btn">← عودة إلى قائمة الكتب</a>
-            <div class="reader-container">
-              <h2>${bookData.title || 'بدون عنوان'}</h2>
-              <p style="color: #71717a; margin-bottom: 25px;"><strong>المؤلف/المُعد:</strong> ${bookData.author || 'غير محدد'}</p>
-              <hr style="border:0; border-top:1px solid #eee; margin-bottom: 25px;">
-              ${chaptersHtml}
-            </div>
-          `;
-        } catch (error) {
-          app.innerHTML = `
-            <a href="index.html" class="back-btn">← عودة إلى قائمة الكتب</a>
-            <div class="error-msg">عذراً، لم نتمكن من العثور على ملف الكتاب المطلوب داخل مجلد data.</div>
-          `;
-        }
-      }
-    }
-
-    // دالة رسم بطاقات الكتب في الرئيسية
-    function renderBooks(books) {
-      const container = document.getElementById('books-container');
-      if (!books.length) {
-        container.innerHTML = `<div class="loading">لا توجد كتب مطابقة لبحثك.</div>`;
-        return;
-      }
-
-      container.innerHTML = books.map(book => `
-        <div class="book-card">
-          <div>
-            <h3>${book.title}</h3>
-            <p>${book.category || 'قسم المصابيح والأذكار'}</p>
-          </div>
-          <a href="index.html?file=${book.file}" class="btn">اقرأ الكتاب الآن</a>
+    <div class="container">
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="ابحث عن كتاب أو مؤلف..." onkeyup="filterBooks()">
         </div>
-      `).join('');
-    }
 
-    // تشغيل التطبيق عند تحميل الصفحة
-    window.addEventListener('DOMContentLoaded', initApp);
-  </script>
+        <div id="booksContainer" class="books-grid">
+            <!-- يتم تحميل الكتب ديناميكياً هنا عبر JavaScript -->
+        </div>
+    </div>
+
+    <footer>
+        <p>منصة إقرأ التعليمية التفاعلية © 2026</p>
+    </footer>
+
+    <script>
+        let allBooks = [];
+
+        async function loadBooks() {
+            try {
+                const response = await fetch('data/books-list.json');
+                const data = await response.json();
+                allBooks = data.books;
+                displayBooks(allBooks);
+            } catch (error) {
+                console.error('خطأ في تحميل الفهرس:', error);
+                document.getElementById('booksContainer').innerHTML = '<p style="text-align:center; color:red;">تعذر تحميل مكتبة الكتب حالياً.</p>';
+            }
+        }
+
+        function displayBooks(books) {
+            const container = document.getElementById('booksContainer');
+            container.innerHTML = '';
+            
+            if (books.length === 0) {
+                container.innerHTML = '<p style="text-align:center; grid-column: 1/-1;">لا توجد كتب تطابق بحثك.</p>';
+                return;
+            }
+
+            books.forEach(book => {
+                const card = document.createElement('div');
+                card.className = 'book-card';
+                card.innerHTML = `
+                    <div>
+                        <h3 class="book-title">${book.title}</h3>
+                        <div class="book-author">تأليف: ${book.author}</div>
+                        <p class="book-desc">${book.description}</p>
+                    </div>
+                    <a href="reader.html?book=${book.file}" class="read-btn">اقرأ الكتاب الآن</a>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function filterBooks() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const filtered = allBooks.filter(b => 
+                b.title.toLowerCase().includes(query) || 
+                b.author.toLowerCase().includes(query) ||
+                b.description.toLowerCase().includes(query)
+            );
+            displayBooks(filtered);
+        }
+
+        loadBooks();
+    </script>
 </body>
 </html>
