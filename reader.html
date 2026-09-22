@@ -8,53 +8,50 @@
     <style>
         body {
             font-family: 'Cairo', sans-serif;
-            background-color: #fdfbf7; /* لون ورقي مريح جداً للقراءة */
+            background-color: #fcf9f2;
             color: #2c2c2c;
             margin: 0;
             padding: 20px;
             line-height: 1.8;
         }
         .container {
-            max-width: 650px;
+            max-width: 800px;
             margin: 0 auto;
             background: #fff;
-            padding: 40px;
-            border-radius: 12px;
-            border: 1px solid #eae6df;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
         }
-        .back {
+        .back-btn {
             display: inline-block;
-            margin-bottom: 25px;
-            color: #666;
+            margin-bottom: 20px;
             text-decoration: none;
+            color: #555;
+            background: #f0f0f0;
+            padding: 6px 14px;
+            border-radius: 6px;
             font-size: 0.9rem;
         }
-        .back:hover {
-            color: #111;
+        .back-btn:hover {
+            background: #e2e2e2;
         }
         h1 {
             font-size: 1.5rem;
-            margin-bottom: 25px;
-            color: #111;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 15px;
-        }
-        .chapter {
-            margin-bottom: 30px;
-        }
-        .chapter h3 {
-            font-size: 1.1rem;
-            color: #444;
+            color: #1b4d3e;
             margin-bottom: 10px;
         }
-        .chapter-content {
-            font-size: 1.05rem;
-            color: #333;
+        .meta {
+            color: #666;
+            font-size: 0.95rem;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
         }
-        .chapter-content p {
-            margin-bottom: 15px;
+        .content {
+            font-size: 1.1rem;
+            white-space: pre-wrap;
         }
-        .msg {
+        .loading {
             text-align: center;
             color: #666;
             padding: 40px;
@@ -62,37 +59,35 @@
     </style>
 </head>
 <body>
-
     <div class="container">
-        <a href="index.html" class="back">← الرجوع إلى القائمة</a>
-        <div id="content">
-            <div class="msg">جاري تحميل الكتاب...</div>
+        <a href="index.html" class="back-btn">← عودة للمكتبة</a>
+        <div id="book-container">
+            <div class="loading">جاري تحميل الكتاب...</div>
         </div>
     </div>
 
     <script>
-        const params = new URLSearchParams(window.location.search);
-        const fileName = params.get('file');
+        const urlParams = new URLSearchParams(window.location.search);
+        const fileName = urlParams.get('file');
 
         if (!fileName) {
-            document.getElementById('content').innerHTML = '<p class="msg">لم يتم تحديد كتاب.</p>';
+            document.getElementById('book-container').innerHTML = '<p style="color:red; text-align:center;">لم يتم تحديد الكتاب المطلوب.</p>';
         } else {
             fetch(`data/${fileName}`)
-                .then(res => res.json())
-                .then(book => {
-                    let html = `<h1>${book.title}</h1>`;
-                    if (book.chapters && book.chapters.length > 0) {
-                        html += book.chapters.map(ch => `
-                            <div class="chapter">
-                                <h3>${ch.title || ''}</h3>
-                                <div class="chapter-content">${ch.content}</div>
-                            </div>
-                        `).join('');
-                    }
-                    document.getElementById('content').innerHTML = html;
+                .then(res => {
+                    if (!res.ok) throw new Error('فشل في جلب ملف الكتاب');
+                    return res.json();
                 })
-                .catch(() => {
-                    document.getElementById('content').innerHTML = '<p class="msg" style="color:red;">تعذر تحميل محتوى الكتاب.</p>';
+                .then(book => {
+                    document.getElementById('book-container').innerHTML = `
+                        <h1>${book.title || 'بدون عنوان'}</h1>
+                        <div class="meta">المؤلف: ${book.author || 'غير محدد'}</div>
+                        <div class="content">${book.content || book.description || 'لا توجد محتويات متاحة.'}</div>
+                    `;
+                })
+                .catch(err => {
+                    console.error(err);
+                    document.getElementById('book-container').innerHTML = '<p style="color:red; text-align:center;">تعذر تحميل محتوى الكتاب. تأكد من مسار الملف داخل مجلد data.</p>';
                 });
         }
     </script>
