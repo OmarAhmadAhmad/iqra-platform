@@ -6,28 +6,37 @@
     <title>منصة إقرا - المكتبة الرقمية</title>
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #1b4d3e;
+            --primary-light: #e8f5e9;
+            --bg-color: #f8f9fa;
+            --card-bg: #ffffff;
+            --text-main: #2c3e50;
+            --text-muted: #7f8c8d;
+            --border-color: #eaeaea;
+        }
         body {
             font-family: 'Cairo', sans-serif;
-            background-color: #f8f9fa;
-            color: #2c3e50;
+            background-color: var(--bg-color);
+            color: var(--text-main);
             margin: 0;
             padding: 0;
         }
         header {
-            background: #ffffff;
-            border-bottom: 1px solid #eaeaea;
-            padding: 25px 20px;
+            background: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            padding: 30px 20px;
             text-align: center;
             box-shadow: 0 2px 4px rgba(0,0,0,0.02);
         }
         h1 {
             font-size: 1.8rem;
             margin: 0 0 5px 0;
-            color: #1b4d3e;
+            color: var(--primary);
             font-weight: 700;
         }
         p.subtitle {
-            color: #7f8c8d;
+            color: var(--text-muted);
             font-size: 0.95rem;
             margin: 0;
         }
@@ -36,7 +45,6 @@
             margin: 30px auto;
             padding: 0 20px;
         }
-        /* شريط البحث */
         .search-box {
             width: 100%;
             padding: 14px 18px;
@@ -52,24 +60,23 @@
             transition: border-color 0.2s;
         }
         .search-box:focus {
-            border-color: #1b4d3e;
+            border-color: var(--primary);
         }
-        /* تبيوبات التصنيفات (الأقسام) */
         .categories-nav {
             display: flex;
             gap: 10px;
             overflow-x: auto;
             padding-bottom: 10px;
             margin-bottom: 25px;
-            scrollbar-width: none; /* إخفاء شريط التمرير للإنترنت إكسبلورر وفيرفوكس */
+            scrollbar-width: none;
         }
         .categories-nav::-webkit-scrollbar {
-            display: none; /* إخفاء شريط التمرير لمتصفحات كروم وساطاري */
+            display: none;
         }
         .cat-btn {
             background: #ffffff;
             border: 1px solid #dcdde1;
-            padding: 8px 16px;
+            padding: 8px 18px;
             border-radius: 20px;
             font-size: 0.9rem;
             cursor: pointer;
@@ -82,17 +89,16 @@
             background: #f1f2f6;
         }
         .cat-btn.active {
-            background: #1b4d3e;
+            background: var(--primary);
             color: #fff;
-            border-color: #1b4d3e;
+            border-color: var(--primary);
             font-weight: 600;
         }
-        /* قائمة الكتب */
         .book-card {
-            background: #fff;
+            background: var(--card-bg);
             padding: 18px 22px;
             border-radius: 10px;
-            border: 1px solid #eaeaea;
+            border: 1px solid var(--border-color);
             margin-bottom: 14px;
             display: flex;
             justify-content: space-between;
@@ -110,37 +116,38 @@
         .book-info {
             display: flex;
             flex-direction: column;
-            gap: 4px;
+            gap: 6px;
         }
         .book-title {
             font-size: 1.15rem;
             font-weight: 600;
-            color: #2c3e50;
+            color: var(--text-main);
         }
         .book-category-tag {
             font-size: 0.8rem;
-            color: #1b4d3e;
-            background: #e8f5e9;
-            padding: 2px 8px;
+            color: var(--primary);
+            background: var(--primary-light);
+            padding: 2px 10px;
             border-radius: 4px;
             width: fit-content;
+            font-weight: 600;
         }
         .read-btn {
             font-size: 0.9rem;
-            color: #1b4d3e;
+            color: var(--primary);
             background: #f1f8f5;
             padding: 8px 16px;
             border-radius: 6px;
             font-weight: 600;
-            transition: background 0.2s;
+            transition: background 0.2s, color 0.2s;
         }
         .book-card:hover .read-btn {
-            background: #1b4d3e;
+            background: var(--primary);
             color: #fff;
         }
         .loading, .no-results {
             text-align: center;
-            color: #7f8c8d;
+            color: var(--text-muted);
             padding: 40px;
             font-size: 1rem;
         }
@@ -154,15 +161,12 @@
     </header>
 
     <div class="container">
-        <!-- شريط البحث الفوري -->
         <input type="text" id="search" class="search-box" placeholder="ابحث عن عنوان كتاب أو مصباح...">
 
-        <!-- أزرار التصنيفات التلقائية -->
         <div id="categories-container" class="categories-nav">
             <button class="cat-btn active" data-category="الكل">الكل</button>
         </div>
 
-        <!-- قائمة الكتب -->
         <div id="books-list">
             <div class="loading">جاري ترتيب وتحميل المكتبة...</div>
         </div>
@@ -172,7 +176,6 @@
         let allBooks = [];
         let currentCategory = 'الكل';
 
-        // جلب بيانات الفهرس
         fetch('data/books-list.json')
             .then(res => res.json())
             .then(data => {
@@ -182,10 +185,9 @@
             })
             .catch((err) => {
                 console.error(err);
-                document.getElementById('books-list').innerHTML = '<p class="no-results" style="color:red;">عذراً، تعذر تحميل قائمة الكتب.</p>';
+                document.getElementById('books-list').innerHTML = '<div class="no-results" style="color:#e74c3c;">عذراً، تعذر تحميل قائمة الكتب.</div>';
             });
 
-        // استخراج التصنيفات وبناء الأزرار تلقائياً
         function buildCategories(books) {
             const categoriesSet = new Set();
             books.forEach(b => {
@@ -199,7 +201,6 @@
                 btn.dataset.category = cat;
                 btn.textContent = cat;
                 btn.addEventListener('click', () => {
-                    // إزالة التفعيل من كل الأزرار وتفعيله على الزر المختار
                     document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
                     btn.classList.add('active');
                     currentCategory = cat;
@@ -207,25 +208,16 @@
                 });
                 catContainer.appendChild(btn);
             });
-
-            // تفعيل زر "الكل"
-            catContainer.querySelector('[data-category="الكل"]').addEventListener('click', () => {
-                document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-                catContainer.querySelector('[data-category="الكل"]').classList.add('active');
-                currentCategory = 'الكل';
-                filterAndRender();
-            });
         }
 
-        // دالة عرض الكتب
         function renderBooks(books) {
             const list = document.getElementById('books-list');
             if (!books || books.length === 0) {
-                list.innerHTML = '<div class="no-results">لا توجد كتب مطابقة لبحثك.</div>';
+                list.innerHTML = '<div class="no-results">لا توجد نتائج مطابقة لبحثك.</div>';
                 return;
             }
 
-            list.innerHTML = books.nodeType ? '' : books.map(book => `
+            list.innerHTML = books.map(book => `
                 <a href="reader.html?file=${book.file}" class="book-card">
                     <div class="book-info">
                         <span class="book-category-tag">${book.category || 'عام'}</span>
@@ -236,7 +228,6 @@
             `).join('');
         }
 
-        // تصفية الكتب حسب القسم المختار والبحث
         function filterAndRender() {
             const searchTerm = document.getElementById('search').value.toLowerCase().trim();
             
@@ -252,7 +243,6 @@
             renderBooks(filtered);
         }
 
-        // ربط البحث الفوري بالحركة
         document.getElementById('search').addEventListener('input', filterAndRender);
     </script>
 </body>
