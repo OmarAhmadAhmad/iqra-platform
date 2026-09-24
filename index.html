@@ -3,40 +3,52 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>منصة إقرأ | إقرأ باسم ربك</title>
-    <!-- خط Cairo العصري والمريح للعين -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <title>منصة إقرأ | المكتبة الرقمية التفاعلية</title>
+    <!-- خطوط عربية فاخرة: Amiri للعناوين و Cairo للواجهات -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary-color: #1b4d3e;
             --primary-light: #2c7a63;
-            --secondary-color: #d4af37;
-            --bg-color: #f8f6f0;
+            --secondary-color: #c59b27;
+            --bg-color: #fbf9f5;
             --card-bg: #ffffff;
             --text-color: #2c3e50;
             --text-muted: #6c757d;
-            --border-color: #e6dfd3;
-            --shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
+            --border-color: #e8e2d5;
+            --shadow: 0 10px 30px rgba(27, 77, 62, 0.06);
             --radius: 16px;
+            --font-heading: 'Amiri', serif;
+            --font-body: 'Cairo', sans-serif;
         }
 
-        /* Dark Mode Theme */
+        /* Mode 1: Dark Mode */
         [data-theme="dark"] {
-            --bg-color: #121816;
-            --card-bg: #1e2623;
-            --text-color: #e0e6e3;
-            --text-muted: #9fae9a;
-            --border-color: #2e3a35;
-            --shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+            --bg-color: #111815;
+            --card-bg: #1a2420;
+            --text-color: #e4ece8;
+            --text-muted: #95a5a0;
+            --border-color: #2a3832;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Mode 2: Sepia Reading Mode */
+        [data-theme="sepia"] {
+            --bg-color: #f4ecd8;
+            --card-bg: #fdf6e3;
+            --text-color: #433422;
+            --text-muted: #7b6a55;
+            --border-color: #e0d2b4;
+            --shadow: 0 10px 30px rgba(67, 52, 34, 0.08);
         }
 
         * {
             box-sizing: border-box;
-            transition: background-color 0.3s, color 0.3s, border-color 0.3s;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         body {
-            font-family: 'Cairo', serif, Arial, sans-serif;
+            font-family: var(--font-body);
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
@@ -44,73 +56,151 @@
             line-height: 1.7;
         }
 
-        /* Header Layout */
+        /* Header UI */
         header {
             background: linear-gradient(135deg, var(--primary-color), #0d2820);
             color: white;
-            padding: 2.5rem 1rem 3.5rem;
+            padding: 3rem 1.5rem 4.5rem;
             text-align: center;
             position: relative;
             border-bottom: 4px solid var(--secondary-color);
         }
 
-        .theme-toggle {
+        .header-top-bar {
             position: absolute;
             top: 1rem;
-            left: 1rem;
-            background: rgba(255, 255, 255, 0.15);
+            left: 1.5rem;
+            right: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .brand-logo {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: #f3e5ab;
+        }
+
+        .theme-selector {
+            display: flex;
+            gap: 0.4rem;
+            background: rgba(255, 255, 255, 0.12);
+            padding: 0.3rem;
+            border-radius: 30px;
+            backdrop-filter: blur(8px);
+        }
+
+        .theme-btn {
+            background: transparent;
             border: none;
             color: white;
-            padding: 0.5rem 1rem;
+            padding: 0.3rem 0.8rem;
             border-radius: 20px;
             cursor: pointer;
-            backdrop-filter: blur(5px);
-            font-family: inherit;
-            font-size: 0.9rem;
+            font-family: var(--font-body);
+            font-size: 0.82rem;
+            font-weight: 600;
+        }
+
+        .theme-btn.active {
+            background: var(--secondary-color);
+            color: #111;
+            font-weight: 700;
         }
 
         header h1 {
-            margin: 0;
-            font-size: 2.8rem;
-            font-weight: 800;
+            font-family: var(--font-heading);
+            margin: 0.5rem 0 0.2rem;
+            font-size: 3.2rem;
+            font-weight: 700;
             color: #f3e5ab;
             letter-spacing: -0.5px;
         }
 
         header p {
-            margin: 0.5rem 0 0;
-            font-size: 1.1rem;
+            margin: 0;
+            font-size: 1.15rem;
             opacity: 0.9;
+            font-weight: 400;
         }
 
+        /* Main Container Layout */
         .container {
-            max-width: 1200px;
-            margin: -2rem auto 3rem;
+            max-width: 1240px;
+            margin: -2.5rem auto 4rem;
             padding: 0 1.2rem;
             position: relative;
             z-index: 10;
         }
 
-        /* Search & Filter Bar */
+        /* Continue Reading Section */
+        .continue-widget {
+            background: linear-gradient(100deg, var(--primary-color), var(--primary-light));
+            color: white;
+            padding: 1.2rem 1.8rem;
+            border-radius: var(--radius);
+            margin-bottom: 1.8rem;
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .continue-widget .title-area {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .continue-widget .icon-box {
+            background: rgba(255, 255, 255, 0.15);
+            width: 45px;
+            height: 45px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.4rem;
+        }
+
+        .continue-widget .btn {
+            background: var(--secondary-color);
+            color: #111;
+            padding: 0.6rem 1.4rem;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        /* Controls Panel (Search, Categories, View Toggle) */
         .controls-card {
             background: var(--card-bg);
-            padding: 1.2rem 1.5rem;
+            padding: 1.5rem;
             border-radius: var(--radius);
             box-shadow: var(--shadow);
             border: 1px solid var(--border-color);
             margin-bottom: 2rem;
         }
 
+        .search-row {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.2rem;
+        }
+
         .search-box {
             position: relative;
-            width: 100%;
-            margin-bottom: 1rem;
+            flex-grow: 1;
         }
 
         .search-box input {
             width: 100%;
-            padding: 0.9rem 1.2rem 0.9rem 3rem;
-            font-size: 1.05rem;
+            padding: 0.95rem 1.2rem 0.95rem 3rem;
+            font-size: 1rem;
             font-family: inherit;
             border: 2px solid var(--border-color);
             border-radius: 12px;
@@ -121,14 +211,39 @@
 
         .search-box input:focus {
             border-color: var(--primary-light);
+            box-shadow: 0 0 0 4px rgba(44, 122, 99, 0.1);
         }
 
-        /* Categories Chips */
+        .view-toggle {
+            display: flex;
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 0.2rem;
+        }
+
+        .view-btn {
+            background: transparent;
+            border: none;
+            padding: 0.6rem 0.9rem;
+            border-radius: 8px;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .view-btn.active {
+            background: var(--card-bg);
+            color: var(--primary-color);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        /* Category Chips Bar */
         .categories-chips {
             display: flex;
             gap: 0.6rem;
             overflow-x: auto;
-            padding-bottom: 0.3rem;
+            padding-bottom: 0.4rem;
             scrollbar-width: none;
         }
 
@@ -140,49 +255,59 @@
             background: var(--bg-color);
             border: 1px solid var(--border-color);
             color: var(--text-color);
-            padding: 0.4rem 1.1rem;
-            border-radius: 20px;
+            padding: 0.5rem 1.1rem;
+            border-radius: 25px;
             cursor: pointer;
             white-space: nowrap;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .chip.active, .chip:hover {
+        .chip .count {
+            background: rgba(0,0,0,0.06);
+            padding: 0.1rem 0.5rem;
+            border-radius: 12px;
+            font-size: 0.78rem;
+        }
+
+        .chip.active {
             background: var(--primary-color);
             color: white;
             border-color: var(--primary-color);
         }
 
-        /* Continue Reading Widget */
-        .continue-reading {
-            background: linear-gradient(to left, var(--primary-color), var(--primary-light));
+        .chip.active .count {
+            background: rgba(255, 255, 255, 0.2);
             color: white;
-            padding: 1.2rem 1.5rem;
-            border-radius: var(--radius);
-            margin-bottom: 2rem;
-            display: none;
-            align-items: center;
-            justify-content: space-between;
-            box-shadow: var(--shadow);
         }
 
-        .continue-reading .btn {
-            background: var(--secondary-color);
-            color: var(--primary-color);
-            padding: 0.5rem 1.2rem;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 700;
-        }
-
-        /* Books Grid */
+        /* Books Layout - Grid View */
         .books-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
             gap: 1.8rem;
         }
 
+        /* Books Layout - List View */
+        .books-grid.list-view {
+            grid-template-columns: 1fr;
+        }
+
+        .books-grid.list-view .book-card {
+            flex-direction: row;
+            height: auto;
+        }
+
+        .books-grid.list-view .book-cover {
+            width: 180px;
+            height: auto;
+            min-height: 180px;
+        }
+
+        /* Book Card Styling */
         .book-card {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -196,25 +321,43 @@
 
         .book-card:hover {
             transform: translateY(-6px);
-            box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+            box-shadow: 0 16px 35px rgba(0,0,0,0.1);
         }
 
         .book-cover {
-            height: 180px;
-            background: linear-gradient(45deg, var(--primary-color), var(--primary-light));
+            height: 190px;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-light));
             display: flex;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
             color: #f3e5ab;
-            font-size: 3rem;
             position: relative;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .book-cover::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+        }
+
+        .book-cover-title {
+            font-family: var(--font-heading);
+            font-size: 1.4rem;
+            font-weight: 700;
+            line-height: 1.3;
+            z-index: 1;
+            margin-bottom: 0.4rem;
         }
 
         .fav-btn {
             position: absolute;
-            top: 10px;
-            left: 10px;
-            background: rgba(0,0,0,0.4);
+            top: 12px;
+            left: 12px;
+            background: rgba(0,0,0,0.3);
             border: none;
             color: white;
             width: 36px;
@@ -225,6 +368,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            z-index: 2;
+            backdrop-filter: blur(4px);
         }
 
         .fav-btn.active {
@@ -233,41 +378,57 @@
         }
 
         .book-details {
-            padding: 1.2rem;
+            padding: 1.3rem;
             display: flex;
             flex-direction: column;
             flex-grow: 1;
         }
 
-        .book-badge {
-            align-self: flex-start;
-            background: rgba(212, 175, 55, 0.15);
-            color: var(--secondary-color);
+        .book-meta-tags {
+            display: flex;
+            gap: 0.4rem;
+            flex-wrap: wrap;
+            margin-bottom: 0.8rem;
+        }
+
+        .tag {
             font-size: 0.75rem;
             font-weight: 700;
             padding: 0.2rem 0.6rem;
             border-radius: 6px;
-            margin-bottom: 0.5rem;
+        }
+
+        .tag-category {
+            background: rgba(197, 155, 39, 0.15);
+            color: var(--secondary-color);
+        }
+
+        .tag-time {
+            background: rgba(44, 122, 99, 0.1);
+            color: var(--primary-light);
         }
 
         .book-title {
+            font-family: var(--font-heading);
             color: var(--text-color);
-            font-size: 1.25rem;
+            font-size: 1.4rem;
             margin: 0 0 0.3rem 0;
             font-weight: 700;
+            line-height: 1.3;
         }
 
         .book-author {
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             color: var(--text-muted);
             margin-bottom: 0.8rem;
+            font-weight: 600;
         }
 
         .book-desc {
             font-size: 0.92rem;
             color: var(--text-color);
             opacity: 0.85;
-            margin-bottom: 1.2rem;
+            margin-bottom: 1.3rem;
             flex-grow: 1;
             display: -webkit-box;
             -webkit-line-clamp: 3;
@@ -289,7 +450,7 @@
             border-radius: 10px;
             text-decoration: none;
             font-weight: 700;
-            font-size: 0.95rem;
+            font-size: 0.92rem;
         }
 
         .read-btn:hover {
@@ -305,42 +466,48 @@
             cursor: pointer;
             font-family: inherit;
             font-weight: 600;
+            font-size: 0.88rem;
         }
 
-        /* Modal Quick View */
+        /* Quick View Modal */
         .modal {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(4px);
+            background: rgba(0, 0, 0, 0.65);
+            backdrop-filter: blur(5px);
             z-index: 1000;
             align-items: center;
             justify-content: center;
-            padding: 1rem;
+            padding: 1.2rem;
         }
 
         .modal-content {
             background: var(--card-bg);
-            padding: 2rem;
+            padding: 2.2rem;
             border-radius: var(--radius);
-            max-width: 500px;
+            max-width: 520px;
             width: 100%;
             position: relative;
             box-shadow: var(--shadow);
+            border: 1px solid var(--border-color);
         }
 
         .close-modal {
             position: absolute;
             top: 1rem; left: 1rem;
-            background: none; border: none;
-            font-size: 1.5rem; color: var(--text-muted);
+            background: var(--bg-color);
+            border: 1px solid var(--border-color);
+            width: 32px; height: 32px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            color: var(--text-muted);
             cursor: pointer;
         }
 
         footer {
             text-align: center;
-            padding: 2rem;
+            padding: 2.2rem;
             background: var(--card-bg);
             color: var(--text-muted);
             border-top: 1px solid var(--border-color);
@@ -351,39 +518,53 @@
 <body>
 
     <header>
-        <button class="theme-toggle" onclick="toggleTheme()">🌙 الوضع الليلي</button>
-        <h1>منصة إقرأ</h1>
-        <p>مكتبتك الرقمية التفاعلية للمطالعة والتعلم السلس</p>
+        <div class="header-top-bar">
+            <span class="brand-logo">📖 منصة إقرأ</span>
+            <div class="theme-selector">
+                <button class="theme-btn active" onclick="setTheme('warm')">☀️ دافئ</button>
+                <button class="theme-btn" onclick="setTheme('sepia')">📜 ورقي</button>
+                <button class="theme-btn" onclick="setTheme('dark')">🌙 ليلي</button>
+            </div>
+        </div>
+        <h1>مكتبة إقرأ الرقمية</h1>
+        <p>إقرأ باسم ربك | تجربة قرائية ممتعة، ميسرة، وسريعة</p>
     </header>
 
     <div class="container">
 
-        <!-- شريط متابعة القراءة -->
-        <div id="continueWidget" class="continue-reading">
-            <div>
-                <small style="opacity: 0.8;">📖 متابعة القراءة الأخيرة</small>
-                <h4 id="continueTitle" style="margin: 0.2rem 0 0 0;">عنوان الكتاب</h4>
+        <!-- شريط متابعة القراءة الأخيرة -->
+        <div id="continueWidget" class="continue-widget">
+            <div class="title-area">
+                <div class="icon-box">🔖</div>
+                <div>
+                    <small style="opacity: 0.85; font-size: 0.8rem;">متابعة قراءة أحدث كتاب</small>
+                    <h4 id="continueTitle" style="margin: 0; font-family: var(--font-heading); font-size: 1.2rem;">عنوان الكتاب</h4>
+                </div>
             </div>
-            <a id="continueLink" href="#" class="btn">متابعة الآن</a>
+            <a id="continueLink" href="#" class="btn">استكمل القراءة الان</a>
         </div>
 
-        <!-- أدوات البحث والتصفية -->
+        <!-- لوحة التحكم والبحث والتصنيفات -->
         <div class="controls-card">
-            <div class="search-box">
-                <input type="text" id="searchInput" placeholder="ابحث باسم الكتاب، المؤلف، أو الفكرة..." onkeyup="filterBooks()">
+            <div class="search-row">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="ابحث باسم الكتاب، المؤلف، أو كلمة مفتاحية..." onkeyup="filterBooks()">
+                </div>
+                <div class="view-toggle">
+                    <button class="view-btn active" id="gridBtn" onclick="setView('grid')">⊞</button>
+                    <button class="view-btn" id="listBtn" onclick="setView('list')">☰</button>
+                </div>
             </div>
+
+            <!-- تصنيفات مشتقة ديناميكياً -->
             <div class="categories-chips" id="categoriesContainer">
-                <button class="chip active" onclick="filterCategory('الكل')">الكل</button>
-                <button class="chip" onclick="filterCategory('سيرة وتاريخ')">سيرة وتاريخ</button>
-                <button class="chip" onclick="filterCategory('فقه وشريعة')">فقه وشريعة</button>
-                <button class="chip" onclick="filterCategory('عقيدة')">عقيدة</button>
-                <button class="chip" onclick="filterCategory('المفضلة')">❤️ المفضلة</button>
+                <!-- يُولد عبر JavaScript -->
             </div>
         </div>
 
-        <!-- شبكة عرض الكتب -->
+        <!-- شبكة الكتب -->
         <div id="booksContainer" class="books-grid">
-            <!-- يتم تحميل الكتب ديناميكياً هنا -->
+            <!-- يُحمل عبر JavaScript -->
         </div>
     </div>
 
@@ -391,18 +572,21 @@
     <div id="quickModal" class="modal">
         <div class="modal-content">
             <button class="close-modal" onclick="closeModal()">&times;</button>
-            <span class="book-badge" id="modalCategory">تصنيف</span>
-            <h2 id="modalTitle" style="margin: 0.5rem 0;">عنوان الكتاب</h2>
-            <p id="modalAuthor" style="color: var(--text-muted); margin-bottom: 1rem;">المؤلف</p>
-            <p id="modalDesc">وصف الكتاب التفصيلي ينزل هنا...</p>
-            <div style="margin-top: 1.5rem; display: flex; gap: 0.8rem;">
-                <a id="modalReadLink" href="#" class="read-btn">بدء القراءة الآن</a>
+            <div class="book-meta-tags" style="margin-bottom: 0.5rem;">
+                <span class="tag tag-category" id="modalCategory">تصنيف</span>
+                <span class="tag tag-time" id="modalTime">⏱️ 15 دقيقة</span>
+            </div>
+            <h2 id="modalTitle" style="font-family: var(--font-heading); font-size: 1.8rem; margin: 0.3rem 0;">عنوان الكتاب</h2>
+            <p id="modalAuthor" style="color: var(--text-muted); font-weight: 600; margin-bottom: 1rem;">المؤلف</p>
+            <p id="modalDesc" style="line-height: 1.8; font-size: 0.98rem; opacity: 0.9;">تفاصيل ووصف الكتاب...</p>
+            <div style="margin-top: 1.8rem; display: flex; gap: 0.8rem;">
+                <a id="modalReadLink" href="#" class="read-btn" style="padding: 0.8rem;">ابدأ قراءة الكتاب الآن</a>
             </div>
         </div>
     </div>
 
     <footer>
-        <p>منصة إقرأ التعليمية التفاعلية © 2026 | جميع الحقوق محفوظة</p>
+        <p>منصة إقرأ التعليمية التفاعلية © 2026 | مصممة للتعلم المعرفي الميسر</p>
     </footer>
 
     <script>
@@ -410,81 +594,90 @@
         let currentCategory = 'الكل';
         let favorites = JSON.parse(localStorage.getItem('iqra_favorites') || '[]');
 
-        // تحميل وتطبيق الثيم المحفوظ
-        if (localStorage.getItem('iqra_theme') === 'dark') {
-            document.body.setAttribute('data-theme', 'dark');
+        // إدارة الأوضاع البصرية (Themes)
+        function setTheme(theme) {
+            document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
+            if (theme === 'dark') {
+                document.body.setAttribute('data-theme', 'dark');
+                event.target.classList.add('active');
+            } else if (theme === 'sepia') {
+                document.body.setAttribute('data-theme', 'sepia');
+                event.target.classList.add('active');
+            } else {
+                document.body.removeAttribute('data-theme');
+                event.target.classList.add('active');
+            }
+            localStorage.setItem('iqra_theme_mode', theme);
         }
 
-        function toggleTheme() {
-            const isDark = document.body.getAttribute('data-theme') === 'dark';
-            if (isDark) {
-                document.body.removeAttribute('data-theme');
-                localStorage.setItem('iqra_theme', 'light');
+        // إعداد العرض (شبكي / قائمة)
+        function setView(view) {
+            const container = document.getElementById('booksContainer');
+            document.getElementById('gridBtn').classList.toggle('active', view === 'grid');
+            document.getElementById('listBtn').classList.toggle('active', view === 'list');
+            
+            if (view === 'list') {
+                container.classList.add('list-view');
             } else {
-                document.body.setAttribute('data-theme', 'dark');
-                localStorage.setItem('iqra_theme', 'dark');
+                container.classList.remove('list-view');
             }
         }
 
+        // تحميل بيانات الكتب من JSON
         async function loadBooks() {
             try {
                 const response = await fetch('data/books-list.json');
                 const data = await response.json();
                 allBooks = data.books;
                 
+                renderCategoryChips();
                 checkLastRead();
                 filterBooks();
             } catch (error) {
                 console.error('خطأ في تحميل الفهرس:', error);
                 document.getElementById('booksContainer').innerHTML = 
-                    '<p style="text-align:center; grid-column: 1/-1; color:#e74c3c;">تعذر تحميل مكتبة الكتب حالياً. التأكد من وجود ملف JSON.</p>';
+                    '<p style="text-align:center; grid-column: 1/-1; color:#e74c3c;">تعذر تحميل مكتبة الكتب حالياً. التأكد من وجود ملف data/books-list.json</p>';
             }
         }
 
-        function checkLastRead() {
-            const lastBook = JSON.parse(localStorage.getItem('iqra_last_read'));
-            if (lastBook) {
-                document.getElementById('continueTitle').textContent = lastBook.title;
-                document.getElementById('continueLink').href = `reader.html?book=${lastBook.file}`;
-                document.getElementById('continueWidget').style.display = 'flex';
-            }
-        }
+        // توليد أزرار التصنيف ديناميكياً مع العدادات
+        function renderCategoryChips() {
+            const container = document.getElementById('categoriesContainer');
+            const categoryCounts = {};
 
-        function displayBooks(books) {
-            const container = document.getElementById('booksContainer');
-            container.innerHTML = '';
-
-            if (books.length === 0) {
-                container.innerHTML = '<p style="text-align:center; grid-column: 1/-1; padding: 2rem;">لا توجد كتب تطابق خيارات البحث.</p>';
-                return;
-            }
-
-            books.forEach(book => {
-                const isFav = favorites.includes(book.file);
-                const category = book.category || 'عام';
-                
-                const card = document.createElement('div');
-                card.className = 'book-card';
-                card.innerHTML = `
-                    <div class="book-cover">
-                        📖
-                        <button class="fav-btn ${isFav ? 'active' : ''}" onclick="toggleFav('${book.file}', event)">
-                            ${isFav ? '♥' : '♡'}
-                        </button>
-                    </div>
-                    <div class="book-details">
-                        <span class="book-badge">${category}</span>
-                        <h3 class="book-title">${book.title}</h3>
-                        <div class="book-author">تأليف: ${book.author}</div>
-                        <p class="book-desc">${book.description}</p>
-                        <div class="card-actions">
-                            <a href="reader.html?book=${book.file}" class="read-btn" onclick="saveLastRead('${book.title}', '${book.file}')">اقرأ الآن</a>
-                            <button class="preview-btn" onclick="openModal('${book.title}', '${book.author}', '${book.description.replace(/'/g, "\\'")}', '${book.file}', '${category}')">معاينة</button>
-                        </div>
-                    </div>
-                `;
-                container.appendChild(card);
+            allBooks.forEach(b => {
+                const cat = b.category || 'عام';
+                categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
             });
+
+            let html = `
+                <button class="chip ${currentCategory === 'الكل' ? 'active' : ''}" onclick="selectCategory('الكل', event)">
+                    <span>الكل</span>
+                    <span class="count">${allBooks.length}</span>
+                </button>
+                <button class="chip ${currentCategory === 'المفضلة' ? 'active' : ''}" onclick="selectCategory('المفضلة', event)">
+                    <span>❤️ المفضلة</span>
+                    <span class="count">${favorites.length}</span>
+                </button>
+            `;
+
+            for (const [cat, count] of Object.entries(categoryCounts)) {
+                html += `
+                    <button class="chip ${currentCategory === cat ? 'active' : ''}" onclick="selectCategory('${cat}', event)">
+                        <span>${cat}</span>
+                        <span class="count">${count}</span>
+                    </button>
+                `;
+            }
+
+            container.innerHTML = html;
+        }
+
+        function selectCategory(cat, e) {
+            currentCategory = cat;
+            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
+            e.currentTarget.classList.add('active');
+            filterBooks();
         }
 
         function filterBooks() {
@@ -510,11 +703,46 @@
             displayBooks(filtered);
         }
 
-        function filterCategory(cat) {
-            currentCategory = cat;
-            document.querySelectorAll('.chip').forEach(c => c.classList.remove('active'));
-            event.target.classList.add('active');
-            filterBooks();
+        function displayBooks(books) {
+            const container = document.getElementById('booksContainer');
+            container.innerHTML = '';
+
+            if (books.length === 0) {
+                container.innerHTML = '<p style="text-align:center; grid-column: 1/-1; padding: 3rem; opacity: 0.7;">لا توجد كتب تطابق البحث والتصنيف المحدد.</p>';
+                return;
+            }
+
+            books.forEach(book => {
+                const isFav = favorites.includes(book.file);
+                const category = book.category || 'عام';
+                const readTime = book.read_time || '10 دقائق';
+
+                const card = document.createElement('div');
+                card.className = 'book-card';
+                card.innerHTML = `
+                    <div class="book-cover">
+                        <button class="fav-btn ${isFav ? 'active' : ''}" onclick="toggleFav('${book.file}', event)">
+                            ${isFav ? '♥' : '♡'}
+                        </button>
+                        <div class="book-cover-title">${book.title}</div>
+                        <small style="opacity: 0.8;">${book.author}</small>
+                    </div>
+                    <div class="book-details">
+                        <div class="book-meta-tags">
+                            <span class="tag tag-category">${category}</span>
+                            <span class="tag tag-time">⏱️ ${readTime}</span>
+                        </div>
+                        <h3 class="book-title">${book.title}</h3>
+                        <div class="book-author">تأليف: ${book.author}</div>
+                        <p class="book-desc">${book.description}</p>
+                        <div class="card-actions">
+                            <a href="reader.html?book=${book.file}" class="read-btn" onclick="saveLastRead('${book.title}', '${book.file}')">اقرأ الآن</a>
+                            <button class="preview-btn" onclick="openModal('${book.title}', '${book.author}', '${book.description.replace(/'/g, "\\'")}', '${book.file}', '${category}', '${readTime}')">معاينة</button>
+                        </div>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
         }
 
         function toggleFav(file, e) {
@@ -525,6 +753,7 @@
                 favorites.push(file);
             }
             localStorage.setItem('iqra_favorites', JSON.stringify(favorites));
+            renderCategoryChips();
             filterBooks();
         }
 
@@ -532,12 +761,21 @@
             localStorage.setItem('iqra_last_read', JSON.stringify({ title, file }));
         }
 
-        // Modal Functions
-        function openModal(title, author, desc, file, category) {
+        function checkLastRead() {
+            const lastBook = JSON.parse(localStorage.getItem('iqra_last_read'));
+            if (lastBook) {
+                document.getElementById('continueTitle').textContent = lastBook.title;
+                document.getElementById('continueLink').href = `reader.html?book=${lastBook.file}`;
+                document.getElementById('continueWidget').style.display = 'flex';
+            }
+        }
+
+        function openModal(title, author, desc, file, category, readTime) {
             document.getElementById('modalTitle').textContent = title;
             document.getElementById('modalAuthor').textContent = `تأليف: ${author}`;
             document.getElementById('modalDesc').textContent = desc;
             document.getElementById('modalCategory').textContent = category;
+            document.getElementById('modalTime').textContent = `⏱️ ${readTime}`;
             
             const readBtn = document.getElementById('modalReadLink');
             readBtn.href = `reader.html?book=${file}`;
