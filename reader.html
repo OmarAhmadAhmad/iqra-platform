@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>قارئ الكتب | منصة إقرأ</title>
-    <!-- توحيد الخط إلى Cairo -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -169,15 +168,15 @@
             </p>
 
             <blockquote>
-                إنما بعثت لأتمم مكارم الأخلاق — قاعدة بناء الشخصية والتربية الشاملة.
+                إنما بعثت لأتمم مكارم الأخلاق قاعدة بناء الشخصية والتربية الشاملة.
             </blockquote>
 
-            <h2>الفصل الأول: العهد المكي</h2>
+            <h2>الفصل الأول العهد المكي</h2>
             <p>
                 ركزت المرحلة المكية على ترسيخ البناء الداخلي للإنسان وإعادة ترتيب أولويات العقل والفكر، وكانت إعداداً إيمانياً ونفسياً عميقاً لبناء أمة قوية.
             </p>
 
-            <h2>الفصل الثاني: العهد المدني</h2>
+            <h2>الفصل الثاني العهد المدني</h2>
             <p>
                 عند الانتقال إلى المدينة المنورة، بدأت مرحلة التشريعات المنظمة للمجتمع، فظهر الاستقرار المؤسسي وتم تنظيم الحقوق والواجبات بدقة متناهية.
             </p>
@@ -192,6 +191,16 @@
             document.documentElement.style.setProperty('--reader-size', currentFontSize + 'px');
         }
 
+        // تنظيف أي نصوص إنجليزية أو رموز غير مرغوب فيها عند معالجة المحتوى
+        function cleanTextContent(htmlContent) {
+            return htmlContent
+                .replace(/\bcity\b/gi, '')
+                .replace(/[A-Za-z]/g, '')
+                .replace(/[#$_=+{}<>[\]\\\/~`]/g, '')
+                .replace(/\s+/g, ' ')
+                .trim();
+        }
+
         const urlParams = new URLSearchParams(window.location.search);
         const bookFile = urlParams.get('book');
 
@@ -202,8 +211,8 @@
                     const parser = new DOMParser();
                     const doc = parser.parseFromString(data, 'text/html');
                     const title = doc.querySelector('h1')?.innerText || 'عرض الكتاب';
-                    document.getElementById('headerTitle').textContent = title;
-                    document.getElementById('bookMainTitle').textContent = title;
+                    document.getElementById('headerTitle').textContent = cleanTextContent(title);
+                    document.getElementById('bookMainTitle').textContent = cleanTextContent(title);
                     document.getElementById('bookArticle').innerHTML = doc.body.innerHTML;
                 })
                 .catch(() => {});
