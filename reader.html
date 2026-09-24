@@ -3,200 +3,448 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>قارئ الكتب التفاعلي - منصة إقرأ</title>
+    <title>قارئ الكتب التفاعلي | منصة إقرأ</title>
+    <!-- استدعاء خطوط القراءة العربية المصممة بعناية -->
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;600;700&family=Noto+Naskh+Arabic:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #1b4d3e;
-            --secondary-color: #d4af37;
-            --bg-color: #fcfbfa;
-            --card-bg: #ffffff;
-            --text-color: #2c3e50;
-            --border-color: #e2d9c5;
+            --bg-body: #fcfaf7;
+            --bg-paper: #ffffff;
+            --text-main: #2b2b2b;
+            --text-muted: #666666;
+            --primary-accent: #1b4d3e;
+            --gold-accent: #c59b27;
+            --border-color: #eee9df;
+            --reader-font: 'Noto Naskh Arabic', serif;
+            --reader-size: 21px;
+            --reader-line-height: 2.2;
+            --content-width: 760px;
         }
+
+        /* الوضع الورقي الكلاسيكي (Sepia) */
+        [data-theme="sepia"] {
+            --bg-body: #f4ecd8;
+            --bg-paper: #fdf6e3;
+            --text-main: #3c2f1d;
+            --text-muted: #73624c;
+            --border-color: #e3d5b8;
+            --primary-accent: #5c3a21;
+        }
+
+        /* الوضع الليلي المريح (Dark Mode) */
+        [data-theme="dark"] {
+            --bg-body: #121614;
+            --bg-paper: #1a201d;
+            --text-main: #dcd6cd;
+            --text-muted: #889690;
+            --border-color: #27332d;
+            --primary-accent: #48a98c;
+            --gold-accent: #d4af37;
+        }
+
+        * {
+            box-sizing: border-box;
+            transition: background-color 0.25s, color 0.25s;
+        }
+
         body {
-            font-family: 'Amiri', 'Traditional Arabic', serif, Arial, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
             margin: 0;
             padding: 0;
-            line-height: 1.8;
+            background-color: var(--bg-body);
+            color: var(--text-main);
+            font-family: 'Cairo', sans-serif;
         }
-        header {
-            background: linear-gradient(135deg, var(--primary-color), #0f2e24);
-            color: white;
-            text-align: center;
-            padding: 2rem 1rem;
-            border-bottom: 4px solid var(--secondary-color);
-            position: relative;
+
+        /* شريط تقدم القراءة العلوي */
+        .progress-container {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 4px;
+            background: rgba(0,0,0,0.05);
+            z-index: 1000;
         }
-        header h1 {
-            margin: 0;
-            font-size: 1.8rem;
-            color: #f3e5ab;
+        .progress-bar {
+            height: 100%;
+            background: var(--gold-accent);
+            width: 0%;
         }
-        .back-link {
-            position: absolute;
-            right: 20px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #f3e5ab;
-            text-decoration: none;
-            font-weight: bold;
-            background: rgba(255,255,255,0.1);
-            padding: 0.4rem 0.8rem;
-            border-radius: 6px;
-        }
-        .back-link:hover {
-            background: rgba(255,255,255,0.2);
-        }
-        .container {
-            max-width: 900px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-        }
-        /* التنقل بين الفصول / النوافذ */
-        .nav-tabs {
+
+        /* شريط الأدوات العلوي العائم */
+        .reader-header {
+            position: sticky;
+            top: 0;
+            background: var(--bg-paper);
+            border-bottom: 1px solid var(--border-color);
+            padding: 0.8rem 1.5rem;
             display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            justify-content: center;
-            margin-bottom: 2rem;
+            align-items: center;
+            justify-content: space-between;
+            z-index: 900;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
         }
-        .tab-btn {
-            background-color: #e9e4d4;
-            border: none;
+
+        .header-left, .header-right {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .back-btn {
+            background: var(--bg-body);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
             padding: 0.5rem 1rem;
-            font-family: inherit;
-            font-size: 0.9rem;
-            font-weight: bold;
-            color: var(--primary-color);
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .book-title-header {
+            font-family: 'Amiri', serif;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--primary-accent);
+        }
+
+        .tool-btn {
+            background: var(--bg-body);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 0.45rem 0.8rem;
             border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s ease;
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 600;
         }
-        .tab-btn.active, .tab-btn:hover {
-            background-color: var(--secondary-color);
-            color: #1b4d3e;
-            transform: translateY(-2px);
+
+        .tool-btn:hover {
+            border-color: var(--gold-accent);
         }
-        .chapter-card {
-            background: var(--card-bg);
+
+        /* حاوية القراءة والتنسيق الداخلي للكتاب */
+        .reader-wrapper {
+            max-width: var(--content-width);
+            margin: 2.5rem auto 5rem;
+            background: var(--bg-paper);
+            padding: 3.5rem 3rem;
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.03);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 2.5rem;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            display: none;
         }
-        .chapter-card.active {
-            display: block;
-            animation: fadeIn 0.4s ease-in-out;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-        h2 {
-            color: var(--primary-color);
-            border-bottom: 2px solid var(--secondary-color);
-            padding-bottom: 0.5rem;
-            margin-top: 0;
-        }
-        p, li {
-            font-size: 1.1rem;
-            text-align: justify;
-        }
-        blockquote {
-            background: #fdfaf3;
-            border-right: 5px solid var(--secondary-color);
-            padding: 1rem 1.5rem;
-            margin: 1.5rem 0;
-            border-radius: 4px;
-            font-style: italic;
-            color: #333;
-        }
-        footer {
+
+        /* غلاف ومقدمة الكتاب الداخلية */
+        .inner-book-header {
             text-align: center;
-            padding: 2rem;
-            background: #2c3e50;
-            color: white;
+            border-bottom: 2px dashed var(--border-color);
+            padding-bottom: 2.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .inner-book-header h1 {
+            font-family: 'Amiri', serif;
+            font-size: 2.8rem;
+            color: var(--primary-accent);
+            margin: 0 0 0.5rem 0;
+            line-height: 1.2;
+        }
+
+        .inner-book-header .author {
+            font-size: 1.1rem;
+            color: var(--gold-accent);
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .inner-book-header .divider {
+            width: 80px;
+            height: 3px;
+            background: var(--gold-accent);
+            margin: 1rem auto;
+            border-radius: 3px;
+        }
+
+        /* تنسيق نصوص الكتاب الداخلية (Typography Engine) */
+        .book-content {
+            font-family: var(--reader-font);
+            font-size: var(--reader-size);
+            line-height: var(--reader-line-height);
+            color: var(--text-main);
+            text-align: justify;
+            text-justify: inter-word;
+        }
+
+        .book-content h2 {
+            font-family: 'Amiri', serif;
+            font-size: 1.9rem;
+            color: var(--primary-accent);
             margin-top: 3rem;
+            margin-bottom: 1.2rem;
+            padding-bottom: 0.4rem;
+            border-bottom: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .book-content h2::after {
+            content: '';
+            position: absolute;
+            bottom: -1px; right: 0;
+            width: 60px; height: 3px;
+            background: var(--gold-accent);
+        }
+
+        .book-content h3 {
+            font-family: 'Amiri', serif;
+            font-size: 1.5rem;
+            color: var(--gold-accent);
+            margin-top: 2rem;
+        }
+
+        .book-content p {
+            margin-bottom: 1.6rem;
+            text-indent: 1.5rem; /* مسافة جمالية لبداية كل فقرة */
+        }
+
+        /* تنسيق الاقتباسات والأحادييث/النصوص البارزة */
+        .book-content blockquote {
+            background: var(--bg-body);
+            border-right: 4px solid var(--gold-accent);
+            margin: 2rem 0;
+            padding: 1.2rem 1.8rem;
+            border-radius: 8px 0 0 8px;
+            font-style: italic;
+            font-size: 1.05em;
+        }
+
+        .book-content blockquote p {
+            text-indent: 0;
+            margin: 0;
+        }
+
+        /* تنسيق الهوامش والملاحظات */
+        .footnote {
+            font-size: 0.85em;
+            color: var(--text-muted);
+            border-top: 1px solid var(--border-color);
+            padding-top: 1rem;
+            margin-top: 3rem;
+        }
+
+        /* شريط التحكم الخفي في الخيارات */
+        .settings-panel {
+            display: none;
+            position: absolute;
+            top: 60px; left: 1.5rem;
+            background: var(--bg-paper);
+            border: 1px solid var(--border-color);
+            padding: 1.2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            z-index: 1000;
+            width: 280px;
+        }
+
+        .settings-panel.active { display: block; }
+
+        .setting-group {
+            margin-bottom: 1rem;
+        }
+
+        .setting-group label {
+            display: block;
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            margin-bottom: 0.4rem;
+            font-weight: 700;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 0.4rem;
+        }
+
+        .btn-group button {
+            flex: 1;
+            padding: 0.4rem;
+            background: var(--bg-body);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+        }
+
+        .btn-group button.active {
+            background: var(--primary-accent);
+            color: white;
+            border-color: var(--primary-accent);
+        }
+
+        @media (max-width: 768px) {
+            .reader-wrapper {
+                padding: 1.8rem 1.2rem;
+                margin: 1rem 0.5rem;
+            }
+            .inner-book-header h1 { font-size: 2rem; }
+            .book-content { font-size: 19px; }
         }
     </style>
 </head>
 <body>
 
-    <header>
-        <a href="index.html" class="back-link">← العودة للمكتبة</a>
-        <h1 id="bookTitle">جاري تحميل الكتاب...</h1>
-        <p id="bookAuthor"></p>
-    </header>
-
-    <div class="container">
-        <div id="navTabs" class="nav-tabs"></div>
-        <div id="chaptersContainer"></div>
+    <!-- شريط تقدم القراءة -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
     </div>
 
-    <footer>
-        <p>منصة إقرأ التفاعلية</p>
-    </footer>
+    <!-- شريط الأدوات العلوي -->
+    <header class="reader-header">
+        <div class="header-right">
+            <a href="index.html" class="back-btn">➔ المكتبة</a>
+            <span class="book-title-header" id="headerTitle">جاري تحميل الكتاب...</span>
+        </div>
+        <div class="header-left">
+            <button class="tool-btn" onclick="toggleSettings()">⚙️ إعدادات الخط</button>
+            <button class="tool-btn" onclick="cycleTheme()">🎨 المظهر</button>
+        </div>
+
+        <!-- لوحة التحكم بالخط والمسافات -->
+        <div class="settings-panel" id="settingsPanel">
+            <div class="setting-group">
+                <label>نوع الخط القرائي:</label>
+                <div class="btn-group">
+                    <button onclick="setFont('Noto Naskh Arabic', this)" class="active">نسخ</button>
+                    <button onclick="setFont('Amiri', this)">أميري</button>
+                    <button onclick="setFont('Cairo', this)">القاهرة</button>
+                </div>
+            </div>
+            <div class="setting-group">
+                <label>حجم الخط:</label>
+                <div class="btn-group">
+                    <button onclick="changeFontSize(-2)">A-</button>
+                    <button onclick="changeFontSize(2)">A+</button>
+                </div>
+            </div>
+            <div class="setting-group">
+                <label>تباعد السطور:</label>
+                <div class="btn-group">
+                    <button onclick="setLineHeight(1.8)">ضيّق</button>
+                    <button onclick="setLineHeight(2.2)" class="active">متوسط</button>
+                    <button onclick="setLineHeight(2.5)">مريح</button>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- محتوى الكتاب الرئيسي -->
+    <main class="reader-wrapper">
+        <div class="inner-book-header">
+            <h1 id="bookMainTitle">فهم السيرة النبوية</h1>
+            <div class="author" id="bookAuthor">بقلم: عمر أحمد</div>
+            <div class="divider"></div>
+        </div>
+
+        <article class="book-content" id="bookArticle">
+            <h2>مقدمة في المنهج العملي</h2>
+            <p>
+                إن السيرة النبوية المشرفة ليست مجرد أحداث تاريخية تُسرد، ولا حكايات تُروى لقطع الأوقات، بل هي المنهج العملي الشامل والتطبيق الحي لأحكام الإسلام وقيمه. ومن خلال دراستها نستشرف كيف بنى النبي صلى الله عليه وسلم الإنسان والشركة والمجتمع على أُسس متينة من الحكمة والعدل.
+            </p>
+
+            <blockquote>
+                <p>«إنما بعثت لأتمم مكارم الأخلاق» — قاعدة بناء الشخصية المسلمة والرؤية التربوية الشاملة.</p>
+            </blockquote>
+
+            <h2>الفصل الأول: العهد المكي وبناء العقيدة</h2>
+            <p>
+                ركزت المرحلة المكية على ترسيخ البناء الداخلي للإنسان، وتصفية المفاهيم، وإعادة ترتيب أولويات الفكر والعقل. لم تكن هذه المرحلة مجرد انتظار، بل كانت إعداداً نفسياً وفكرياً عميقاً يحمل القارئ والمتعلم على التفكّر والتدبّر في ملكوت السموات والأرض.
+            </p>
+            <p>
+                ومن هنا نجد أن الآيات القرآنية التي نزلت في هذه الفترة جاءت بقصر الفواصل، وقوة السَبك، ووضوح الحجة، لكي تخاطب القلب والعقل معاً بأسلوب يجمع بين الجمال البصري والروحي.
+            </p>
+
+            <h2>الفصل الثاني: تنظيم المجتمع والعهد المدني</h2>
+            <p>
+                عند الانتقال إلى المدينة المنورة، بدأت مرحلة التشريعات المنظمة للمجتمع، فظهَر الاستقرار المؤسسي وتم وضع صحيفة المدينة كأول وثيقة مواطنة وتنظيم إداري يحفظ الحقوق ويُحدد الواجبات بدقة متناهية.
+            </p>
+        </article>
+
+        <div class="footnote">
+            * تم إعداد وتنسيق هذا النص ليناسب تجربة القراءة المريحة عبر منصة إقرأ الرقمية.
+        </div>
+    </main>
 
     <script>
-        async function loadBookContent() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const bookFile = urlParams.get('book');
+        let currentFontSize = 21;
+        let themes = ['normal', 'sepia', 'dark'];
+        let currentThemeIdx = 0;
 
-            if (!bookFile) {
-                document.getElementById('bookTitle').innerText = 'لم يتم تحديد كتاب';
-                return;
+        // تحديث شريط تقدم القراءة عند التمرير
+        window.onscroll = function() {
+            let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+            let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            let scrolled = (winScroll / height) * 100;
+            document.getElementById("progressBar").style.width = scrolled + "%";
+        };
+
+        // فتح/إغلاق لوحة الإعدادات
+        function toggleSettings() {
+            document.getElementById('settingsPanel').classList.toggle('active');
+        }
+
+        // تغيير الخط
+        function setFont(fontName, btn) {
+            document.documentElement.style.setProperty('--reader-font', fontName);
+            btn.parentElement.querySelectorAll('button').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+        }
+
+        // تغيير حجم الخط
+        function changeFontSize(delta) {
+            currentFontSize = Math.max(16, Math.min(32, currentFontSize + delta));
+            document.documentElement.style.setProperty('--reader-size', currentFontSize + 'px');
+        }
+
+        // تغيير تباعد السطور
+        function setLineHeight(val) {
+            document.documentElement.style.setProperty('--reader-line-height', val);
+        }
+
+        // التنقل بين مظاهر القراءة (عادي / ورقي / ليلي)
+        function cycleTheme() {
+            currentThemeIdx = (currentThemeIdx + 1) % themes.length;
+            let theme = themes[currentThemeIdx];
+            if (theme === 'normal') {
+                document.body.removeAttribute('data-theme');
+            } else {
+                document.body.setAttribute('data-theme', theme);
             }
+        }
 
-            try {
-                const response = await fetch(`data/${bookFile}`);
-                const book = await response.json();
+        // جلب اسم الكتاب من الرابط وقراءة محتواه إذا توفر
+        const urlParams = new URLSearchParams(window.location.search);
+        const bookFile = urlParams.get('book');
 
-                document.getElementById('bookTitle').innerText = book.title;
-                document.getElementById('bookAuthor').innerText = `تأليف: ${book.author}`;
+        if (bookFile) {
+            fetch(`data/${bookFile}`)
+                .then(res => res.text())
+                .then(data => {
+                    // إذا كان ملف HTML أو نص يحتوي تفاصيل
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(data, 'text/html');
+                    const title = doc.querySelector('h1')?.innerText || 'عرض الكتاب';
+                    const content = doc.body.innerHTML;
 
-                const navTabs = document.getElementById('navTabs');
-                const chaptersContainer = document.getElementById('chaptersContainer');
-
-                book.chapters.forEach((chapter, index) => {
-                    const chapterNum = index + 1;
-
-                    // إنشاء زر الفهرس العلوي
-                    const btn = document.createElement('button');
-                    btn.className = `tab-btn ${index === 0 ? 'active' : ''}`;
-                    btn.innerText = `النافذة ${chapterNum}`;
-                    btn.onclick = (e) => switchChapter(chapterNum, e);
-                    navTabs.appendChild(btn);
-
-                    // إنشاء بطاقة الفصل
-                    const card = document.createElement('div');
-                    card.id = `chapter-${chapterNum}`;
-                    card.className = `chapter-card ${index === 0 ? 'active' : ''}`;
-                    card.innerHTML = `
-                        <h2>${chapter.title}</h2>
-                        <div>${chapter.content}</div>
-                    `;
-                    chaptersContainer.appendChild(card);
+                    document.getElementById('headerTitle').textContent = title;
+                    document.getElementById('bookMainTitle').textContent = title;
+                    document.getElementById('bookArticle').innerHTML = content;
+                })
+                .catch(() => {
+                    console.log("يعمل على كتاب النموذج الافتراضي.");
                 });
-
-            } catch (error) {
-                console.error('خطأ في تحميل الكتاب:', error);
-                document.getElementById('bookTitle').innerText = 'عذراً، حدث خطأ في تحميل بيانات الكتاب.';
-            }
         }
-
-        function switchChapter(chapterNum, event) {
-            document.querySelectorAll('.chapter-card').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-
-            document.getElementById(`chapter-${chapterNum}`).classList.add('active');
-            event.target.classList.add('active');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        loadBookContent();
     </script>
 </body>
 </html>
