@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>المكتبة الرقمية | منصة إقرأ</title>
-    <!-- خط واحد موحد للمنصة بالكامل -->
     <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -34,7 +33,7 @@
 
         header {
             background-color: var(--primary-color);
-            color: white;
+            color: #ffffff;
             padding: 2.5rem 1rem;
             text-align: center;
         }
@@ -136,7 +135,7 @@
 
         .chip.active {
             background: var(--primary-color);
-            color: white;
+            color: #ffffff;
             border-color: var(--primary-color);
         }
 
@@ -182,7 +181,7 @@
 
         .read-btn {
             background-color: var(--primary-color);
-            color: white;
+            color: #ffffff;
             text-align: center;
             padding: 0.6rem;
             border-radius: 8px;
@@ -225,18 +224,14 @@
                 </div>
             </div>
 
-            <div class="categories-chips" id="categoriesContainer">
-                <!-- يتم توليد التصنيفات ديناميكياً -->
-            </div>
+            <div class="categories-chips" id="categoriesContainer"></div>
         </div>
 
-        <div id="booksContainer" class="books-grid">
-            <!-- يتم تحميل الكتب ديناميكياً -->
-        </div>
+        <div id="booksContainer" class="books-grid"></div>
     </div>
 
     <footer>
-        <p>جميع الحقوق محفوظة © منصة إقرأ الرقمية</p>
+        <p>جميع الحقوق محفوظة منصة إقرأ الرقمية</p>
     </footer>
 
     <script>
@@ -286,7 +281,7 @@
         }
 
         function filterBooks() {
-            const query = document.getElementById('searchInput').value.toLowerCase();
+            const query = document.getElementById('searchInput').value.toLowerCase().trim();
             const filtered = allBooks.filter(b => {
                 const matchesQuery = b.title.toLowerCase().includes(query) || b.author.toLowerCase().includes(query);
                 const matchesCategory = currentCategory === 'الكل' || b.category === currentCategory;
