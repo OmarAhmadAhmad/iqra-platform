@@ -20,8 +20,7 @@ def fix_spelling_and_format(text):
         r'\bالى\b': 'إلى',
         r'\bبان\b': 'بأن',
         r'\bانهم\b': 'أنهم',
-        r'\bابناء\b': 'أبناء',
-        r'\bهذا الكلمات\b': 'هذه الكلمات'
+        r'\bابناء\b': 'أبناء'
     }
     for pattern, replacement in corrections.items():
         text = re.sub(pattern, replacement, text)
@@ -33,7 +32,6 @@ def process_json_file(file_path):
         with open(file_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
         
-        # معالجة النصوص سواء كانت قائمة أو نصاً
         def clean_recursive(obj):
             if isinstance(obj, str):
                 return fix_spelling_and_format(obj)
