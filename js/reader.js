@@ -21,7 +21,6 @@ async function loadBookData(bookFile) {
     const bookTitleElem = document.getElementById('bookTitle');
 
     try {
-        // إضافة الامتداد إن لم يكن موجوداً
         const fileName = bookFile.endsWith('.json') ? bookFile : `${bookFile}.json`;
         const response = await fetch(`./data/${fileName}`);
         
@@ -29,7 +28,6 @@ async function loadBookData(bookFile) {
 
         const bookData = await response.json();
         
-        // ضبط العنوان
         const title = bookData.title || bookData.name || "عرض الكتاب";
         if (bookTitleElem) bookTitleElem.innerText = title;
         document.title = `${title} - منصة إقراء`;
@@ -52,7 +50,6 @@ function renderContent(data) {
     contentArea.innerHTML = '';
     if (tocList) tocList.innerHTML = '';
 
-    // إذا كانت البيانات قائمة من الفصول/الفقرات
     if (Array.isArray(data)) {
         data.forEach((item, index) => {
             appendChapter(contentArea, tocList, item.title || `الجزء ${index + 1}`, item.content || item.text || item, index);
@@ -64,7 +61,6 @@ function renderContent(data) {
     } else if (data.content || data.text) {
         appendChapter(contentArea, tocList, data.title || "المحتوى", data.content || data.text, 0);
     } else {
-        // في حال كانت بنية الـ JSON كائن يحتوي على نصوص مباشرة
         let idx = 0;
         for (const [key, value] of Object.entries(data)) {
             if (typeof value === 'string') {
@@ -75,14 +71,12 @@ function renderContent(data) {
 }
 
 function appendChapter(container, toc, title, rawContent, index) {
-    // إضافة للفهرس
     if (toc) {
         const li = document.createElement('li');
         li.innerHTML = `<a href="#chap-${index}">${title}</a>`;
         toc.appendChild(li);
     }
 
-    // إضافة للمحتوى
     const section = document.createElement('section');
     section.id = `chap-${index}`;
     section.className = 'chapter-section';
@@ -98,11 +92,13 @@ function formatText(text) {
     if (!text) return '';
     if (Array.isArray(text)) text = text.join('\n\n');
 
-    return text
+    const formatted = text
         .replace(/\((?:ص\vert{}صلعم)\)/g, 'ﷺ')
         .replace(/\s+([\.،؛:؟!])/g, '$1')
         .replace(/\n\n/g, '</p><p>')
         .replace(/\n/g, '<br>');
+
+    return `<p>${formatted}</p>`;
 }
 
 // 4. التحكم بحجم الخط
