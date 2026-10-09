@@ -1,298 +1,157 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>منصة إقرأ | المكتبة الرقمية</title>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --primary-color: #1b4d3e;
-            --primary-light: #2c6e59;
-            --bg-color: #f6f7f9;
-            --card-bg: #ffffff;
-            --text-color: #1a1a1a;
-            --text-muted: #65676b;
-            --border-color: #e4e6eb;
-            --radius-md: 12px;
-            --radius-lg: 16px;
-            --font-main: 'Cairo', sans-serif;
-        }
+// js/reader.js - إدارة محرك القراءة والتحكم بالنصوص
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: var(--font-main);
-            -webkit-tap-highlight-color: transparent;
-        }
+document.addEventListener("DOMContentLoaded", async () => {
+    initTheme();
+    setupFontSizeControls();
+    
+    const urlParams = new URLSearchParams(window.location.search);
+    const bookFile = urlParams.get('book');
 
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-color);
-            line-height: 1.5;
-            padding-bottom: 2rem;
-        }
+    if (!bookFile) {
+        document.getElementById('bookContent').innerHTML = "<p class='error'>لم يتم تحديد كتاب للعرض.</p>";
+        return;
+    }
 
-        /* ترويسة تطبيق الموبايل */
-        .app-header {
-            position: sticky;
-            top: 0;
-            background-color: var(--primary-color);
-            color: #ffffff;
-            padding: 1.2rem 1rem;
-            text-align: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            z-index: 100;
-        }
+    await loadBookData(bookFile);
+});
 
-        .app-header h1 {
-            font-size: 1.4rem;
-            font-weight: 800;
-        }
+// 1. جلب بيانات الكتاب
+async function loadBookData(bookFile) {
+    const contentArea = document.getElementById('bookContent');
+    const bookTitleElem = document.getElementById('bookTitle');
 
-        .app-header p {
-            font-size: 0.8rem;
-            opacity: 0.85;
-            margin-top: 0.2rem;
-        }
+    try {
+        // إضافة الامتداد إن لم يكن موجوداً
+        const fileName = bookFile.endsWith('.json') ? bookFile : `${bookFile}.json`;
+        const response = await fetch(`./data/${fileName}`);
+        
+        if (!response.ok) throw new Error("تعذر الوصول لملف الكتاب");
 
-        .main-container {
-            padding: 1rem;
-            max-width: 600px;
-            margin: 0 auto;
-        }
+        const bookData = await response.json();
+        
+        // ضبط العنوان
+        const title = bookData.title || bookData.name || "عرض الكتاب";
+        if (bookTitleElem) bookTitleElem.innerText = title;
+        document.title = `${title} - منصة إقراء`;
 
-        /* شريط البحث والتصنيفات */
-        .search-container {
-            margin-bottom: 1rem;
-        }
+        renderContent(bookData);
+        restoreBookmark(bookFile);
+        setupScrollListener(bookFile);
 
-        .search-input-wrap {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
+    } catch (error) {
+        console.error("خطأ في تحميل محتوى الكتاب:", error);
+        contentArea.innerHTML = "<p class='error'>عذراً، حدث خطأ أثناء تحميل محتوى الكتاب.</p>";
+    }
+}
 
-        .search-input-wrap input {
-            width: 100%;
-            padding: 0.85rem 1rem;
-            font-size: 0.95rem;
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-md);
-            background: var(--card-bg);
-            outline: none;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
-        }
+// 2. معالجة وعرض محتوى الكتاب والعناوين
+function renderContent(data) {
+    const contentArea = document.getElementById('bookContent');
+    const tocList = document.getElementById('tocList');
+    
+    contentArea.innerHTML = '';
+    if (tocList) tocList.innerHTML = '';
 
-        .search-input-wrap input:focus {
-            border-color: var(--primary-color);
-        }
-
-        /* تصنيفات سريعة قابلة للتمرير الأفقي باللمس */
-        .categories-scroll {
-            display: flex;
-            gap: 0.5rem;
-            overflow-x: auto;
-            padding: 0.5rem 0;
-            scrollbar-width: none;
-        }
-
-        .categories-scroll::-webkit-scrollbar {
-            display: none;
-        }
-
-        .chip-btn {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            color: var(--text-color);
-            padding: 0.5rem 1.1rem;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            white-space: nowrap;
-            cursor: pointer;
-            flex-shrink: 0;
-        }
-
-        .chip-btn.active {
-            background: var(--primary-color);
-            color: #ffffff;
-            border-color: var(--primary-color);
-        }
-
-        /* بطاقات الكتب المصممة للموبايل */
-        .books-list {
-            display: flex;
-            flex-direction: column;
-            gap: 0.9rem;
-            margin-top: 0.5rem;
-        }
-
-        .book-card-mobile {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            padding: 1.1rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-        }
-
-        .book-info h3 {
-            font-size: 1.15rem;
-            font-weight: 700;
-            color: var(--primary-color);
-            margin-bottom: 0.2rem;
-        }
-
-        .book-author {
-            font-size: 0.82rem;
-            color: var(--text-muted);
-            font-weight: 600;
-            margin-bottom: 0.6rem;
-        }
-
-        .book-desc {
-            font-size: 0.88rem;
-            color: var(--text-color);
-            line-height: 1.5;
-            margin-bottom: 1rem;
-        }
-
-        .action-btn {
-            background-color: var(--primary-color);
-            color: #ffffff;
-            text-align: center;
-            padding: 0.75rem;
-            border-radius: var(--radius-md);
-            text-decoration: none;
-            font-weight: 700;
-            font-size: 0.9rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            min-height: 44px;
-        }
-
-        .action-btn:active {
-            background-color: var(--primary-light);
-        }
-
-        .svg-icon {
-            width: 18px;
-            height: 18px;
-            fill: currentColor;
-        }
-
-        footer {
-            text-align: center;
-            padding: 1.5rem 1rem;
-            color: var(--text-muted);
-            font-size: 0.8rem;
-        }
-    </style>
-</head>
-<body>
-
-    <!-- ترويسة التطبيق -->
-    <header class="app-header">
-        <h1>منصة إقرأ الرقمية</h1>
-        <p>مكتبة القراءة الميسرة للموبايل</p>
-    </header>
-
-    <main class="main-container">
-        <!-- البحث والتصنيف -->
-        <div class="search-container">
-            <div class="search-input-wrap">
-                <input type="text" id="searchInput" placeholder="ابحث باسم الكتاب أو المؤلف..." onkeyup="filterBooks()">
-            </div>
-            <div class="categories-scroll" id="categoriesContainer"></div>
-        </div>
-
-        <!-- قائمة الكتب -->
-        <div class="books-list" id="booksContainer"></div>
-    </main>
-
-    <footer>
-        <p>جميع الحقوق محفوظة منصة إقرأ الرقمية</p>
-    </footer>
-
-    <script>
-        let allBooks = [];
-        let currentCategory = 'الكل';
-
-        async function loadBooks() {
-            try {
-                const response = await fetch('data/books-list.json');
-                const data = await response.json();
-                allBooks = data.books;
-                renderCategories();
-                filterBooks();
-            } catch (error) {
-                document.getElementById('booksContainer').innerHTML = 
-                    '<p style="text-align:center; padding:2rem; color:var(--text-muted);">تعذر تحميل الكتب حالياً.</p>';
+    // إذا كانت البيانات قائمة من الفصول/الفقرات
+    if (Array.isArray(data)) {
+        data.forEach((item, index) => {
+            appendChapter(contentArea, tocList, item.title || `الجزء ${index + 1}`, item.content || item.text || item, index);
+        });
+    } else if (data.chapters && Array.isArray(data.chapters)) {
+        data.chapters.forEach((chap, index) => {
+            appendChapter(contentArea, tocList, chap.title || `الفصل ${index + 1}`, chap.content || chap.text, index);
+        });
+    } else if (data.content || data.text) {
+        appendChapter(contentArea, tocList, data.title || "المحتوى", data.content || data.text, 0);
+    } else {
+        // في حال كانت بنية الـ JSON كائن يحتوي على نصوص مباشرة
+        let idx = 0;
+        for (const [key, value] of Object.entries(data)) {
+            if (typeof value === 'string') {
+                appendChapter(contentArea, tocList, key, value, idx++);
             }
         }
+    }
+}
 
-        function renderCategories() {
-            const container = document.getElementById('categoriesContainer');
-            const categories = ['الكل', ...new Set(allBooks.map(b => b.category || 'عام'))];
+function appendChapter(container, toc, title, rawContent, index) {
+    // إضافة للفهرس
+    if (toc) {
+        const li = document.createElement('li');
+        li.innerHTML = `<a href="#chap-${index}">${title}</a>`;
+        toc.appendChild(li);
+    }
 
-            container.innerHTML = categories.map(cat => `
-                <button class="chip-btn ${currentCategory === cat ? 'active' : ''}" onclick="selectCategory('${cat}', event)">
-                    ${cat}
-                </button>
-            `).join('');
-        }
+    // إضافة للمحتوى
+    const section = document.createElement('section');
+    section.id = `chap-${index}`;
+    section.className = 'chapter-section';
+    section.innerHTML = `
+        <h3>${title}</h3>
+        <div class="chapter-body">${formatText(rawContent)}</div>
+    `;
+    container.appendChild(section);
+}
 
-        function selectCategory(cat, e) {
-            currentCategory = cat;
-            document.querySelectorAll('.chip-btn').forEach(c => c.classList.remove('active'));
-            e.currentTarget.classList.add('active');
-            filterBooks();
-        }
+// 3. تحسين وتنظيف النص إملائياً للعرض
+function formatText(text) {
+    if (!text) return '';
+    if (Array.isArray(text)) text = text.join('\n\n');
 
-        function filterBooks() {
-            const query = document.getElementById('searchInput').value.toLowerCase().trim();
-            const filtered = allBooks.filter(b => {
-                const matchesQuery = b.title.toLowerCase().includes(query) || b.author.toLowerCase().includes(query);
-                const matchesCategory = currentCategory === 'الكل' || b.category === currentCategory;
-                return matchesQuery && matchesCategory;
-            });
-            displayBooks(filtered);
-        }
+    return text
+        .replace(/\((?:ص\vert{}صلعم)\)/g, 'ﷺ')
+        .replace(/\s+([\.،؛:؟!])/g, '$1')
+        .replace(/\n\n/g, '</p><p>')
+        .replace(/\n/g, '<br>');
+}
 
-        function displayBooks(books) {
-            const container = document.getElementById('booksContainer');
-            container.innerHTML = '';
+// 4. التحكم بحجم الخط
+function setupFontSizeControls() {
+    let currentSize = parseInt(localStorage.getItem('reader_font_size')) || 20;
+    const contentArea = document.getElementById('bookContent');
+    if (contentArea) contentArea.style.fontSize = `${currentSize}px`;
 
-            if (books.length === 0) {
-                container.innerHTML = '<p style="text-align:center; padding:2rem; color:var(--text-muted);">لا توجد نتائج مطابقة.</p>';
-                return;
+    const incBtn = document.getElementById('increaseFont');
+    const decBtn = document.getElementById('decreaseFont');
+
+    if (incBtn) {
+        incBtn.addEventListener('click', () => {
+            if (currentSize < 36) {
+                currentSize += 2;
+                if (contentArea) contentArea.style.fontSize = `${currentSize}px`;
+                localStorage.setItem('reader_font_size', currentSize);
             }
+        });
+    }
 
-            books.forEach(book => {
-                const card = document.createElement('div');
-                card.className = 'book-card-mobile';
-                card.innerHTML = `
-                    <div class="book-info">
-                        <h3>${book.title}</h3>
-                        <div class="book-author">تأليف: ${book.author}</div>
-                        <p class="book-desc">${book.description}</p>
-                    </div>
-                    <a href="reader.html?book=${book.file}" class="action-btn">
-                        <svg class="svg-icon" viewBox="0 0 24 24"><path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zM12 17c-2.76 0-5-2.24-5-5s2.24-5 5-5 5 2.24 5 5-2.24 5-5 5zm0-8c-1.66 0-3 1.34-3 3s1.34 3 3 3 3-1.34 3-3-1.34-3-3-3z"/></svg>
-                        قراءة الكتاب
-                    </a>
-                `;
-                container.appendChild(card);
-            });
-        }
+    if (decBtn) {
+        decBtn.addEventListener('click', () => {
+            if (currentSize > 14) {
+                currentSize -= 2;
+                if (contentArea) contentArea.style.fontSize = `${currentSize}px`;
+                localStorage.setItem('reader_font_size', currentSize);
+            }
+        });
+    }
+}
 
-        loadBooks();
-    </script>
-</body>
-</html>
+// 5. حفظ واسترجاع موضع القراءة تلقائياً
+function setupScrollListener(bookId) {
+    window.addEventListener('scroll', () => {
+        localStorage.setItem(`bookmark_${bookId}`, window.scrollY);
+    });
+}
+
+function restoreBookmark(bookId) {
+    const savedPos = localStorage.getItem(`bookmark_${bookId}`);
+    if (savedPos) {
+        setTimeout(() => {
+            window.scrollTo({ top: parseInt(savedPos), behavior: 'smooth' });
+        }, 300);
+    }
+}
+
+function initTheme() {
+    const savedTheme = localStorage.getItem("theme") || "light";
+    document.body.setAttribute("data-theme", savedTheme);
+}
