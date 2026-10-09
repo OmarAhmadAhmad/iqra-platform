@@ -1,100 +1,105 @@
-// js/reader.js - محرك القراءة الشامل لمنصة إقراء
+// js/reader.js - إدارة محرك القراءة والتحكم بالنصوص
 
 document.addEventListener("DOMContentLoaded", async () => {
     initTheme();
     setupFontSizeControls();
     
     const urlParams = new URLSearchParams(window.location.search);
-    let bookFile = urlParams.get('book');
+    let rawBookParam = urlParams.get('book');
 
-    if (!bookFile) {
-        document.getElementById('bookContent').innerHTML = "<p class='error'>لم يتم تحديد كتاب للعرض. يرجى العودة للمكتبة واختيار كتاب.</p>";
+    if (!rawBookParam) {
+        document.getElementById('bookContent').innerHTML = "<p class='error' style='text-align:center;'>لم يتم تحديد كتاب للعرض. يرجى العودة للمكتبة واختيار كتاب.</p>";
         return;
     }
 
-    await loadBookData(bookFile);
+    await loadBookData(rawBookParam);
 });
 
-// 1. جلب بيانات الكتاب مع التعامل المباشر مع أسماء الملفات
-async function loadBookData(bookFile) {
+// 1. جلب بيانات الكتاب وتنظيف المسار من تكرار الامتدادات
+async function loadBookData(rawBookParam) {
     const contentArea = document.getElementById('bookContent');
     const bookTitleElem = document.getElementById('bookTitle');
 
-    // تنظيف اسم الملف من الامتدادات المكررة
-    let cleanFileName = bookFile.replace(/\.json$/i, '');
+    // إزالة امتداد .json التلقائي لتجنب تكراره مثل (.json.json)
+    let cleanBookId = rawBookParam.replace(/\.json$/i, '');
 
     try {
-        const response = await fetch(`./data/${cleanFileName}.json`);
+        const response = await fetch(`./data/${cleanBookId}.json`);
         
         if (!response.ok) {
-            throw new Error(`تعذر العثور على الملف: data/${cleanFileName}.json`);
+            throw new Error(`تعذر العثور على data/${cleanBookId}.json`);
         }
 
         const bookData = await response.json();
         
-        const title = bookData.title || bookData.name || cleanFileName.replace(/-/g, ' ');
+        // استخراج عنوان الكتاب بحسب الهيكلية
+        const title = bookData.title || bookData.name || cleanBookId.replace(/-/g, ' ');
         if (bookTitleElem) bookTitleElem.innerText = title;
         document.title = `${title} - منصة إقراء`;
 
         renderContent(bookData);
-        restoreBookmark(cleanFileName);
-        setupScrollListener(cleanFileName);
+        restoreBookmark(cleanBookId);
+        setupScrollListener(cleanBookId);
 
     } catch (error) {
-        console.error("خطأ في تحميل الكتاب:", error);
+        console.error(error);
         contentArea.innerHTML = `
             <div style="text-align: center; padding: 2rem;">
-                <p class='error' style='color: red; font-size: 1.2rem;'>عذراً، تعذر تحميل محتوى هذا الكتاب.</p>
-                <p style="color: var(--text-secondary); margin-top: 0.5rem;">تأكد من وجود الملف <code>data/${cleanFileName}.json</code> داخل المستودع.</p>
-                <a href="index.html" style="display: inline-block; margin-top: 1rem; color: var(--accent-color);">العودة إلى المكتبة الرئيسية</a>
+                <p class='error' style='color: #e63946; font-size: 1.2rem; font-weight: bold;'>عذراً، تعذر تحميل محتوى هذا الكتاب.</p>
+                <p style="color: var(--text-secondary); margin-top: 0.5rem; font-family: monospace;">تأكد من وجود الملف: data/${cleanBookId}.json داخل المستودع.</p>
+                <a href="index.html" style="display: inline-block; margin-top: 1.5rem; background: var(--accent-color); color: white; padding: 0.5rem 1.5rem; border-radius: 20px; text-decoration: none;">العودة للمكتبة الرئيسية</a>
             </div>
         `;
     }
 }
 
-// 2. عرض المحتوى وتنسيقه
+// 2. معالجة وعرض محتوى الكتاب والعناوين
 function renderContent(data) {
     const contentArea = document.getElementById('bookContent');
+    const tocList = document.getElementById('tocList');
+    
     contentArea.innerHTML = '';
+    if (tocList) tocList.innerHTML = '';
 
     if (Array.isArray(data)) {
         data.forEach((item, index) => {
-            appendChapter(contentArea, item.title || `الجزء ${index + 1}`, item.content || item.text || item, index);
+            appendChapter(contentArea, tocList, item.title || `الجزء ${index + 1}`, item.content || item.text || item, index);
         });
     } else if (data.chapters && Array.isArray(data.chapters)) {
         data.chapters.forEach((chap, index) => {
-            appendChapter(contentArea, chap.title || `الفصل ${index + 1}`, chap.content || chap.text, index);
+            appendChapter(contentArea, tocList, chap.title || `الفصل ${index + 1}`, chap.content || chap.text, index);
         });
     } else if (data.content || data.text) {
-        appendChapter(contentArea, data.title || "المحتوى", data.content || data.text, 0);
+        appendChapter(contentArea, tocList, data.title || "المحتوى", data.content || data.text, 0);
     } else if (typeof data === 'object') {
         let idx = 0;
         for (const [key, value] of Object.entries(data)) {
             if (typeof value === 'string' || Array.isArray(value)) {
-                appendChapter(contentArea, key, value, idx++);
+                appendChapter(contentArea, tocList, key, value, idx++);
             }
         }
-    } else {
-        contentArea.innerHTML = "<p>تنسيق كتاب غير معروف.</p>";
     }
 }
 
-function appendChapter(container, title, rawContent, index) {
+function appendChapter(container, toc, title, rawContent, index) {
+    if (toc) {
+        const li = document.createElement('li');
+        li.innerHTML = `<a href="#chap-${index}">${title}</a>`;
+        toc.appendChild(li);
+    }
+
     const section = document.createElement('section');
     section.id = `chap-${index}`;
     section.className = 'chapter-section';
-    section.style.marginBottom = '2rem';
-    section.style.paddingBottom = '1.5rem';
-    section.style.borderBottom = '1px solid var(--border-color)';
 
     section.innerHTML = `
         <h3 style="color: var(--accent-color); margin-bottom: 1rem;">${title}</h3>
-        <div class="chapter-body" style="line-height: 2;">${formatText(rawContent)}</div>
+        <div class="chapter-body" style="line-height: 2.2;">${formatText(rawContent)}</div>
     `;
     container.appendChild(section);
 }
 
-// 3. تصحيح وتجميل النص إملائياً
+// 3. تصحيح وتنظيف النص إملائياً وتنسيق الفقرات
 function formatText(text) {
     if (!text) return '';
     if (Array.isArray(text)) text = text.join('\n\n');
@@ -139,7 +144,7 @@ function setupFontSizeControls() {
     }
 }
 
-// 5. حفظ واسترجاع التصفح
+// 5. حفظ واسترجاع موضع التصفح
 function setupScrollListener(bookId) {
     window.addEventListener('scroll', () => {
         localStorage.setItem(`bookmark_${bookId}`, window.scrollY);
