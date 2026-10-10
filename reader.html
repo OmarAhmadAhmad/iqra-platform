@@ -3,24 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>القارئ الذكي - منصة إقراء</title>
+    <title id="pageTitle">قراءة الكتاب</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <header class="reader-toolbar">
-        <a href="index.html" style="text-decoration: none; color: var(--accent-color); font-weight: bold; margin-left: 1rem;">➔ المكتبة</a>
-        <h2 id="bookTitle" style="font-size: 1.2rem; color: var(--text-primary); flex-grow: 1;">جاري تحميل الكتاب...</h2>
-        <div class="reader-controls" style="display: flex; gap: 0.5rem;">
-            <button id="decreaseFont" style="padding: 0.3rem 0.8rem; cursor: pointer;">A-</button>
-            <button id="increaseFont" style="padding: 0.3rem 0.8rem; cursor: pointer;">A+</button>
-        </div>
-    </header>
 
-    <main class="container">
-        <article id="bookContent" class="content-area">
-            <p>جاري جلب المحتوى...</p>
-        </article>
-    </main>
+    <div class="reader-container">
+        <div class="reader-header">
+            <a href="index.html" class="back-link">← العودة للمكتبة</a>
+            <h2 id="bookTitle" style="color: var(--accent-color);">جاري التحميل...</h2>
+        </div>
+        
+        <div id="bookContent" class="book-content">
+            <p style="text-align: center; color: var(--text-secondary);">جاري تحميل محتوى الكتاب...</p>
+        </div>
+    </div>
 
     <script src="js/reader.js"></script>
 </body>
