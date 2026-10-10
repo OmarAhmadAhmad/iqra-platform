@@ -22,7 +22,7 @@ async function loadBooksList() {
         setupCategoryTabs();
     } catch (error) {
         console.error("خطأ:", error);
-        booksGrid.innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: #e74c3c;'>جاري تحميل المكتبة، تأكد من تشغيل الخادم المحلي...</p>";
+        booksGrid.innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: #e74c3c;'>جاري تحميل المكتبة...</p>";
     }
 }
 
@@ -31,7 +31,7 @@ function renderBooks(books) {
     booksGrid.innerHTML = "";
 
     if (!books || books.length === 0) {
-        booksGrid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 40px;'><p style='font-size: 1.1rem; color: var(--text-secondary);'>لا توجد كتب مطابقة لبحثك.</p></div>";
+        booksGrid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 40px;'><p style='font-size: 1.1rem; color: var(--text-secondary);'>لا توجد كتب أو أذكار مطابقة لبحثك.</p></div>";
         return;
     }
 
@@ -44,15 +44,15 @@ function renderBooks(books) {
 
         card.innerHTML = `
             <div class="card-top">
-                <span class="book-cat">${book.category || 'مكتبة عامة'}</span>
+                <span class="book-cat">${book.category || 'مكتبة الطريقة الجامعة'}</span>
             </div>
             <div class="card-body">
                 <h3>${book.title}</h3>
-                <p class="book-author">${book.author || 'المكتبة الإسلامية'}</p>
-                <p class="book-desc">${book.description ? book.description.substring(0, 95) + '...' : 'كتاب إسلامي تربوي متميز...'}</p>
+                <p class="book-author">${book.author || 'الشيخ أحمد البسفي'}</p>
+                <p class="book-desc">${book.description ? book.description.substring(0, 95) + '...' : 'مرجع تربوي إيماني...'}</p>
             </div>
             <div class="card-footer">
-                <span class="read-action">قراءة الكتاب ➔</span>
+                <span class="read-action">قراءة المحتوى ➔</span>
             </div>
         `;
         booksGrid.appendChild(card);
