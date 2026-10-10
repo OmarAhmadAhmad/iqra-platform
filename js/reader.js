@@ -1,4 +1,4 @@
-// js/reader.js - محرك القراءة المباشر بدون مشاكل CORS
+// js/reader.js - محرك القراءة المضمون لـ GitHub Pages
 document.addEventListener("DOMContentLoaded", async () => {
     initTheme();
     const params = new URLSearchParams(window.location.search);
@@ -9,75 +9,67 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
     }
 
-    let cleanId = bookParam.replace(/\.json$/i, '');
-    await loadBookDirectly(cleanId);
+    let cleanId = bookParam.replace(/\.json$/i, '').trim();
+    await loadBook(cleanId);
 });
 
-async function loadBookDirectly(bookId) {
+async function loadBook(bookId) {
     const contentDiv = document.getElementById('bookContent');
     const titleHeader = document.getElementById('bookTitle');
     const pageTitle = document.getElementById('pageTitle');
 
     try {
-        // جلب ملف الكتاب بالطريقة المحلية الآمنة
+        // المسار الصحيح للملفات على GitHub Pages
         const response = await fetch(`data/${bookId}.json`);
-        if (!response.ok) throw new Error("تعذر جلب ملف الكتاب");
+        if (!response.ok) throw new Error("تعذر جلب الملف");
         
-        const bookData = await response.json();
+        const data = await response.json();
         
-        let title = bookData.title || bookId.replace(/-/g, ' ');
-        titleHeader.innerText = title;
+        let title = data.title || bookId.replace(/-/g, ' ');
+        if (titleHeader) titleHeader.innerText = title;
         if (pageTitle) pageTitle.innerText = `${title} - المكتبة الإسلامية`;
 
-        renderBookContent(bookData, contentDiv);
+        displayContent(data, contentDiv);
 
     } catch (error) {
         console.error(error);
-        // محاولة بديلة في حال فشل الـ fetch المباشر لضمان عمل التطبيق أوفلاين
         contentDiv.innerHTML = `
-            <div style="text-align: center; padding: 30px;">
-                <p style="color: #e74c3c; font-size: 1.1rem; font-weight: bold; margin-bottom: 10px;">عذراً، يحتاج المتصفح لتشغيل صفحة الويب عبر خادم محلي لقراءة الملفات.</p>
-                <p style="color: #7f8c8d; font-size: 0.95rem; line-height: 1.6;">
-                    لحل هذه المشكلة نهائياً للتشغيل أوفلاين، افتح مجلد المشروع باستخدام برنامج <b>VS Code</b> ثم قم بتثبيت إضافة <b>Live Server</b> واضغط على زر <i>Go Live</i> أسفل الشاشة، أو قم برفع الملفات مباشرة على GitHub Pages.
-                </p>
-                <a href="index.html" style="display: inline-block; margin-top: 20px; background: var(--accent-color); color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none;">العودة للرئيسية</a>
+            <div style="text-align: center; padding: 40px;">
+                <p style="color: #e74c3c; font-size: 1.2rem; font-weight: bold; margin-bottom: 10px;">عذراً، تعذر العثور على ملف هذا الكتاب أو قراءته.</p>
+                <p style="color: #7f8c8d; font-size: 0.95rem; margin-bottom: 20px;">تأكد أن الملف <b>${bookId}.json</b> مرفوع تماماً داخل مجلد <b>data</b> في مستودع GitHub.</p>
+                <a href="index.html" style="background: #1b4d3e; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none;">العودة للمكتبة الرئيسية</a>
             </div>
         `;
     }
 }
 
-function renderBookContent(data, container) {
+function displayContent(data, container) {
     container.innerHTML = "";
-    
-    let textHTML = "";
-    
+    let htmlContent = "";
+
     if (typeof data === 'string') {
-        textHTML = formatText(data);
+        htmlContent = formatParagraphs(data);
     } else if (data.content) {
-        textHTML = formatText(data.content);
+        htmlContent = formatParagraphs(data.content);
     } else if (Array.isArray(data)) {
-        textHTML = data.map(item => `<h3>${item.title || ''}</h3>` + formatText(item.content || item.text || item)).join('<hr style="margin: 20px 0; border:0; border-top:1px solid var(--border-color);">');
+        htmlContent = data.map(item => `<h3>${item.title || ''}</h3>` + formatParagraphs(item.content || item.text || item)).join('<hr style="margin:20px 0; border:0; border-top:1px solid #ddd;">');
     } else if (data.chapters && Array.isArray(data.chapters)) {
-        textHTML = data.chapters.map(chap => `<h3 style="color:var(--accent-color); margin-top:25px; margin-bottom:10px;">${chap.title || ''}</h3>` + formatText(chap.content || chap.text || '')).join('');
+        htmlContent = data.chapters.map(chap => `<h3 style="color:#1b4d3e; margin:25px 0 10px 0;">${chap.title || ''}</h3>` + formatParagraphs(chap.content || chap.text || '')).join('');
     } else {
-        textHTML = formatText(JSON.stringify(data));
+        // إذا كان ملف JSON يحتوي على حقول أخرى، نقوم بعرض وصفه أو نصه مباشرة
+        htmlContent = formatParagraphs(data.description || JSON.stringify(data, null, 2));
     }
 
-    container.innerHTML = textHTML;
+    container.innerHTML = htmlContent;
 }
 
-// دالة لتنظيف النصوص وإزالة الرموز الزائدة وتنسيق الأسطر بانتظام
-function formatText(text) {
+function formatParagraphs(text) {
     if (!text) return "";
-    let cleaned = text.toString()
-        .replace(//g, '') // إزالة أي رموز تالفة
-        .replace(/\s+([،؛.؟!])/g, '$1'); // تنظيم المسافات حول علامات الترقيم
-
-    return cleaned
+    return text.toString()
         .split('\n')
         .map(line => line.trim())
         .filter(line => line.length > 0)
-        .map(line => `<p style="margin-bottom: 18px; text-align: justify;">${line}</p>`)
+        .map(line => `<p style="margin-bottom: 18px; text-align: justify; line-height: 2.1;">${line}</p>`)
         .join('');
 }
 
