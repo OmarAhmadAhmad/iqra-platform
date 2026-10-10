@@ -1,4 +1,4 @@
-/* css/style.css - تصميم كلاسيكي إسلامي هادئ ومناسب للقراءة اليومية */
+/* css/style.css - التصميم الخبير المتكامل للموبايل والشاشات */
 
 @import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;600;700&display=swap');
 
@@ -39,7 +39,6 @@ body {
     padding: 15px;
 }
 
-/* تنسيق الهيدر والبحث */
 .app-header {
     text-align: center;
     margin-bottom: 25px;
@@ -142,7 +141,6 @@ button.theme-btn {
     font-weight: 600;
 }
 
-/* بطاقة استكمال القراءة السريعة */
 .main-container {
     max-width: 1000px;
     margin: 0 auto;
@@ -192,7 +190,6 @@ button.theme-btn {
     transform: scale(1.03);
 }
 
-/* تنسيقات الأقسام الشجرية المتقدمة */
 .sections-container {
     display: flex;
     flex-direction: column;
@@ -234,7 +231,6 @@ button.theme-btn {
     font-weight: bold;
 }
 
-/* شبكة كروت الكتب داخل كل قسم */
 .books-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
@@ -287,7 +283,6 @@ button.theme-btn {
     font-size: 0.88rem;
 }
 
-/* شاشة قراءة الكتاب */
 .reader-container {
     background: var(--card-bg);
     padding: 35px 25px;
