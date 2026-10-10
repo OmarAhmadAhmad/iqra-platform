@@ -1,4 +1,4 @@
-// js/app.js - تنظيم الأقسام الشجرية، البحث الفوري، ومتابعة القراءة
+// js/app.js - إدارة الفهرس، الأقسام، ومتابعة القراءة
 document.addEventListener("DOMContentLoaded", () => {
     initTheme();
     loadBooksList();
@@ -26,19 +26,19 @@ async function loadBooksList() {
     }
 }
 
-// عرض الكتب مقسمة حسَب الأقسام الشجرية مع أيقونات وتعداد ذكي
 function renderCategorizedBooks(books) {
     const container = document.getElementById("sectionsContainer");
+    if (!container) return;
     container.innerHTML = "";
 
     if (!books || books.length === 0) {
-        container.innerHTML = "<p style='text-align: center; padding: 30px; color: var(--text-secondary);'>لا توجد كتب أو أذكار مطابقة لبحثك.</p>";
+        container.innerHTML = "<p style='text-align: center; padding: 30px; color: var(--text-secondary);'>لا توجد نتائج مطابقة للبحث.</p>";
         return;
     }
 
     const categories = {};
     books.forEach(book => {
-        const cat = book.category ? book.category.trim() : 'عام';
+        const cat = (book && book.category) ? book.category.trim() : 'عام';
         if (!categories[cat]) categories[cat] = [];
         categories[cat].push(book);
     });
@@ -73,13 +73,18 @@ function renderCategorizedBooks(books) {
 }
 
 function createBookCardHTML(book) {
+    if (!book) return "";
     let fileName = (book.file || book.id || "").toString().replace(/\.json$/i, '').trim();
+    let title = book.title || "عنوان غير مسمى";
+    let author = book.author || 'الشيخ أحمد البسفي';
+    let desc = book.description ? book.description.substring(0, 85) + '...' : 'مرجع إيماني متميز...';
+
     return `
         <a href="reader.html?book=${encodeURIComponent(fileName)}" class="book-card">
             <div class="card-body">
-                <h3>${book.title}</h3>
-                <p class="book-author">${book.author || 'الشيخ أحمد البسفي'}</p>
-                <p class="book-desc">${book.description ? book.description.substring(0, 85) + '...' : 'مرجع إيماني متميز...'}</p>
+                <h3>${title}</h3>
+                <p class="book-author">${author}</p>
+                <p class="book-desc">${desc}</p>
             </div>
             <div class="card-footer">
                 <span class="read-action">اقرأ الآن ➔</span>
@@ -99,23 +104,29 @@ function setupSearch() {
             return;
         }
 
-        const filtered = allBooks.filter(book => 
-            book.title.toLowerCase().includes(query) ||
-            (book.description && book.description.toLowerCase().includes(query)) ||
-            (book.category && book.category.toLowerCase().includes(query))
-        );
+        const filtered = allBooks.filter(book => {
+            if (!book) return false;
+            const t = (book.title || "").toLowerCase();
+            const d = (book.description || "").toLowerCase();
+            const c = (book.category || "").toLowerCase();
+            return t.includes(query) || d.includes(query) || c.includes(query);
+        });
 
         renderCategorizedBooks(filtered);
     });
 }
 
 function checkContinueReading() {
-    const lastBook = JSON.parse(localStorage.getItem("lastReadBook"));
-    const section = document.getElementById("continueReadingSection");
-    if (lastBook && section) {
-        document.getElementById("continueBookTitle").innerText = lastBook.title;
-        document.getElementById("continueBookBtn").href = `reader.html?book=${encodeURIComponent(lastBook.id)}`;
-        section.style.display = "block";
+    try {
+        const lastBook = JSON.parse(localStorage.getItem("lastReadBook"));
+        const section = document.getElementById("continueReadingSection");
+        if (lastBook && lastBook.id && section) {
+            document.getElementById("continueBookTitle").innerText = lastBook.title || "";
+            document.getElementById("continueBookBtn").href = `reader.html?book=${encodeURIComponent(lastBook.id)}`;
+            section.style.display = "block";
+        }
+    } catch(e) {
+        console.error(e);
     }
 }
 
