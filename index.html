@@ -5,29 +5,33 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>مكتبة الطريقة الجامعة - الشيخ أحمد البسفي</title>
     
+    <!-- ربط ملف الـ Manifest وتهيئته للتثبيت كتطبيق على الموبايل (PWA) -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#1b4d3e">
     <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <meta name="apple-mobile-web-app-title" content="الطريقة الجامعة">
     
+    <!-- التصميم والخطوط العربية الكلاسيكية -->
     <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 </head>
 <body>
 
-    <!-- الهيدر الفاخر -->
+    <!-- الهيدر الفاخر والهوية -->
     <header class="app-header">
         <div class="header-content">
             <span class="badge-offline">🔒 مرجع إيماني - يعمل أوفلاين 100%</span>
             <h1>مكتبة الطريقة الجامعة</h1>
             <p class="subtitle">للشيخ أحمد البسفي الأول بن مصطفى</p>
             
+            <!-- التنويه الرسمي وأمانة النقل -->
             <div class="disclaimer-box">
                 <p>💡 <b>تنويه هام:</b> هذا التطبيق مجهود شخصي للاستخدام اليومي ونشر الذكر والفكر، وليس إصداراً رسمياً عن الشيخ، حفظاً لأمانة النقل والجمع.</p>
             </div>
         </div>
 
-        <!-- شريط البحث السريع والبارز -->
+        <!-- شريط التحكم والبحث المتقدم -->
         <div class="controls-container">
             <div class="search-box">
                 <span class="search-icon">🔍</span>
@@ -37,8 +41,9 @@
         </div>
     </header>
 
+    <!-- منطقة عرض المحتوى والأقسام -->
     <main class="main-container">
-        <!-- قسم متابعة القراءة السريعة (يظهر إذا كان هناك كتاب مفتوح سابقاً) -->
+        <!-- قسم متابعة القراءة السريعة (يظهر تلقائياً للمستخدم) -->
         <div id="continueReadingSection" class="continue-section" style="display: none;">
             <div class="continue-card">
                 <div class="continue-info">
@@ -49,22 +54,28 @@
             </div>
         </div>
 
-        <!-- أقسام المكتبة الشجرية والمنظمة -->
+        <!-- الأقسام الشجرية المنظمة للكتب -->
         <div id="sectionsContainer" class="sections-container">
-            <!-- يتم تعبئة الأقسام والكتب عبر js/app.js -->
+            <!-- يتم تعبئة الأقسام والكتب ديناميكياً بواسطة js/app.js -->
         </div>
     </main>
 
+    <!-- تذييل الصفحة -->
     <footer class="app-footer">
         <p>مكتبة الطريقة الجامعة (مجهود شخصي) &copy; 2026</p>
         <p style="font-size: 0.8rem; margin-top: 5px; opacity: 0.75;">صممت لتجربة قراءة سلسة ومريحة بدون إنترنت</p>
     </footer>
 
+    <!-- ملف التشغيل البرمجي الرئيسي -->
     <script src="js/app.js"></script>
+
+    <!-- تسجيل الـ Service Worker لتفعيل العمل أوفلاين والتثبيت على الهاتف -->
     <script>
         if ('serviceWorker' in navigator) {
             window.addEventListener('load', () => {
-                navigator.serviceWorker.register('service-worker.js');
+                navigator.serviceWorker.register('service-worker.js')
+                    .then(reg => console.log('Service Worker Registered Successfully:', reg.scope))
+                    .catch(err => console.error('Service Worker Registration Failed:', err));
             });
         }
     </script>
