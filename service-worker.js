@@ -1,5 +1,5 @@
 // service-worker.js - التخزين المؤقت للعمل أوفلاين كتطبيق
-const CACHE_NAME = 'islamic-library-v2';
+const CACHE_NAME = 'islamic-library-v3';
 const assetsToCache = [
   'index.html',
   'reader.html',
