@@ -1,4 +1,4 @@
-// js/app.js - تنظيم المكتبة بالأقسام ومتابعة القراءة
+// js/app.js - تنظيم الأقسام الشجرية، البحث الفوري، ومتابعة القراءة
 document.addEventListener("DOMContentLoaded", () => {
     initTheme();
     loadBooksList();
@@ -26,17 +26,16 @@ async function loadBooksList() {
     }
 }
 
-// عرض الكتب مقسمة حسَب الأقسام مع تعداد ذكي لكل قسم
+// عرض الكتب مقسمة حسَب الأقسام الشجرية مع أيقونات وتعداد ذكي
 function renderCategorizedBooks(books) {
     const container = document.getElementById("sectionsContainer");
     container.innerHTML = "";
 
     if (!books || books.length === 0) {
-        container.innerHTML = "<p style='text-align: center; padding: 30px; color: var(--text-secondary);'>لا توجد نتائج مطابقة للبحث.</p>";
+        container.innerHTML = "<p style='text-align: center; padding: 30px; color: var(--text-secondary);'>لا توجد كتب أو أذكار مطابقة لبحثك.</p>";
         return;
     }
 
-    // تجميع الكتب حسب القسم
     const categories = {};
     books.forEach(book => {
         const cat = book.category ? book.category.trim() : 'عام';
@@ -44,8 +43,7 @@ function renderCategorizedBooks(books) {
         categories[cat].push(book);
     });
 
-    // رسم كل قسم بكروته المنسقة
-    Object.keys(categories).forEach((catName, index) => {
+    Object.keys(categories).forEach((catName) => {
         const catGroup = document.createElement("section");
         catGroup.className = "category-group";
 
@@ -63,7 +61,7 @@ function renderCategorizedBooks(books) {
         catGroup.innerHTML = `
             <div class="category-header">
                 <h2><span>${catIcon}</span> ${catName}</h2>
-                <span class="count-badge">${categories[catName].length} كتاب/مصباح</span>
+                <span class="count-badge">${categories[catName].length} عنصراً</span>
             </div>
             <div class="books-grid">
                 ${categories[catName].map(book => createBookCardHTML(book)).join('')}
