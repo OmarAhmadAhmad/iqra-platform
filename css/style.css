@@ -1,12 +1,56 @@
-/* تنسيقات إضافية لنموذج الصفحة الرئيسية النادر */
+/* css/style.css - تصميم كلاسيكي إسلامي هادئ ومناسب للموبايل */
+
+@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;600;700&display=swap');
+
+:root {
+    --bg-color: #fcfbfa;
+    --card-bg: #ffffff;
+    --text-main: #2b2b2b;
+    --text-secondary: #666666;
+    --accent-color: #1b4d3e;
+    --accent-hover: #12352a;
+    --border-color: #e6e4df;
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+[data-theme="dark"] {
+    --bg-color: #141817;
+    --card-bg: #1c2220;
+    --text-main: #e2dfdb;
+    --text-secondary: #a39e93;
+    --accent-color: #4db6ac;
+    --accent-hover: #26a69a;
+    --border-color: #2a3330;
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-main);
+    font-family: 'Cairo', sans-serif;
+    line-height: 1.9;
+    direction: rtl;
+    padding: 15px;
+}
+
+/* تنسيق الهيدر والبحث */
 .app-header {
+    text-align: center;
+    margin-bottom: 25px;
+    padding: 25px 15px;
     background: var(--card-bg);
     border-radius: 16px;
-    padding: 30px 20px;
-    margin-bottom: 30px;
     box-shadow: var(--shadow);
     border: 1px solid var(--border-color);
-    text-align: center;
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .badge-offline {
@@ -20,29 +64,56 @@
     margin-bottom: 12px;
 }
 
+.app-header h1 {
+    color: var(--accent-color);
+    font-size: 1.8rem;
+    margin-bottom: 5px;
+    font-weight: 700;
+}
+
+.subtitle {
+    font-size: 1.15rem;
+    color: var(--accent-color);
+    font-weight: 700;
+    margin-bottom: 12px;
+}
+
+.disclaimer-box {
+    background: rgba(27, 77, 62, 0.05);
+    border-right: 3px solid var(--accent-color);
+    padding: 10px 15px;
+    border-radius: 6px;
+    max-width: 650px;
+    margin: 10px auto 15px auto;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+    text-align: right;
+}
+
 .controls-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 12px;
+    gap: 10px;
     margin: 20px 0;
     flex-wrap: wrap;
 }
 
 .search-box {
     position: relative;
-    width: 400px;
+    width: 380px;
     max-width: 100%;
 }
 
 .search-box input {
     width: 100%;
-    padding: 12px 15px 12px 40px;
+    padding: 11px 15px 11px 40px;
     border-radius: 10px;
     border: 1px solid var(--border-color);
     background: var(--bg-color);
     color: var(--text-main);
-    font-size: 1rem;
+    font-size: 0.95rem;
     outline: none;
     transition: all 0.2s;
 }
@@ -60,23 +131,34 @@
     opacity: 0.5;
 }
 
-/* أزرار الفلاتر */
+button.theme-btn {
+    padding: 11px 18px;
+    border: none;
+    background: var(--accent-color);
+    color: white;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+/* أزرار التصفية السريعة */
 .category-tabs {
     display: flex;
     justify-content: center;
     gap: 8px;
     flex-wrap: wrap;
-    margin-top: 20px;
+    margin-top: 15px;
 }
 
 .tab-btn {
     background: var(--bg-color);
     border: 1px solid var(--border-color);
     color: var(--text-main);
-    padding: 8px 16px;
+    padding: 7px 15px;
     border-radius: 20px;
     cursor: pointer;
-    font-size: 0.88px;
+    font-size: 0.85rem;
     font-family: 'Cairo', sans-serif;
     transition: all 0.2s;
 }
@@ -87,22 +169,36 @@
     border-color: var(--accent-color);
 }
 
-/* تنسيق كروت الكتب */
+/* شبكة عرض الكتب */
+.main-container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.books-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
 .book-card {
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
     background: var(--card-bg);
     border: 1px solid var(--border-color);
     border-radius: 12px;
-    padding: 22px;
-    transition: transform 0.2s, box-shadow 0.2s;
+    padding: 20px;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+    box-shadow: var(--shadow);
 }
 
 .book-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.06);
+    transform: translateY(-3px);
     border-color: var(--accent-color);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
 }
 
 .book-cat {
@@ -114,16 +210,24 @@
     font-weight: 700;
 }
 
+.book-card h3 {
+    color: var(--accent-color);
+    font-size: 1.15rem;
+    margin: 8px 0 6px 0;
+    font-weight: 700;
+    line-height: 1.4;
+}
+
 .book-author {
     font-size: 0.85rem;
     color: var(--text-secondary);
-    margin: 6px 0 12px 0;
+    margin-bottom: 10px;
 }
 
 .book-desc {
-    font-size: 0.9rem;
+    font-size: 0.88rem;
     color: var(--text-secondary);
-    line-height: 1.6;
+    line-height: 1.5;
     margin-bottom: 15px;
 }
 
@@ -133,11 +237,101 @@
     font-size: 0.9rem;
 }
 
+/* شاشة قراءة الكتاب */
+.reader-container {
+    background: var(--card-bg);
+    padding: 35px 25px;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+}
+
+.reader-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 15px;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.back-link {
+    text-decoration: none;
+    color: var(--accent-color);
+    font-weight: 700;
+    font-size: 0.9rem;
+    background: var(--bg-color);
+    padding: 7px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+}
+
+.reader-header h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--accent-color);
+}
+
+.book-content {
+    font-family: 'Amiri', serif;
+    font-size: 1.3rem;
+    line-height: 2.3;
+    color: var(--text-main);
+    text-align: justify;
+}
+
+.book-content h3 {
+    font-family: 'Cairo', sans-serif;
+    color: var(--accent-color);
+    font-size: 1.35rem;
+    margin-top: 35px;
+    margin-bottom: 12px;
+    font-weight: 700;
+    border-right: 4px solid var(--accent-color);
+    padding-right: 12px;
+}
+
+.book-content p {
+    margin-bottom: 20px;
+    text-indent: 25px;
+}
+
+.book-content .highlight-box {
+    background: var(--bg-color);
+    border: 1px solid var(--border-color);
+    padding: 12px 18px;
+    border-radius: 8px;
+    margin: 18px 0;
+    font-weight: bold;
+    color: var(--accent-color);
+    font-family: 'Cairo', sans-serif;
+    text-align: center;
+    font-size: 1.1rem;
+}
+
 .app-footer {
     text-align: center;
-    margin-top: 50px;
+    margin-top: 40px;
     padding: 20px;
     color: var(--text-secondary);
     border-top: 1px solid var(--border-color);
-    font-size: 0.9rem;
+    font-size: 0.88rem;
+}
+
+@media (max-width: 600px) {
+    body {
+        padding: 8px;
+    }
+    .reader-container {
+        padding: 20px 15px;
+    }
+    .book-content {
+        font-size: 1.15rem;
+        line-height: 2.1;
+    }
+    .app-header h1 {
+        font-size: 1.5rem;
+    }
 }
