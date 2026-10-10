@@ -1,0 +1,15 @@
+{
+  "name": "المكتبة الإسلامية الرقمية",
+  "short_name": "المكتبة الإسلامية",
+  "start_url": "index.html",
+  "display": "standalone",
+  "background_color": "#fcfbfa",
+  "theme_color": "#1b4d3e",
+  "icons": [
+    {
+      "src": "icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
