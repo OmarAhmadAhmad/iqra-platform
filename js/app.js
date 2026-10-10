@@ -1,15 +1,16 @@
-// js/app.js - إدارة الفهرس، البحث، والتصفية الفورية
+// js/app.js - تنظيم المكتبة بالأقسام ومتابعة القراءة
 document.addEventListener("DOMContentLoaded", () => {
     initTheme();
     loadBooksList();
     setupSearch();
+    checkContinueReading();
 });
 
 let allBooks = [];
 
 async function loadBooksList() {
-    const booksGrid = document.getElementById("booksGrid");
-    if (!booksGrid) return;
+    const container = document.getElementById("sectionsContainer");
+    if (!container) return;
 
     try {
         const response = await fetch("./data/books-list.json");
@@ -18,45 +19,75 @@ async function loadBooksList() {
         const data = await response.json();
         allBooks = Array.isArray(data) ? data : (data.books || []);
         
-        renderBooks(allBooks);
-        setupCategoryTabs();
+        renderCategorizedBooks(allBooks);
     } catch (error) {
         console.error("خطأ:", error);
-        booksGrid.innerHTML = "<p style='grid-column: 1/-1; text-align: center; color: #e74c3c;'>جاري تحميل المكتبة...</p>";
+        container.innerHTML = "<p style='text-align: center; color: #e74c3c;'>جاري تحميل المكتبة...</p>";
     }
 }
 
-function renderBooks(books) {
-    const booksGrid = document.getElementById("booksGrid");
-    booksGrid.innerHTML = "";
+// عرض الكتب مقسمة حسَب الأقسام مع تعداد ذكي لكل قسم
+function renderCategorizedBooks(books) {
+    const container = document.getElementById("sectionsContainer");
+    container.innerHTML = "";
 
     if (!books || books.length === 0) {
-        booksGrid.innerHTML = "<div style='grid-column: 1/-1; text-align: center; padding: 40px;'><p style='font-size: 1.1rem; color: var(--text-secondary);'>لا توجد كتب أو أذكار مطابقة لبحثك.</p></div>";
+        container.innerHTML = "<p style='text-align: center; padding: 30px; color: var(--text-secondary);'>لا توجد نتائج مطابقة للبحث.</p>";
         return;
     }
 
+    // تجميع الكتب حسب القسم
+    const categories = {};
     books.forEach(book => {
-        const card = document.createElement("a");
-        card.className = "book-card";
-        
-        let fileName = (book.file || book.id || "").toString().replace(/\.json$/i, '').trim();
-        card.href = `reader.html?book=${encodeURIComponent(fileName)}`;
+        const cat = book.category ? book.category.trim() : 'عام';
+        if (!categories[cat]) categories[cat] = [];
+        categories[cat].push(book);
+    });
 
-        card.innerHTML = `
-            <div class="card-top">
-                <span class="book-cat">${book.category || 'مكتبة الطريقة الجامعة'}</span>
+    // رسم كل قسم بكروته المنسقة
+    Object.keys(categories).forEach((catName, index) => {
+        const catGroup = document.createElement("section");
+        catGroup.className = "category-group";
+
+        const iconMap = {
+            'المصابيح والأذكار': '📿',
+            'دروس ومحاضرات الصلاة': '🕌',
+            'دروس ومحاضرات الصيام': '🌙',
+            'العبادات والفقه': '📖',
+            'أسماء الله الحسنى': '✨',
+            'الشخصيات الإسلامية والتراجم': '📜'
+        };
+
+        const catIcon = iconMap[catName] || '📚';
+
+        catGroup.innerHTML = `
+            <div class="category-header">
+                <h2><span>${catIcon}</span> ${catName}</h2>
+                <span class="count-badge">${categories[catName].length} كتاب/مصباح</span>
             </div>
+            <div class="books-grid">
+                ${categories[catName].map(book => createBookCardHTML(book)).join('')}
+            </div>
+        `;
+
+        container.appendChild(catGroup);
+    });
+}
+
+function createBookCardHTML(book) {
+    let fileName = (book.file || book.id || "").toString().replace(/\.json$/i, '').trim();
+    return `
+        <a href="reader.html?book=${encodeURIComponent(fileName)}" class="book-card">
             <div class="card-body">
                 <h3>${book.title}</h3>
                 <p class="book-author">${book.author || 'الشيخ أحمد البسفي'}</p>
-                <p class="book-desc">${book.description ? book.description.substring(0, 95) + '...' : 'مرجع تربوي إيماني...'}</p>
+                <p class="book-desc">${book.description ? book.description.substring(0, 85) + '...' : 'مرجع إيماني متميز...'}</p>
             </div>
             <div class="card-footer">
-                <span class="read-action">قراءة المحتوى ➔</span>
+                <span class="read-action">اقرأ الآن ➔</span>
             </div>
-        `;
-        booksGrid.appendChild(card);
-    });
+        </a>
+    `;
 }
 
 function setupSearch() {
@@ -65,32 +96,29 @@ function setupSearch() {
 
     searchInput.addEventListener("input", (e) => {
         const query = e.target.value.trim().toLowerCase();
+        if (!query) {
+            renderCategorizedBooks(allBooks);
+            return;
+        }
+
         const filtered = allBooks.filter(book => 
             book.title.toLowerCase().includes(query) ||
             (book.description && book.description.toLowerCase().includes(query)) ||
-            (book.author && book.author.toLowerCase().includes(query)) ||
             (book.category && book.category.toLowerCase().includes(query))
         );
-        renderBooks(filtered);
+
+        renderCategorizedBooks(filtered);
     });
 }
 
-function setupCategoryTabs() {
-    const tabBtns = document.querySelectorAll(".tab-btn");
-    tabBtns.forEach(btn => {
-        btn.addEventListener("click", () => {
-            tabBtns.forEach(b => b.classList.remove("active"));
-            btn.classList.add("active");
-
-            const category = btn.dataset.category;
-            if (category === "all") {
-                renderBooks(allBooks);
-            } else {
-                const filtered = allBooks.filter(book => book.category && book.category.trim() === category.trim());
-                renderBooks(filtered);
-            }
-        });
-    });
+function checkContinueReading() {
+    const lastBook = JSON.parse(localStorage.getItem("lastReadBook"));
+    const section = document.getElementById("continueReadingSection");
+    if (lastBook && section) {
+        document.getElementById("continueBookTitle").innerText = lastBook.title;
+        document.getElementById("continueBookBtn").href = `reader.html?book=${encodeURIComponent(lastBook.id)}`;
+        section.style.display = "block";
+    }
 }
 
 function initTheme() {
@@ -102,7 +130,6 @@ function initTheme() {
         themeToggle.addEventListener("click", () => {
             const currentTheme = document.body.getAttribute("data-theme");
             const newTheme = currentTheme === "dark" ? "light" : "dark";
-            
             document.body.setAttribute("data-theme", newTheme);
             localStorage.setItem("theme", newTheme);
         });
