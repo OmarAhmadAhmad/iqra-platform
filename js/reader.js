@@ -1,4 +1,4 @@
-// js/reader.js - محرك تنسيق وتنظيف وعرض النصوص فقرة فقرة وحفظ القراءة الأخيرة
+// js/reader.js - تنظيف وتنسيق النصوص فقرة فقرة وحفظ التقدم
 document.addEventListener("DOMContentLoaded", async () => {
     initTheme();
     const params = new URLSearchParams(window.location.search);
@@ -24,11 +24,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (titleHeader) titleHeader.innerText = title;
         document.title = `${title} - مكتبة الطريقة الجامعة`;
 
-        // حفظ أحدث كتاب في التخزين المحلي لخاصية "متابعة القراءة"
-        localStorage.setItem("lastReadBook", JSON.stringify({
-            id: cleanId,
-            title: title
-        }));
+        try {
+            localStorage.setItem("lastReadBook", JSON.stringify({
+                id: cleanId,
+                title: title
+            }));
+        } catch(e) {}
 
         formatAndRenderBook(data, contentDiv);
 
@@ -52,7 +53,10 @@ function formatAndRenderBook(data, container) {
     } else if (data.content) {
         rawText = data.content;
     } else if (Array.isArray(data)) {
-        rawText = data.map(item => item.title ? `\n\n### ${item.title}\n\n` + (item.content || item.text || '') : (item.content || item.text || item)).join('\n\n');
+        rawText = data.map(item => {
+            if (typeof item === 'string') return item;
+            return item.title ? `\n\n### ${item.title}\n\n` + (item.content || item.text || '') : (item.content || item.text || '');
+        }).join('\n\n');
     } else if (data.chapters && Array.isArray(data.chapters)) {
         data.chapters.forEach(chap => {
             const h = document.createElement('h3');
