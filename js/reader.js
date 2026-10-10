@@ -1,4 +1,4 @@
-// js/reader.js - الحل النهائي المباشر لعرض محتوى الكتب
+// js/reader.js - محرك تنسيق وتنظيف وعرض النصوص فقرة فقرة
 document.addEventListener("DOMContentLoaded", async () => {
     initTheme();
     const params = new URLSearchParams(window.location.search);
@@ -15,7 +15,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     let cleanId = bookParam.replace(/\.json$/i, '').trim();
 
     try {
-        // محاولة جلب ملف الكتاب من مجلد data
         const response = await fetch(`data/${cleanId}.json`);
         if (!response.ok) throw new Error("فشل الجلب");
         
@@ -25,72 +24,88 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (titleHeader) titleHeader.innerText = title;
         document.title = `${title} - المكتبة الإسلامية`;
 
-        renderContent(data, contentDiv);
+        formatAndRenderBook(data, contentDiv);
 
     } catch (error) {
         console.error(error);
-        // خطة بديلة فورية لضمان عدم بقاء الشاشة معلقة نهائياً
-        try {
-            const listRes = await fetch('data/books-list.json');
-            const listData = await listRes.json();
-            const books = Array.isArray(listData) ? listData : (listData.books || []);
-            const foundBook = books.find(b => (b.file || '').includes(cleanId) || b.id == cleanId);
-
-            if (foundBook) {
-                if (titleHeader) titleHeader.innerText = foundBook.title;
-                contentDiv.innerHTML = `
-                    <div style="padding: 20px;">
-                        <h3 style="color: var(--accent-color); margin-bottom: 15px;">${foundBook.title}</h3>
-                        <p style="font-size: 1.1rem; line-height: 2; margin-bottom: 20px;">${foundBook.description || ''}</p>
-                        <div style="background: var(--bg-color); padding: 15px; border-radius: 8px; border: 1px solid var(--border-color);">
-                            <p><b>المؤلف:</b> ${foundBook.author || 'غيرระบุ'}</p>
-                            <p><b>القسم:</b> ${foundBook.category || 'عام'}</p>
-                        </div>
-                    </div>
-                `;
-                return;
-            }
-        } catch (e) {
-            console.error(e);
-        }
-
         contentDiv.innerHTML = `
             <div style="text-align: center; padding: 30px;">
-                <p style="color: #e74c3c; font-weight: bold; font-size: 1.1rem;">عذراً، تعذر تحميل محتوى هذا الكتاب حالياً.</p>
-                <p style="color: #7f8c8d; font-size: 0.9rem; margin-top: 10px;">تأكد من رفع ملف الكتاب المطابق داخل مجلد data على المستودع.</p>
-                <a href="index.html" style="display:inline-block; margin-top:20px; color:var(--accent-color); font-weight:bold;">العودة للمكتبة الرئيسية</a>
+                <p style="color: #e74c3c; font-weight: bold;">عذراً، تعذر تحميل محتوى هذا الكتاب.</p>
+                <a href="index.html" style="display:inline-block; margin-top:15px; color:var(--accent-color); font-weight:bold;">العودة للمكتبة الرئيسية</a>
             </div>
         `;
     }
 });
 
-function renderContent(data, container) {
+// دالة ذكية لتنظيف النص، إزالة الرموز المشوهة، وتنسيقه فقرة فقرة بانتظام
+function formatAndRenderBook(data, container) {
     container.innerHTML = "";
-    let htmlContent = "";
+    
+    let rawText = "";
 
     if (typeof data === 'string') {
-        htmlContent = formatParagraphs(data);
+        rawText = data;
     } else if (data.content) {
-        htmlContent = formatParagraphs(data.content);
+        rawText = data.content;
     } else if (Array.isArray(data)) {
-        htmlContent = data.map(item => `<h3>${item.title || ''}</h3>` + formatParagraphs(item.content || item.text || item)).join('<hr style="margin:20px 0; border:0; border-top:1px solid #ddd;">');
+        rawText = data.map(item => item.title ? `\n\n### ${item.title}\n\n` + (item.content || item.text || '') : (item.content || item.text || item)).join('\n\n');
     } else if (data.chapters && Array.isArray(data.chapters)) {
-        htmlContent = data.chapters.map(chap => `<h3 style="color:var(--accent-color); margin:25px 0 10px 0;">${chap.title || ''}</h3>` + formatParagraphs(chap.content || chap.text || '')).join('');
+        data.chapters.forEach(chap => {
+            const h = document.createElement('h3');
+            h.innerText = cleanArtifacts(chap.title || "فصل");
+            container.appendChild(h);
+            
+            const pDiv = document.createElement('div');
+            pDiv.innerHTML = processParagraphs(chap.content || chap.text || "");
+            container.appendChild(pDiv);
+        });
+        return;
     } else {
-        htmlContent = formatParagraphs(data.description || JSON.stringify(data, null, 2));
+        rawText = data.description || JSON.stringify(data, null, 2);
     }
 
-    container.innerHTML = htmlContent;
+    // تنظيف وعرض النص العام
+    container.innerHTML = processParagraphs(rawText);
 }
 
-function formatParagraphs(text) {
+// دالة تنظيف الرموز غير المفهومة والزائدة
+function cleanArtifacts(text) {
     if (!text) return "";
     return text.toString()
-        .split('\n')
-        .map(line => line.trim())
-        .filter(line => line.length > 0)
-        .map(line => `<p style="margin-bottom: 18px; text-align: justify; line-height: 2.1;">${line}</p>`)
-        .join('');
+        .replace(/[\uFFFD\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '') // إزالة الرموز التالفة والغير مرئية
+        .replace(/\s+([،؛.؟!%])/g, '$1') // تصحيح الفراغات قبل علامات الترقيم
+        .trim();
+}
+
+// دالة تقسيم النص إلى فقرات مريحة ومنظمة
+function processParagraphs(text) {
+    if (!text) return "";
+    
+    let cleaned = cleanArtifacts(text);
+    
+    // تقسيم النص بناءً على الأسطر الجديدة أو النقاط لضمان ظهوره فقرة فقرة
+    let lines = cleaned.split(/\r?\n/);
+    let htmlOutput = "";
+
+    lines.forEach(line => {
+        let trimmed = line.trim();
+        if (trimmed.length === 0) return;
+
+        // إذا كانت السطر يبدو كعنوان أو اسم من أسماء الله الحسنى (يبدأ بكلمة كتاب، مصباح، أو رقم مسلسل، أو قصير جداً ومميز)
+        if (trimmed.startsWith("###") || trimmed.startsWith("الكتاب") || trimmed.startsWith("المصباح") || (trimmed.startsWith("الدرس") && trimmed.length < 50)) {
+            let headingText = trimmed.replace("###", "").trim();
+            htmlOutput += `<h3>${headingText}</h3>`;
+        } 
+        // إذا كان سطراً يمثل اسماً مفرداً أو بنداً رئيسياً (مثل أسماء الله الحسنى: الله، الرحمن، الرحيم...)
+        else if (trimmed.length < 40 && !trimmed.includes(".") && !trimmed.includes("،")) {
+            htmlOutput += `<div class="highlight-box">${trimmed}</div>`;
+        } 
+        else {
+            htmlOutput += `<p>${trimmed}</p>`;
+        }
+    });
+
+    return htmlOutput;
 }
 
 function initTheme() {
