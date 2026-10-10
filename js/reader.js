@@ -22,7 +22,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         
         let title = data.title || cleanId.replace(/-/g, ' ');
         if (titleHeader) titleHeader.innerText = title;
-        document.title = `${title} - المكتبة الإسلامية`;
+        document.title = `${title} - مكتبة الطريقة الجامعة`;
 
         formatAndRenderBook(data, contentDiv);
 
@@ -37,10 +37,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
-// دالة ذكية لتنظيف النص، إزالة الرموز المشوهة، وتنسيقه فقرة فقرة بانتظام
 function formatAndRenderBook(data, container) {
     container.innerHTML = "";
-    
     let rawText = "";
 
     if (typeof data === 'string') {
@@ -64,26 +62,20 @@ function formatAndRenderBook(data, container) {
         rawText = data.description || JSON.stringify(data, null, 2);
     }
 
-    // تنظيف وعرض النص العام
     container.innerHTML = processParagraphs(rawText);
 }
 
-// دالة تنظيف الرموز غير المفهومة والزائدة
 function cleanArtifacts(text) {
     if (!text) return "";
     return text.toString()
-        .replace(/[\uFFFD\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '') // إزالة الرموز التالفة والغير مرئية
-        .replace(/\s+([،؛.؟!%])/g, '$1') // تصحيح الفراغات قبل علامات الترقيم
+        .replace(/[\uFFFD\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '')
+        .replace(/\s+([،؛.؟!%])/g, '$1')
         .trim();
 }
 
-// دالة تقسيم النص إلى فقرات مريحة ومنظمة
 function processParagraphs(text) {
     if (!text) return "";
-    
     let cleaned = cleanArtifacts(text);
-    
-    // تقسيم النص بناءً على الأسطر الجديدة أو النقاط لضمان ظهوره فقرة فقرة
     let lines = cleaned.split(/\r?\n/);
     let htmlOutput = "";
 
@@ -91,12 +83,10 @@ function processParagraphs(text) {
         let trimmed = line.trim();
         if (trimmed.length === 0) return;
 
-        // إذا كانت السطر يبدو كعنوان أو اسم من أسماء الله الحسنى (يبدأ بكلمة كتاب، مصباح، أو رقم مسلسل، أو قصير جداً ومميز)
         if (trimmed.startsWith("###") || trimmed.startsWith("الكتاب") || trimmed.startsWith("المصباح") || (trimmed.startsWith("الدرس") && trimmed.length < 50)) {
             let headingText = trimmed.replace("###", "").trim();
             htmlOutput += `<h3>${headingText}</h3>`;
         } 
-        // إذا كان سطراً يمثل اسماً مفرداً أو بنداً رئيسياً (مثل أسماء الله الحسنى: الله، الرحمن، الرحيم...)
         else if (trimmed.length < 40 && !trimmed.includes(".") && !trimmed.includes("،")) {
             htmlOutput += `<div class="highlight-box">${trimmed}</div>`;
         } 
