@@ -1,12 +1,13 @@
 // service-worker.js - التخزين المؤقت للعمل أوفلاين كتطبيق
-const CACHE_NAME = 'islamic-library-v1';
+const CACHE_NAME = 'islamic-library-v2';
 const assetsToCache = [
   'index.html',
   'reader.html',
   'css/style.css',
   'js/app.js',
   'js/reader.js',
-  'data/books-list.json'
+  'data/books-list.json',
+  'manifest.json'
 ];
 
 self.addEventListener('install', (event) => {
