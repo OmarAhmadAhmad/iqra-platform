@@ -1,4 +1,4 @@
-// js/reader.js - محرك تنسيق وتنظيف وعرض النصوص فقرة فقرة
+// js/reader.js - محرك تنسيق وتنظيف وعرض النصوص فقرة فقرة وحفظ القراءة الأخيرة
 document.addEventListener("DOMContentLoaded", async () => {
     initTheme();
     const params = new URLSearchParams(window.location.search);
@@ -23,6 +23,12 @@ document.addEventListener("DOMContentLoaded", async () => {
         let title = data.title || cleanId.replace(/-/g, ' ');
         if (titleHeader) titleHeader.innerText = title;
         document.title = `${title} - مكتبة الطريقة الجامعة`;
+
+        // حفظ أحدث كتاب في التخزين المحلي لخاصية "متابعة القراءة"
+        localStorage.setItem("lastReadBook", JSON.stringify({
+            id: cleanId,
+            title: title
+        }));
 
         formatAndRenderBook(data, contentDiv);
 
