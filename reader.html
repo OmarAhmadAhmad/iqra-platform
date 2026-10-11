@@ -12,8 +12,18 @@
     <main class="main-container" style="padding-top: 20px;">
         <div class="reader-container">
             <div class="reader-header">
-                <h2 id="bookTitle">جاري التحميل...</h2>
-                <a href="index.html" class="back-link">← العودة للمكتبة</a>
+                <div class="reader-title-area">
+                    <h2 id="bookTitle">جاري التحميل...</h2>
+                </div>
+                <!-- أدوات القارئ المريحة والمفضلة -->
+                <div class="reader-actions">
+                    <div class="font-controls">
+                        <button id="zoomOutBtn" class="font-btn" title="تصغير الخط">A-</button>
+                        <button id="zoomInBtn" class="font-btn" title="تكبير الخط">A+</button>
+                    </div>
+                    <button id="favoriteBtn" class="fav-action-btn" title="إضافة للمفضلة">⭐ أضف للمفضلة</button>
+                    <a href="index.html" class="back-link">← العودة للمكتبة</a>
+                </div>
             </div>
             
             <div id="bookContent" class="book-content">
