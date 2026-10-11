@@ -1,7 +1,7 @@
-// js/reader.js - تنظيف وتنسيق النصوص مع إمكانية تكبير الخط والمفضلة
+// js/reader.js - حفظ أحدث قراءة وشريط التمرير العلوي
 document.addEventListener("DOMContentLoaded", async () => {
     initTheme();
-    setupFontSizeControls();
+    setupProgressBar();
 
     const params = new URLSearchParams(window.location.search);
     let bookParam = params.get('book');
@@ -26,6 +26,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (titleHeader) titleHeader.innerText = title;
         document.title = `${title} - مكتبة الطريقة الجامعة`;
 
+        // حفظ أحدث وصول للقراءة
         try {
             localStorage.setItem("lastReadBook", JSON.stringify({
                 id: cleanId,
@@ -48,6 +49,17 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
     }
 });
+
+// شريط التمرير العلوي أثناء القراءة
+function setupProgressBar() {
+    window.addEventListener('scroll', () => {
+        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        const scrolled = (winScroll / height) * 100;
+        const bar = document.getElementById('progressBar');
+        if (bar) bar.style.width = scrolled + '%';
+    });
+}
 
 function setupReaderFavorite(cleanId) {
     const favBtn = document.getElementById('favoriteBtn');
@@ -80,38 +92,6 @@ function setupReaderFavorite(cleanId) {
             updateFavState();
         } catch(e) {}
     });
-}
-
-function setupFontSizeControls() {
-    let currentFontSize = parseFloat(localStorage.getItem("readerFontSize")) || 1.3;
-    const contentDiv = document.getElementById('bookContent');
-    
-    if (contentDiv) {
-        contentDiv.style.fontSize = `${currentFontSize}rem`;
-    }
-
-    const zoomInBtn = document.getElementById('zoomInBtn');
-    const zoomOutBtn = document.getElementById('zoomOutBtn');
-
-    if (zoomInBtn) {
-        zoomInBtn.addEventListener('click', () => {
-            if (currentFontSize < 2.2) {
-                currentFontSize += 0.1;
-                contentDiv.style.fontSize = `${currentFontSize}rem`;
-                localStorage.setItem("readerFontSize", currentFontSize);
-            }
-        });
-    }
-
-    if (zoomOutBtn) {
-        zoomOutBtn.addEventListener('click', () => {
-            if (currentFontSize > 0.9) {
-                currentFontSize -= 0.1;
-                contentDiv.style.fontSize = `${currentFontSize}rem`;
-                localStorage.setItem("readerFontSize", currentFontSize);
-            }
-        });
-    }
 }
 
 function formatAndRenderBook(data, container) {
