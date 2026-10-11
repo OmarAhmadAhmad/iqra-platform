@@ -1,4 +1,3 @@
-// js/reader.js - حفظ أحدث قراءة وشريط التمرير العلوي
 document.addEventListener("DOMContentLoaded", async () => {
     initTheme();
     setupProgressBar();
@@ -10,7 +9,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const titleHeader = document.getElementById('bookTitle');
 
     if (!bookParam) {
-        if (contentDiv) contentDiv.innerHTML = "<p style='text-align:center;'>لم يتم تحديد كتاب للعرض.</p>";
+        if (contentDiv) contentDiv.innerHTML = "<p style='text-align:center;'>لم يتم تحديد مرجع للقراءة.</p>";
         return;
     }
 
@@ -21,36 +20,34 @@ document.addEventListener("DOMContentLoaded", async () => {
         if (!response.ok) throw new Error("فشل الجلب");
         
         const data = await response.json();
-        
         let title = data.title || cleanId.replace(/-/g, ' ');
+        
         if (titleHeader) titleHeader.innerText = title;
         document.title = `${title} - مكتبة الطريقة الجامعة`;
 
-        // حفظ أحدث وصول للقراءة
         try {
-            localStorage.setItem("lastReadBook", JSON.stringify({
+            localStorage.setItem("lastBookRead", JSON.stringify({
                 id: cleanId,
                 title: title
             }));
         } catch(e) {}
 
-        setupReaderFavorite(cleanId);
-        formatAndRenderBook(data, contentDiv);
+        setupReaderFavBtn(cleanId);
+        renderContent(data, contentDiv);
 
     } catch (error) {
         console.error(error);
         if (contentDiv) {
             contentDiv.innerHTML = `
-                <div style="text-align: center; padding: 30px;">
-                    <p style="color: #e74c3c; font-weight: bold;">عذراً، تعذر تحميل محتوى هذا الكتاب.</p>
-                    <a href="index.html" style="display:inline-block; margin-top:15px; color:var(--accent-color); font-weight:bold;">العودة للمكتبة الرئيسية</a>
+                <div style="text-align: center; padding: 40px;">
+                    <p style="color: #ef4444; font-weight: bold;">عذراً، تعذر جلب محتوى هذا الملف.</p>
+                    <a href="index.html" class="action-chip" style="display:inline-block; margin-top:15px;">العودة للرئيسية</a>
                 </div>
             `;
         }
     }
 });
 
-// شريط التمرير العلوي أثناء القراءة
 function setupProgressBar() {
     window.addEventListener('scroll', () => {
         const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
@@ -61,40 +58,40 @@ function setupProgressBar() {
     });
 }
 
-function setupReaderFavorite(cleanId) {
-    const favBtn = document.getElementById('favoriteBtn');
-    if (!favBtn) return;
+function setupReaderFavBtn(cleanId) {
+    const btn = document.getElementById('favoriteBtn');
+    if (!btn) return;
 
-    function updateFavState() {
+    function refreshState() {
         try {
-            const favorites = JSON.parse(localStorage.getItem("libraryFavorites")) || [];
-            if (favorites.includes(cleanId)) {
-                favBtn.innerText = "⭐ مفضل عندي";
-                favBtn.classList.add("is-fav");
+            const favs = JSON.parse(localStorage.getItem("libraryFavs")) || [];
+            if (favs.includes(cleanId)) {
+                btn.innerText = "⭐ مفضل عندي";
+                btn.classList.add("is-fav");
             } else {
-                favBtn.innerText = "⭐ أضف للمفضلة";
-                favBtn.classList.remove("is-fav");
+                btn.innerText = "⭐ أضف للمفضلة";
+                btn.classList.remove("is-fav");
             }
         } catch(e) {}
     }
 
-    updateFavState();
+    refreshState();
 
-    favBtn.addEventListener('click', () => {
+    btn.addEventListener('click', () => {
         try {
-            let favorites = JSON.parse(localStorage.getItem("libraryFavorites")) || [];
-            if (favorites.includes(cleanId)) {
-                favorites = favorites.filter(id => id !== cleanId);
+            let favs = JSON.parse(localStorage.getItem("libraryFavs")) || [];
+            if (favs.includes(cleanId)) {
+                favs = favs.filter(i => i !== cleanId);
             } else {
-                favorites.push(cleanId);
+                favs.push(cleanId);
             }
-            localStorage.setItem("libraryFavorites", JSON.stringify(favorites));
-            updateFavState();
+            localStorage.setItem("libraryFavs", JSON.stringify(favs));
+            refreshState();
         } catch(e) {}
     });
 }
 
-function formatAndRenderBook(data, container) {
+function renderContent(data, container) {
     container.innerHTML = "";
     let rawText = "";
 
@@ -103,59 +100,28 @@ function formatAndRenderBook(data, container) {
     } else if (data.content) {
         rawText = data.content;
     } else if (Array.isArray(data)) {
-        rawText = data.map(item => {
-            if (typeof item === 'string') return item;
-            return item.title ? `\n\n### ${item.title}\n\n` + (item.content || item.text || '') : (item.content || item.text || '');
-        }).join('\n\n');
-    } else if (data.chapters && Array.isArray(data.chapters)) {
-        data.chapters.forEach(chap => {
-            const h = document.createElement('h3');
-            h.innerText = cleanArtifacts(chap.title || "فصل");
-            container.appendChild(h);
-            
-            const pDiv = document.createElement('div');
-            pDiv.innerHTML = processParagraphs(chap.content || chap.text || "");
-            container.appendChild(pDiv);
-        });
-        return;
+        rawText = data.map(i => typeof i === 'string' ? i : (i.content || i.text || '')).join('\n\n');
     } else {
         rawText = data.description || JSON.stringify(data, null, 2);
     }
 
-    container.innerHTML = processParagraphs(rawText);
-}
-
-function cleanArtifacts(text) {
-    if (!text) return "";
-    return text.toString()
-        .replace(/[\uFFFD\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '')
-        .replace(/\s+([،؛.؟!%])/g, '$1')
-        .trim();
-}
-
-function processParagraphs(text) {
-    if (!text) return "";
-    let cleaned = cleanArtifacts(text);
-    let lines = cleaned.split(/\r?\n/);
-    let htmlOutput = "";
+    let lines = rawText.split(/\r?\n/);
+    let html = "";
 
     lines.forEach(line => {
         let trimmed = line.trim();
-        if (trimmed.length === 0) return;
+        if (!trimmed) return;
 
         if (trimmed.startsWith("###") || trimmed.startsWith("الكتاب") || trimmed.startsWith("المصباح") || (trimmed.startsWith("الدرس") && trimmed.length < 50)) {
-            let headingText = trimmed.replace("###", "").trim();
-            htmlOutput += `<h3>${headingText}</h3>`;
-        } 
-        else if (trimmed.length < 40 && !trimmed.includes(".") && !trimmed.includes("،")) {
-            htmlOutput += `<div class="highlight-box">${trimmed}</div>`;
-        } 
-        else {
-            htmlOutput += `<p>${trimmed}</p>`;
+            html += `<h3>${trimmed.replace("###", "").trim()}</h3>`;
+        } else if (trimmed.length < 40 && !trimmed.includes(".") && !trimmed.includes("،")) {
+            html += `<div class="highlight-box">${trimmed}</div>`;
+        } else {
+            html += `<p>${trimmed}</p>`;
         }
     });
 
-    return htmlOutput;
+    container.innerHTML = html;
 }
 
 function initTheme() {
