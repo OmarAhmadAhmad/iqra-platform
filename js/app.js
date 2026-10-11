@@ -1,12 +1,15 @@
-// js/app.js - إدارة الفهرس، الأقسام، ومتابعة القراءة
+// js/app.js - برمجة خفيفة وعالية الأداء للبحث والتصفية والمفضلة
 document.addEventListener("DOMContentLoaded", () => {
     initTheme();
     loadBooksList();
     setupSearch();
     checkContinueReading();
+    setupDrawer();
+    setupViewTabs();
 });
 
 let allBooks = [];
+let currentView = 'all';
 
 async function loadBooksList() {
     const container = document.getElementById("sectionsContainer");
@@ -19,10 +22,25 @@ async function loadBooksList() {
         const data = await response.json();
         allBooks = Array.isArray(data) ? data : (data.books || []);
         
-        renderCategorizedBooks(allBooks);
+        updateFavoritesCount();
+        renderCurrentView();
+        populateDrawerCategories(allBooks);
     } catch (error) {
         console.error("خطأ:", error);
         container.innerHTML = "<p style='text-align: center; color: #e74c3c;'>جاري تحميل المكتبة...</p>";
+    }
+}
+
+function renderCurrentView() {
+    if (currentView === 'favorites') {
+        const favorites = getFavoritesList();
+        const favBooks = allBooks.filter(book => {
+            let id = (book.file || book.id || "").toString().replace(/\.json$/i, '').trim();
+            return favorites.includes(id);
+        });
+        renderCategorizedBooks(favBooks);
+    } else {
+        renderCategorizedBooks(allBooks);
     }
 }
 
@@ -32,7 +50,7 @@ function renderCategorizedBooks(books) {
     container.innerHTML = "";
 
     if (!books || books.length === 0) {
-        container.innerHTML = "<p style='text-align: center; padding: 30px; color: var(--text-secondary);'>لا توجد نتائج مطابقة للبحث.</p>";
+        container.innerHTML = "<p style='text-align: center; padding: 40px; color: var(--text-secondary);'>لا توجد عناصر مطابقة لبحثك.</p>";
         return;
     }
 
@@ -46,6 +64,7 @@ function renderCategorizedBooks(books) {
     Object.keys(categories).forEach((catName) => {
         const catGroup = document.createElement("section");
         catGroup.className = "category-group";
+        catGroup.id = `cat-${sanitizeId(catName)}`;
 
         const iconMap = {
             'المصابيح والأذكار': '📿',
@@ -78,20 +97,125 @@ function createBookCardHTML(book) {
     let title = book.title || "عنوان غير مسمى";
     let author = book.author || 'الشيخ أحمد البسفي';
     let desc = book.description ? book.description.substring(0, 85) + '...' : 'مرجع إيماني متميز...';
+    
+    const favorites = getFavoritesList();
+    const isFav = favorites.includes(fileName);
 
     return `
-        <a href="reader.html?book=${encodeURIComponent(fileName)}" class="book-card">
+        <div class="book-card">
             <div class="card-body">
-                <h3>${title}</h3>
+                <div class="card-header-flex">
+                    <a href="reader.html?book=${encodeURIComponent(fileName)}" style="text-decoration:none; color:inherit; flex-grow:1;">
+                        <h3>${title}</h3>
+                    </a>
+                    <button class="fav-star-btn" onclick="toggleFavorite('${fileName}', event)" title="إضافة/إزالة من المفضلة">
+                        ${isFav ? '⭐' : '☆'}
+                    </button>
+                </div>
                 <p class="book-author">${author}</p>
                 <p class="book-desc">${desc}</p>
             </div>
             <div class="card-footer">
-                <span class="read-action">اقرأ الآن ➔</span>
+                <a href="reader.html?book=${encodeURIComponent(fileName)}" class="read-action" style="text-decoration:none;">اقرأ الآن ➔</a>
             </div>
-        </a>
+        </div>
     `;
 }
+
+function getFavoritesList() {
+    try {
+        return JSON.parse(localStorage.getItem("libraryFavorites")) || [];
+    } catch(e) { return []; }
+}
+
+function toggleFavorite(bookId, event) {
+    if (event) event.stopPropagation();
+    let favorites = getFavoritesList();
+    if (favorites.includes(bookId)) {
+        favorites = favorites.filter(id => id !== bookId);
+    } else {
+        favorites.push(bookId);
+    }
+    localStorage.setItem("libraryFavorites", JSON.stringify(favorites));
+    updateFavoritesCount();
+    renderCurrentView();
+}
+
+function updateFavoritesCount() {
+    const countSpan = document.getElementById("favCount");
+    if (countSpan) countSpan.innerText = getFavoritesList().length;
+}
+
+function setupDrawer() {
+    const menuBtn = document.getElementById("menuBtn");
+    const closeDrawer = document.getElementById("closeDrawer");
+    const drawer = document.getElementById("sideDrawer");
+    const overlay = document.getElementById("drawerOverlay");
+
+    function toggleDrawer() {
+        drawer.classList.toggle("open");
+        overlay.classList.toggle("active");
+    }
+
+    if (menuBtn) menuBtn.addEventListener("click", toggleDrawer);
+    if (closeDrawer) closeDrawer.addEventListener("click", toggleDrawer);
+    if (overlay) overlay.addEventListener("click", toggleDrawer);
+}
+
+function populateDrawerCategories(books) {
+    const drawerList = document.getElementById("drawerCategoriesList");
+    if (!drawerList) return;
+
+    const categories = [...new Set(books.map(b => b.category ? b.category.trim() : 'عام'))];
+    
+    drawerList.innerHTML = categories.map(cat => `
+        <a href="#cat-${sanitizeId(cat)}" onclick="closeDrawerAndScroll('cat-${sanitizeId(cat)}')">📂 ${cat}</a>
+    `).join('') + `<a href="#" onclick="switchView('favorites'); closeDrawer(); return false;">⭐ المفضلة</a>`;
+}
+
+function closeDrawerAndScroll(elementId) {
+    closeDrawer();
+    if (currentView !== 'all') {
+        currentView = 'all';
+        document.querySelectorAll(".view-tab-btn").forEach(b => b.classList.remove("active"));
+        document.querySelector("[data-view='all']").classList.add("active");
+        renderCurrentView();
+    }
+    setTimeout(() => {
+        const el = document.getElementById(elementId);
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+    }, 150);
+}
+
+function closeDrawer() {
+    document.getElementById("sideDrawer").classList.remove("open");
+    document.getElementById("drawerOverlay").classList.remove("active");
+}
+
+function sanitizeId(str) {
+    return str.replace(/\s+/g, '-').replace(/[^\w\u0600-\u06FF-]/g, '');
+}
+
+function setupViewTabs() {
+    const tabs = document.querySelectorAll(".view-tab-btn");
+    tabs.forEach(tab => {
+        tab.addEventListener("click", () => {
+            tabs.forEach(t => t.classList.remove("active"));
+            tab.classList.add("active");
+            currentView = tab.dataset.view;
+            renderCurrentView();
+        });
+    });
+}
+
+window.switchView = function(viewName) {
+    currentView = viewName;
+    document.querySelectorAll(".view-tab-btn").forEach(t => {
+        if(t.dataset.view === viewName) t.classList.add("active");
+        else t.classList.remove("active");
+    });
+    renderCurrentView();
+};
 
 function setupSearch() {
     const searchInput = document.getElementById("searchInput");
@@ -100,11 +224,15 @@ function setupSearch() {
     searchInput.addEventListener("input", (e) => {
         const query = e.target.value.trim().toLowerCase();
         if (!query) {
-            renderCategorizedBooks(allBooks);
+            renderCurrentView();
             return;
         }
 
-        const filtered = allBooks.filter(book => {
+        const baseList = currentView === 'favorites' 
+            ? allBooks.filter(b => getFavoritesList().includes((b.file || b.id || "").toString().replace(/\.json$/i, '').trim()))
+            : allBooks;
+
+        const filtered = baseList.filter(book => {
             if (!book) return false;
             const t = (book.title || "").toLowerCase();
             const d = (book.description || "").toLowerCase();
@@ -125,9 +253,7 @@ function checkContinueReading() {
             document.getElementById("continueBookBtn").href = `reader.html?book=${encodeURIComponent(lastBook.id)}`;
             section.style.display = "block";
         }
-    } catch(e) {
-        console.error(e);
-    }
+    } catch(e) {}
 }
 
 function initTheme() {
