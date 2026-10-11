@@ -3,27 +3,29 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="pageTitle">قراءة الكتاب - مكتبة الطريقة الجامعة</title>
+    <title id="pageTitle">قراءة الورد - مكتبة الطريقة الجامعة</title>
     <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="reader-body">
 
-    <!-- شريط تقدم القراءة الاحترافي -->
-    <div id="progressBar" class="progress-bar"></div>
+    <!-- شريط التقدم النوراني في القراءة -->
+    <div id="progressBar" class="reading-progress-line"></div>
 
-    <main class="main-container reader-layout">
-        <div class="reader-card">
-            <div class="reader-topbar">
-                <h2 id="bookTitle">جاري تحميل المحتوى...</h2>
-                <div class="reader-controls-group">
-                    <button id="favoriteBtn" class="action-chip">⭐ أضف للمفضلة</button>
-                    <a href="index.html" class="action-chip back-chip">← المكتبة</a>
-                </div>
-            </div>
-            
-            <div id="bookContent" class="book-content">
-                <p style="text-align: center; color: var(--text-secondary); padding: 40px;">جاري إعداد محتوى القراءة...</p>
+    <!-- هيدر القراءة العائم -->
+    <header class="reader-floating-header">
+        <a href="index.html" class="float-back-btn">← المكتبة</a>
+        <h2 id="bookTitle" class="float-title">جاري التحميل...</h2>
+        <div class="header-actions-group">
+            <button id="favoriteBtn" class="float-fav-btn" title="المفضلة">⭐</button>
+            <button id="shareBtn" class="float-share-btn" title="مشاركة النص">📲</button>
+        </div>
+    </header>
+
+    <main class="reader-viewport">
+        <div class="reader-paper-sheet">
+            <div id="bookContent" class="book-text-content">
+                <p style="text-align: center; color: var(--text-secondary); padding: 50px;">جاري إعداد محتوى الورد...</p>
             </div>
         </div>
     </main>
