@@ -1,10 +1,9 @@
-// js/app.js - برمجة خفيفة وعالية الأداء للبحث والتصفية والمفضلة
+// js/app.js - إدارة الأقسام الشجرية السريعة والمفضلة
 document.addEventListener("DOMContentLoaded", () => {
     initTheme();
     loadBooksList();
     setupSearch();
     checkContinueReading();
-    setupDrawer();
     setupViewTabs();
 });
 
@@ -24,7 +23,6 @@ async function loadBooksList() {
         
         updateFavoritesCount();
         renderCurrentView();
-        populateDrawerCategories(allBooks);
     } catch (error) {
         console.error("خطأ:", error);
         container.innerHTML = "<p style='text-align: center; color: #e74c3c;'>جاري تحميل المكتبة...</p>";
@@ -50,7 +48,7 @@ function renderCategorizedBooks(books) {
     container.innerHTML = "";
 
     if (!books || books.length === 0) {
-        container.innerHTML = "<p style='text-align: center; padding: 40px; color: var(--text-secondary);'>لا توجد عناصر مطابقة لبحثك.</p>";
+        container.innerHTML = "<p style='text-align: center; padding: 40px; color: var(--text-secondary);'>لا توجد عناصر مطابقة.</p>";
         return;
     }
 
@@ -64,7 +62,6 @@ function renderCategorizedBooks(books) {
     Object.keys(categories).forEach((catName) => {
         const catGroup = document.createElement("section");
         catGroup.className = "category-group";
-        catGroup.id = `cat-${sanitizeId(catName)}`;
 
         const iconMap = {
             'المصابيح والأذكار': '📿',
@@ -146,56 +143,6 @@ function updateFavoritesCount() {
     if (countSpan) countSpan.innerText = getFavoritesList().length;
 }
 
-function setupDrawer() {
-    const menuBtn = document.getElementById("menuBtn");
-    const closeDrawer = document.getElementById("closeDrawer");
-    const drawer = document.getElementById("sideDrawer");
-    const overlay = document.getElementById("drawerOverlay");
-
-    function toggleDrawer() {
-        drawer.classList.toggle("open");
-        overlay.classList.toggle("active");
-    }
-
-    if (menuBtn) menuBtn.addEventListener("click", toggleDrawer);
-    if (closeDrawer) closeDrawer.addEventListener("click", toggleDrawer);
-    if (overlay) overlay.addEventListener("click", toggleDrawer);
-}
-
-function populateDrawerCategories(books) {
-    const drawerList = document.getElementById("drawerCategoriesList");
-    if (!drawerList) return;
-
-    const categories = [...new Set(books.map(b => b.category ? b.category.trim() : 'عام'))];
-    
-    drawerList.innerHTML = categories.map(cat => `
-        <a href="#cat-${sanitizeId(cat)}" onclick="closeDrawerAndScroll('cat-${sanitizeId(cat)}')">📂 ${cat}</a>
-    `).join('') + `<a href="#" onclick="switchView('favorites'); closeDrawer(); return false;">⭐ المفضلة</a>`;
-}
-
-function closeDrawerAndScroll(elementId) {
-    closeDrawer();
-    if (currentView !== 'all') {
-        currentView = 'all';
-        document.querySelectorAll(".view-tab-btn").forEach(b => b.classList.remove("active"));
-        document.querySelector("[data-view='all']").classList.add("active");
-        renderCurrentView();
-    }
-    setTimeout(() => {
-        const el = document.getElementById(elementId);
-        if (el) el.scrollIntoView({ behavior: 'smooth' });
-    }, 150);
-}
-
-function closeDrawer() {
-    document.getElementById("sideDrawer").classList.remove("open");
-    document.getElementById("drawerOverlay").classList.remove("active");
-}
-
-function sanitizeId(str) {
-    return str.replace(/\s+/g, '-').replace(/[^\w\u0600-\u06FF-]/g, '');
-}
-
 function setupViewTabs() {
     const tabs = document.querySelectorAll(".view-tab-btn");
     tabs.forEach(tab => {
@@ -207,15 +154,6 @@ function setupViewTabs() {
         });
     });
 }
-
-window.switchView = function(viewName) {
-    currentView = viewName;
-    document.querySelectorAll(".view-tab-btn").forEach(t => {
-        if(t.dataset.view === viewName) t.classList.add("active");
-        else t.classList.remove("active");
-    });
-    renderCurrentView();
-};
 
 function setupSearch() {
     const searchInput = document.getElementById("searchInput");
