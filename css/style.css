@@ -1,4 +1,4 @@
-/* css/style.css - تصميم خفيف وسريع متوافق مع كافة الشاشات */
+/* css/style.css - تصميم خفيف ونظيف مخصص للقراءة */
 
 @import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;600;700&display=swap');
 
@@ -8,7 +8,6 @@
     --text-main: #2b2b2b;
     --text-secondary: #666666;
     --accent-color: #1b4d3e;
-    --accent-hover: #12352a;
     --border-color: #e6e4df;
     --shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
@@ -19,7 +18,6 @@
     --text-main: #e2dfdb;
     --text-secondary: #a39e93;
     --accent-color: #4db6ac;
-    --accent-hover: #26a69a;
     --border-color: #2a3330;
     --shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
@@ -39,23 +37,23 @@ body {
     padding: 15px;
 }
 
+/* شريط التمرير العلوي لقراءة الكتاب */
+.progress-bar {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 4px;
+    background: var(--accent-color);
+    width: 0%;
+    z-index: 1000;
+    transition: width 0.1s ease-out;
+}
+
 .top-nav-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 10px;
-}
-
-.icon-btn {
-    background: var(--bg-color);
-    border: 1px solid var(--border-color);
-    color: var(--accent-color);
-    padding: 7px 14px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: bold;
-    font-family: 'Cairo', sans-serif;
+    margin-bottom: 12px;
 }
 
 .app-header {
@@ -79,7 +77,6 @@ body {
     border-radius: 20px;
     font-size: 0.8rem;
     font-weight: 700;
-    margin-bottom: 12px;
 }
 
 .app-header h1 {
@@ -90,7 +87,7 @@ body {
 }
 
 .subtitle {
-    font-size: 1.15rem;
+    font-size: 1.1rem;
     color: var(--accent-color);
     font-weight: 700;
     margin-bottom: 12px;
@@ -112,8 +109,6 @@ body {
 .controls-container {
     display: flex;
     justify-content: center;
-    align-items: center;
-    gap: 10px;
     margin-top: 15px;
 }
 
@@ -143,72 +138,13 @@ body {
 }
 
 button.theme-btn {
-    padding: 8px 15px;
+    padding: 6px 14px;
     border: 1px solid var(--border-color);
     background: var(--bg-color);
     color: var(--text-main);
     border-radius: 10px;
     cursor: pointer;
-    font-size: 1rem;
-}
-
-/* القائمة الجانبية (Drawer) */
-.side-drawer {
-    position: fixed;
-    top: 0;
-    right: -300px;
-    width: 280px;
-    height: 100%;
-    background: var(--card-bg);
-    box-shadow: -5px 0 25px rgba(0,0,0,0.15);
-    z-index: 1000;
-    transition: right 0.3s ease;
-    padding: 20px;
-    overflow-y: auto;
-}
-
-.side-drawer.open { right: 0; }
-
-.drawer-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 2px solid var(--border-color);
-    padding-bottom: 12px;
-    margin-bottom: 15px;
-}
-
-.close-btn {
-    background: none;
-    border: none;
-    font-size: 1.8rem;
-    color: var(--text-main);
-    cursor: pointer;
-}
-
-.drawer-overlay {
-    position: fixed;
-    top: 0; left: 0; width: 100%; height: 100%;
-    background: rgba(0,0,0,0.4);
-    z-index: 999;
-    display: none;
-}
-
-.drawer-overlay.active { display: block; }
-
-.drawer-links a {
-    display: block;
-    padding: 10px 12px;
-    color: var(--text-main);
-    text-decoration: none;
-    border-radius: 8px;
-    margin-bottom: 6px;
-    font-weight: 600;
-}
-
-.drawer-links a:hover {
-    background: rgba(27, 77, 62, 0.08);
-    color: var(--accent-color);
+    font-size: 0.9rem;
 }
 
 .main-container {
@@ -216,6 +152,7 @@ button.theme-btn {
     margin: 0 auto;
 }
 
+/* تبويبات التبديل المباشر */
 .view-tabs {
     display: flex;
     justify-content: center;
@@ -227,11 +164,12 @@ button.theme-btn {
     background: var(--card-bg);
     border: 1px solid var(--border-color);
     color: var(--text-main);
-    padding: 8px 20px;
+    padding: 8px 18px;
     border-radius: 20px;
     cursor: pointer;
     font-weight: 700;
     font-family: 'Cairo', sans-serif;
+    font-size: 0.9rem;
 }
 
 .view-tab-btn.active {
@@ -240,17 +178,18 @@ button.theme-btn {
     border-color: var(--accent-color);
 }
 
+/* الأقسام والكتب */
 .sections-container {
     display: flex;
     flex-direction: column;
-    gap: 30px;
+    gap: 25px;
 }
 
 .category-group {
     background: var(--card-bg);
     border: 1px solid var(--border-color);
     border-radius: 16px;
-    padding: 22px;
+    padding: 20px;
     box-shadow: var(--shadow);
 }
 
@@ -259,16 +198,13 @@ button.theme-btn {
     justify-content: space-between;
     align-items: center;
     border-bottom: 2px solid var(--border-color);
-    padding-bottom: 12px;
-    margin-bottom: 20px;
+    padding-bottom: 10px;
+    margin-bottom: 18px;
 }
 
 .category-header h2 {
-    font-size: 1.3rem;
+    font-size: 1.25rem;
     color: var(--accent-color);
-    display: flex;
-    align-items: center;
-    gap: 8px;
     font-weight: 700;
 }
 
@@ -276,22 +212,22 @@ button.theme-btn {
     background: rgba(27, 77, 62, 0.08);
     color: var(--accent-color);
     font-size: 0.8rem;
-    padding: 4px 10px;
+    padding: 3px 10px;
     border-radius: 12px;
     font-weight: bold;
 }
 
 .books-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-    gap: 18px;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
 }
 
 .book-card {
     background: var(--bg-color);
     border: 1px solid var(--border-color);
     border-radius: 12px;
-    padding: 18px;
+    padding: 16px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -312,15 +248,15 @@ button.theme-btn {
 
 .book-card h3 {
     color: var(--accent-color);
-    font-size: 1.1rem;
+    font-size: 1.05rem;
     margin-bottom: 6px;
     font-weight: 700;
 }
 
 .book-author {
-    font-size: 0.82rem;
+    font-size: 0.8rem;
     color: var(--text-secondary);
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .book-desc {
@@ -333,13 +269,13 @@ button.theme-btn {
 .read-action {
     color: var(--accent-color);
     font-weight: 700;
-    font-size: 0.88rem;
+    font-size: 0.85rem;
 }
 
-/* أدوات صفحة القراءة المريحة */
+/* شاشة القراءة */
 .reader-container {
     background: var(--card-bg);
-    padding: 35px 25px;
+    padding: 30px 22px;
     border-radius: 16px;
     box-shadow: var(--shadow);
     border: 1px solid var(--border-color);
@@ -360,26 +296,6 @@ button.theme-btn {
     display: flex;
     align-items: center;
     gap: 10px;
-    flex-wrap: wrap;
-}
-
-.font-controls {
-    display: flex;
-    gap: 4px;
-    background: var(--bg-color);
-    padding: 2px;
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
-}
-
-.font-btn {
-    background: none;
-    border: none;
-    color: var(--accent-color);
-    font-weight: bold;
-    padding: 4px 10px;
-    cursor: pointer;
-    font-size: 0.9rem;
 }
 
 .fav-action-btn {
@@ -413,7 +329,7 @@ button.theme-btn {
 
 .book-content {
     font-family: 'Amiri', serif;
-    font-size: 1.3rem;
+    font-size: 1.25rem;
     line-height: 2.3;
     color: var(--text-main);
     text-align: justify;
@@ -422,7 +338,7 @@ button.theme-btn {
 .book-content h3 {
     font-family: 'Cairo', sans-serif;
     color: var(--accent-color);
-    font-size: 1.35rem;
+    font-size: 1.3rem;
     margin-top: 30px;
     margin-bottom: 12px;
     font-weight: 700;
@@ -432,7 +348,7 @@ button.theme-btn {
 
 .book-content p {
     margin-bottom: 20px;
-    text-indent: 25px;
+    text-indent: 20px;
 }
 
 .book-content .highlight-box {
@@ -445,7 +361,7 @@ button.theme-btn {
     color: var(--accent-color);
     font-family: 'Cairo', sans-serif;
     text-align: center;
-    font-size: 1.1rem;
+    font-size: 1.05rem;
 }
 
 .continue-section { margin-bottom: 25px; }
@@ -483,6 +399,6 @@ button.theme-btn {
 
 @media (max-width: 600px) {
     body { padding: 8px; }
-    .reader-container { padding: 20px 15px; }
+    .reader-container { padding: 18px 12px; }
     .book-content { font-size: 1.15rem; line-height: 2.1; }
 }
