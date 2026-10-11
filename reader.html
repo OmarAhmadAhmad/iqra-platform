@@ -9,23 +9,21 @@
 </head>
 <body>
 
-    <!-- شريط تقدم القراءة الأعلى عند التمرير -->
+    <!-- شريط تقدم القراءة الاحترافي -->
     <div id="progressBar" class="progress-bar"></div>
 
-    <main class="main-container" style="padding-top: 20px;">
-        <div class="reader-container">
-            <div class="reader-header">
-                <div class="reader-title-area">
-                    <h2 id="bookTitle">جاري التحميل...</h2>
-                </div>
-                <div class="reader-actions">
-                    <button id="favoriteBtn" class="fav-action-btn">⭐ أضف للمفضلة</button>
-                    <a href="index.html" class="back-link">← العودة للمكتبة</a>
+    <main class="main-container reader-layout">
+        <div class="reader-card">
+            <div class="reader-topbar">
+                <h2 id="bookTitle">جاري تحميل المحتوى...</h2>
+                <div class="reader-controls-group">
+                    <button id="favoriteBtn" class="action-chip">⭐ أضف للمفضلة</button>
+                    <a href="index.html" class="action-chip back-chip">← المكتبة</a>
                 </div>
             </div>
             
             <div id="bookContent" class="book-content">
-                <p style="text-align: center; color: var(--text-secondary);">جاري تحميل محتوى الكتاب...</p>
+                <p style="text-align: center; color: var(--text-secondary); padding: 40px;">جاري إعداد محتوى القراءة...</p>
             </div>
         </div>
     </main>
