@@ -1,25 +1,26 @@
-/* css/style.css - تصميم خفيف ونظيف مخصص للقراءة */
-
-@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;600;700;800&display=swap');
 
 :root {
-    --bg-color: #fcfbfa;
+    --bg-color: #f8fafc;
     --card-bg: #ffffff;
-    --text-main: #2b2b2b;
-    --text-secondary: #666666;
-    --accent-color: #1b4d3e;
-    --border-color: #e6e4df;
-    --shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+    --text-main: #1e293b;
+    --text-secondary: #64748b;
+    --accent-color: #0f766e;
+    --accent-hover: #115e59;
+    --border-color: #e2e8f0;
+    --shadow: 0 4px 20px -2px rgba(15, 118, 110, 0.08);
+    --radius: 16px;
 }
 
 [data-theme="dark"] {
-    --bg-color: #141817;
-    --card-bg: #1c2220;
-    --text-main: #e2dfdb;
-    --text-secondary: #a39e93;
-    --accent-color: #4db6ac;
-    --border-color: #2a3330;
-    --shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    --bg-color: #0f172a;
+    --card-bg: #1e293b;
+    --text-main: #f1f5f9;
+    --text-secondary: #94a3b8;
+    --accent-color: #2dd4bf;
+    --accent-hover: #14b8a6;
+    --border-color: #334155;
+    --shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.3);
 }
 
 * {
@@ -32,101 +33,114 @@ body {
     background-color: var(--bg-color);
     color: var(--text-main);
     font-family: 'Cairo', sans-serif;
-    line-height: 1.9;
+    line-height: 1.85;
     direction: rtl;
-    padding: 15px;
+    padding: 16px;
 }
 
-/* شريط التمرير العلوي لقراءة الكتاب */
+/* شريط التقدم الاحترافي */
 .progress-bar {
     position: fixed;
     top: 0;
     right: 0;
-    height: 4px;
-    background: var(--accent-color);
+    height: 3px;
+    background: linear-gradient(90deg, var(--accent-color), #38bdf8);
     width: 0%;
-    z-index: 1000;
+    z-index: 9999;
     transition: width 0.1s ease-out;
 }
 
-.top-nav-bar {
+.app-header {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 24px;
+    max-width: 900px;
+    margin: 0 auto 24px auto;
+    box-shadow: var(--shadow);
+}
+
+.header-top-bar {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    margin-bottom: 15px;
+}
+
+.brand-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(15, 118, 110, 0.1);
+    color: var(--accent-color);
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 700;
+}
+
+.pulse-dot {
+    width: 8px;
+    height: 8px;
+    background: var(--accent-color);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(15, 118, 110, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(15, 118, 110, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(15, 118, 110, 0); }
+}
+
+.hero-title {
+    text-align: center;
     margin-bottom: 12px;
 }
 
-.app-header {
-    text-align: center;
-    margin-bottom: 25px;
-    padding: 20px 15px;
-    background: var(--card-bg);
-    border-radius: 16px;
-    box-shadow: var(--shadow);
-    border: 1px solid var(--border-color);
-    max-width: 1000px;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.badge-offline {
-    display: inline-block;
-    background: rgba(27, 77, 62, 0.1);
+.hero-title h1 {
+    font-size: 1.9rem;
     color: var(--accent-color);
-    padding: 4px 12px;
-    border-radius: 20px;
-    font-size: 0.8rem;
-    font-weight: 700;
-}
-
-.app-header h1 {
-    color: var(--accent-color);
-    font-size: 1.8rem;
-    margin-bottom: 5px;
-    font-weight: 700;
+    font-weight: 800;
+    letter-spacing: -0.5px;
 }
 
 .subtitle {
-    font-size: 1.1rem;
-    color: var(--accent-color);
-    font-weight: 700;
-    margin-bottom: 12px;
-}
-
-.disclaimer-box {
-    background: rgba(27, 77, 62, 0.05);
-    border-right: 3px solid var(--accent-color);
-    padding: 10px 15px;
-    border-radius: 6px;
-    max-width: 650px;
-    margin: 10px auto 15px auto;
-    font-size: 0.85rem;
+    font-size: 1.05rem;
     color: var(--text-secondary);
-    line-height: 1.6;
-    text-align: right;
+    font-weight: 600;
 }
 
-.controls-container {
-    display: flex;
-    justify-content: center;
+.disclaimer-banner {
+    background: var(--bg-color);
+    border-right: 3px solid var(--accent-color);
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    margin: 15px 0;
+}
+
+.search-wrapper {
+    position: relative;
     margin-top: 15px;
 }
 
-.search-box {
-    position: relative;
-    width: 380px;
-    max-width: 100%;
-}
-
-.search-box input {
+.search-wrapper input {
     width: 100%;
-    padding: 11px 15px 11px 40px;
-    border-radius: 10px;
+    padding: 12px 16px 12px 42px;
+    border-radius: 12px;
     border: 1px solid var(--border-color);
     background: var(--bg-color);
     color: var(--text-main);
     font-size: 0.95rem;
     outline: none;
+    transition: all 0.2s;
+}
+
+.search-wrapper input:focus {
+    border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.15);
 }
 
 .search-icon {
@@ -137,58 +151,102 @@ body {
     opacity: 0.5;
 }
 
-button.theme-btn {
-    padding: 6px 14px;
-    border: 1px solid var(--border-color);
+.theme-btn {
     background: var(--bg-color);
+    border: 1px solid var(--border-color);
     color: var(--text-main);
+    padding: 8px 12px;
     border-radius: 10px;
     cursor: pointer;
-    font-size: 0.9rem;
+    font-size: 1rem;
 }
 
 .main-container {
-    max-width: 1000px;
+    max-width: 900px;
     margin: 0 auto;
 }
 
-/* تبويبات التبديل المباشر */
-.view-tabs {
+.segmented-control {
     display: flex;
-    justify-content: center;
-    gap: 10px;
-    margin-bottom: 25px;
-}
-
-.view-tab-btn {
     background: var(--card-bg);
     border: 1px solid var(--border-color);
-    color: var(--text-main);
-    padding: 8px 18px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-weight: 700;
-    font-family: 'Cairo', sans-serif;
-    font-size: 0.9rem;
+    padding: 4px;
+    border-radius: 14px;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow);
 }
 
-.view-tab-btn.active {
+.segment-btn {
+    flex: 1;
+    background: transparent;
+    border: none;
+    color: var(--text-secondary);
+    padding: 10px;
+    border-radius: 10px;
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.segment-btn.active {
     background: var(--accent-color);
     color: white;
-    border-color: var(--accent-color);
+    box-shadow: 0 2px 10px rgba(15, 118, 110, 0.2);
 }
 
-/* الأقسام والكتب */
+.continue-pill-card {
+    background: linear-gradient(135deg, var(--accent-color), var(--accent-hover));
+    color: white;
+    border-radius: var(--radius);
+    padding: 18px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    box-shadow: var(--shadow);
+}
+
+.pill-tag {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    opacity: 0.9;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.continue-pill-card h4 {
+    font-size: 1.15rem;
+    font-weight: 700;
+}
+
+.pill-action-btn {
+    background: white;
+    color: var(--accent-color);
+    text-decoration: none;
+    padding: 8px 18px;
+    border-radius: 10px;
+    font-weight: 700;
+    font-size: 0.88rem;
+    transition: transform 0.2s;
+}
+
+.pill-action-btn:hover {
+    transform: scale(1.04);
+}
+
 .sections-container {
     display: flex;
     flex-direction: column;
-    gap: 25px;
+    gap: 24px;
 }
 
 .category-group {
     background: var(--card-bg);
     border: 1px solid var(--border-color);
-    border-radius: 16px;
+    border-radius: var(--radius);
     padding: 20px;
     box-shadow: var(--shadow);
 }
@@ -197,21 +255,21 @@ button.theme-btn {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    border-bottom: 2px solid var(--border-color);
-    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 12px;
     margin-bottom: 18px;
 }
 
 .category-header h2 {
     font-size: 1.25rem;
     color: var(--accent-color);
-    font-weight: 700;
+    font-weight: 800;
 }
 
-.count-badge {
-    background: rgba(27, 77, 62, 0.08);
+.count-pill {
+    background: rgba(15, 118, 110, 0.1);
     color: var(--accent-color);
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     padding: 3px 10px;
     border-radius: 12px;
     font-weight: bold;
@@ -231,32 +289,43 @@ button.theme-btn {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    transition: transform 0.2s, border-color 0.2s;
 }
 
-.card-header-flex {
+.book-card:hover {
+    transform: translateY(-2px);
+    border-color: var(--accent-color);
+}
+
+.card-top {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
 }
 
-.fav-star-btn {
+.fav-interactive-btn {
     background: none;
     border: none;
     cursor: pointer;
-    font-size: 1.2rem;
+    font-size: 1.25rem;
+    transition: transform 0.2s;
+}
+
+.fav-interactive-btn:active {
+    transform: scale(1.3);
 }
 
 .book-card h3 {
-    color: var(--accent-color);
-    font-size: 1.05rem;
-    margin-bottom: 6px;
+    color: var(--text-main);
+    font-size: 1.1rem;
+    margin-bottom: 4px;
     font-weight: 700;
 }
 
 .book-author {
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     color: var(--text-secondary);
-    margin-bottom: 6px;
+    margin-bottom: 8px;
 }
 
 .book-desc {
@@ -266,70 +335,69 @@ button.theme-btn {
     margin-bottom: 12px;
 }
 
-.read-action {
+.read-link {
     color: var(--accent-color);
     font-weight: 700;
-    font-size: 0.85rem;
+    font-size: 0.88rem;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
 }
 
-/* شاشة القراءة */
-.reader-container {
+.reader-card {
     background: var(--card-bg);
-    padding: 30px 22px;
-    border-radius: 16px;
-    box-shadow: var(--shadow);
     border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    padding: 30px 24px;
+    box-shadow: var(--shadow);
 }
 
-.reader-header {
+.reader-topbar {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 25px;
     border-bottom: 1px solid var(--border-color);
-    padding-bottom: 15px;
+    padding-bottom: 16px;
+    margin-bottom: 24px;
     flex-wrap: wrap;
     gap: 12px;
 }
 
-.reader-actions {
+.reader-topbar h2 {
+    font-size: 1.35rem;
+    color: var(--accent-color);
+    font-weight: 800;
+}
+
+.reader-controls-group {
     display: flex;
-    align-items: center;
     gap: 10px;
 }
 
-.fav-action-btn {
+.action-chip {
     background: var(--bg-color);
     border: 1px solid var(--border-color);
     color: var(--text-main);
-    padding: 6px 12px;
-    border-radius: 8px;
-    cursor: pointer;
+    padding: 7px 14px;
+    border-radius: 10px;
     font-family: 'Cairo', sans-serif;
     font-size: 0.85rem;
     font-weight: bold;
-}
-
-.fav-action-btn.is-fav {
-    background: #ffc107;
-    color: #000;
-    border-color: #ffc107;
-}
-
-.back-link {
+    cursor: pointer;
     text-decoration: none;
-    color: var(--accent-color);
-    font-weight: 700;
-    font-size: 0.88rem;
-    background: var(--bg-color);
-    padding: 6px 12px;
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
+    transition: all 0.2s;
+}
+
+.action-chip.is-fav {
+    background: #f59e0b;
+    color: #fff;
+    border-color: #f59e0b;
 }
 
 .book-content {
     font-family: 'Amiri', serif;
-    font-size: 1.25rem;
+    font-size: 1.3rem;
     line-height: 2.3;
     color: var(--text-main);
     text-align: justify;
@@ -339,7 +407,7 @@ button.theme-btn {
     font-family: 'Cairo', sans-serif;
     color: var(--accent-color);
     font-size: 1.3rem;
-    margin-top: 30px;
+    margin-top: 35px;
     margin-bottom: 12px;
     font-weight: 700;
     border-right: 4px solid var(--accent-color);
@@ -348,15 +416,15 @@ button.theme-btn {
 
 .book-content p {
     margin-bottom: 20px;
-    text-indent: 20px;
+    text-indent: 25px;
 }
 
 .book-content .highlight-box {
     background: var(--bg-color);
     border: 1px solid var(--border-color);
     padding: 12px 18px;
-    border-radius: 8px;
-    margin: 18px 0;
+    border-radius: 10px;
+    margin: 20px 0;
     font-weight: bold;
     color: var(--accent-color);
     font-family: 'Cairo', sans-serif;
@@ -364,41 +432,16 @@ button.theme-btn {
     font-size: 1.05rem;
 }
 
-.continue-section { margin-bottom: 25px; }
-
-.continue-card {
-    background: var(--accent-color);
-    color: white;
-    border-radius: 14px;
-    padding: 16px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 10px;
-}
-
-.continue-btn {
-    background: white;
-    color: var(--accent-color);
-    text-decoration: none;
-    padding: 7px 15px;
-    border-radius: 8px;
-    font-weight: 700;
-    font-size: 0.88rem;
-}
-
 .app-footer {
     text-align: center;
-    margin-top: 40px;
-    padding: 20px;
+    margin-top: 30px;
     color: var(--text-secondary);
-    border-top: 1px solid var(--border-color);
-    font-size: 0.88rem;
+    font-size: 0.85rem;
 }
 
 @media (max-width: 600px) {
     body { padding: 8px; }
-    .reader-container { padding: 18px 12px; }
+    .app-header { padding: 16px; }
+    .reader-card { padding: 20px 14px; }
     .book-content { font-size: 1.15rem; line-height: 2.1; }
 }
