@@ -17,12 +17,11 @@
 
     <header class="app-header">
         <div class="top-nav-bar">
-            <button id="menuBtn" class="icon-btn" title="القائمة والتصنيفات">☰ الأقسام</button>
+            <span class="badge-offline">🔒 مرجع إيماني - يعمل أوفلاين 100%</span>
             <button id="themeToggle" class="theme-btn" title="تغيير المظهر">🌓</button>
         </div>
 
         <div class="header-content">
-            <span class="badge-offline">🔒 مرجع إيماني - يعمل أوفلاين 100%</span>
             <h1>مكتبة الطريقة الجامعة</h1>
             <p class="subtitle">للشيخ أحمد البسفي الأول بن مصطفى</p>
             
@@ -39,18 +38,8 @@
         </div>
     </header>
 
-    <!-- القائمة الجانبية المنسدلة للأقسام -->
-    <div id="sideDrawer" class="side-drawer">
-        <div class="drawer-header">
-            <h3>🗂️ التصنيفات والأقسام</h3>
-            <button id="closeDrawer" class="close-btn">&times;</button>
-        </div>
-        <div id="drawerCategoriesList" class="drawer-links"></div>
-    </div>
-    <div id="drawerOverlay" class="drawer-overlay"></div>
-
     <main class="main-container">
-        <!-- قسم متابعة القراءة -->
+        <!-- 1. استكمال آخر وصول للقراءة -->
         <div id="continueReadingSection" class="continue-section" style="display: none;">
             <div class="continue-card">
                 <div class="continue-info">
@@ -61,12 +50,13 @@
             </div>
         </div>
 
-        <!-- أزرار التبديل بين الكل والمفضلة -->
+        <!-- 2. التبديل السريع بين جميع الكتب والمفضلة -->
         <div class="view-tabs">
-            <button class="view-tab-btn active" data-view="all">📚 جميع الكتب</button>
-            <button class="view-tab-btn" data-view="favorites">⭐ المفضلة (<span id="favCount">0</span>)</button>
+            <button class="view-tab-btn active" data-view="all">📚 جميع الكتب والتصنيفات</button>
+            <button class="view-tab-btn" data-view="favorites">⭐ الكتب المفضلة (<span id="favCount">0</span>)</button>
         </div>
 
+        <!-- 3. عرض الكتب حسب الأقسام والتصنيفات -->
         <div id="sectionsContainer" class="sections-container"></div>
     </main>
 
