@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
     initTheme();
-    setupProgressBar();
+    setupProgressLine();
 
     const params = new URLSearchParams(window.location.search);
     let bookParam = params.get('book');
@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const titleHeader = document.getElementById('bookTitle');
 
     if (!bookParam) {
-        if (contentDiv) contentDiv.innerHTML = "<p style='text-align:center;'>لم يتم تحديد مرجع للقراءة.</p>";
+        if (contentDiv) contentDiv.innerHTML = "<p style='text-align:center;'>لم يتم تحديد مرجع.</p>";
         return;
     }
 
@@ -17,7 +17,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     try {
         const response = await fetch(`data/${cleanId}.json`);
-        if (!response.ok) throw new Error("فشل الجلب");
+        if (!response.ok) throw new Error("خطأ بالملف");
         
         const data = await response.json();
         let title = data.title || cleanId.replace(/-/g, ' ');
@@ -32,50 +32,47 @@ document.addEventListener("DOMContentLoaded", async () => {
             }));
         } catch(e) {}
 
-        setupReaderFavBtn(cleanId);
-        renderContent(data, contentDiv);
+        setupReaderFav(cleanId);
+        setupShareButton(title);
+        renderParsedText(data, contentDiv);
 
     } catch (error) {
-        console.error(error);
         if (contentDiv) {
-            contentDiv.innerHTML = `
-                <div style="text-align: center; padding: 40px;">
-                    <p style="color: #ef4444; font-weight: bold;">عذراً، تعذر جلب محتوى هذا الملف.</p>
-                    <a href="index.html" class="action-chip" style="display:inline-block; margin-top:15px;">العودة للرئيسية</a>
-                </div>
-            `;
+            contentDiv.innerHTML = "<p style='text-align:center; color:#ef4444;'>تعذر تحميل هذا الورد.</p>";
         }
     }
 });
 
-function setupProgressBar() {
+function setupProgressLine() {
     window.addEventListener('scroll', () => {
-        const winScroll = document.body.scrollTop || document.documentElement.scrollTop;
-        const height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
-        const scrolled = (winScroll / height) * 100;
-        const bar = document.getElementById('progressBar');
-        if (bar) bar.style.width = scrolled + '%';
+        let winScroll = document.body.scrollTop || document.documentElement.scrollTop;
+        let height = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+        let scrolled = (winScroll / height) * 100;
+        let line = document.getElementById('progressBar');
+        if (line) line.style.width = scrolled + '%';
     });
 }
 
-function setupReaderFavBtn(cleanId) {
+function setupReaderFav(cleanId) {
     const btn = document.getElementById('favoriteBtn');
     if (!btn) return;
 
-    function refreshState() {
+    function updateState() {
         try {
-            const favs = JSON.parse(localStorage.getItem("libraryFavs")) || [];
+            let favs = JSON.parse(localStorage.getItem("libraryFavs")) || [];
             if (favs.includes(cleanId)) {
-                btn.innerText = "⭐ مفضل عندي";
-                btn.classList.add("is-fav");
+                btn.innerText = "⭐ مفضل";
+                btn.style.background = "#f59e0b";
+                btn.style.color = "#fff";
             } else {
-                btn.innerText = "⭐ أضف للمفضلة";
-                btn.classList.remove("is-fav");
+                btn.innerText = "⭐";
+                btn.style.background = "var(--bg-color)";
+                btn.style.color = "var(--text-main)";
             }
         } catch(e) {}
     }
 
-    refreshState();
+    updateState();
 
     btn.addEventListener('click', () => {
         try {
@@ -86,12 +83,34 @@ function setupReaderFavBtn(cleanId) {
                 favs.push(cleanId);
             }
             localStorage.setItem("libraryFavs", JSON.stringify(favs));
-            refreshState();
+            updateState();
         } catch(e) {}
     });
 }
 
-function renderContent(data, container) {
+function setupShareButton(title) {
+    const shareBtn = document.getElementById('shareBtn');
+    if (!shareBtn) return;
+
+    shareBtn.addEventListener('click', async () => {
+        const shareData = {
+            title: title,
+            text: `من أوراد ودروس الشيخ أحمد البسفي - ${title}:`,
+            url: window.location.href
+        };
+
+        if (navigator.share) {
+            try {
+                await navigator.share(shareData);
+            } catch (err) {}
+        } else {
+            navigator.clipboard.writeText(window.location.href);
+            alert("تم نسخ رابط الدرس إلى الحافظة!");
+        }
+    });
+}
+
+function renderParsedText(data, container) {
     container.innerHTML = "";
     let rawText = "";
 
@@ -125,6 +144,6 @@ function renderContent(data, container) {
 }
 
 function initTheme() {
-    const saved = localStorage.getItem("theme") || "light";
+    let saved = localStorage.getItem("theme") || "light";
     document.body.setAttribute("data-theme", saved);
 }
