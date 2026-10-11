@@ -1,6 +1,8 @@
-// js/reader.js - تنظيف وتنسيق النصوص فقرة فقرة وحفظ التقدم
+// js/reader.js - تنظيف وتنسيق النصوص مع إمكانية تكبير الخط والمفضلة
 document.addEventListener("DOMContentLoaded", async () => {
     initTheme();
+    setupFontSizeControls();
+
     const params = new URLSearchParams(window.location.search);
     let bookParam = params.get('book');
 
@@ -8,7 +10,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const titleHeader = document.getElementById('bookTitle');
 
     if (!bookParam) {
-        contentDiv.innerHTML = "<p style='text-align:center;'>لم يتم تحديد كتاب للعرض.</p>";
+        if (contentDiv) contentDiv.innerHTML = "<p style='text-align:center;'>لم يتم تحديد كتاب للعرض.</p>";
         return;
     }
 
@@ -31,18 +33,86 @@ document.addEventListener("DOMContentLoaded", async () => {
             }));
         } catch(e) {}
 
+        setupReaderFavorite(cleanId);
         formatAndRenderBook(data, contentDiv);
 
     } catch (error) {
         console.error(error);
-        contentDiv.innerHTML = `
-            <div style="text-align: center; padding: 30px;">
-                <p style="color: #e74c3c; font-weight: bold;">عذراً، تعذر تحميل محتوى هذا الكتاب.</p>
-                <a href="index.html" style="display:inline-block; margin-top:15px; color:var(--accent-color); font-weight:bold;">العودة للمكتبة الرئيسية</a>
-            </div>
-        `;
+        if (contentDiv) {
+            contentDiv.innerHTML = `
+                <div style="text-align: center; padding: 30px;">
+                    <p style="color: #e74c3c; font-weight: bold;">عذراً، تعذر تحميل محتوى هذا الكتاب.</p>
+                    <a href="index.html" style="display:inline-block; margin-top:15px; color:var(--accent-color); font-weight:bold;">العودة للمكتبة الرئيسية</a>
+                </div>
+            `;
+        }
     }
 });
+
+function setupReaderFavorite(cleanId) {
+    const favBtn = document.getElementById('favoriteBtn');
+    if (!favBtn) return;
+
+    function updateFavState() {
+        try {
+            const favorites = JSON.parse(localStorage.getItem("libraryFavorites")) || [];
+            if (favorites.includes(cleanId)) {
+                favBtn.innerText = "⭐ مفضل عندي";
+                favBtn.classList.add("is-fav");
+            } else {
+                favBtn.innerText = "⭐ أضف للمفضلة";
+                favBtn.classList.remove("is-fav");
+            }
+        } catch(e) {}
+    }
+
+    updateFavState();
+
+    favBtn.addEventListener('click', () => {
+        try {
+            let favorites = JSON.parse(localStorage.getItem("libraryFavorites")) || [];
+            if (favorites.includes(cleanId)) {
+                favorites = favorites.filter(id => id !== cleanId);
+            } else {
+                favorites.push(cleanId);
+            }
+            localStorage.setItem("libraryFavorites", JSON.stringify(favorites));
+            updateFavState();
+        } catch(e) {}
+    });
+}
+
+function setupFontSizeControls() {
+    let currentFontSize = parseFloat(localStorage.getItem("readerFontSize")) || 1.3;
+    const contentDiv = document.getElementById('bookContent');
+    
+    if (contentDiv) {
+        contentDiv.style.fontSize = `${currentFontSize}rem`;
+    }
+
+    const zoomInBtn = document.getElementById('zoomInBtn');
+    const zoomOutBtn = document.getElementById('zoomOutBtn');
+
+    if (zoomInBtn) {
+        zoomInBtn.addEventListener('click', () => {
+            if (currentFontSize < 2.2) {
+                currentFontSize += 0.1;
+                contentDiv.style.fontSize = `${currentFontSize}rem`;
+                localStorage.setItem("readerFontSize", currentFontSize);
+            }
+        });
+    }
+
+    if (zoomOutBtn) {
+        zoomOutBtn.addEventListener('click', () => {
+            if (currentFontSize > 0.9) {
+                currentFontSize -= 0.1;
+                contentDiv.style.fontSize = `${currentFontSize}rem`;
+                localStorage.setItem("readerFontSize", currentFontSize);
+            }
+        });
+    }
+}
 
 function formatAndRenderBook(data, container) {
     container.innerHTML = "";
