@@ -1,6 +1,4 @@
-let allBooks = [];
-let currentMode = 'all';
-
+// js/app.js - إدارة الفهرس، الأقسام، ومتابعة القراءة
 document.addEventListener("DOMContentLoaded", () => {
     initTheme();
     loadBooksList();
@@ -8,193 +6,141 @@ document.addEventListener("DOMContentLoaded", () => {
     checkContinueReading();
 });
 
+let allBooks = [];
+
 async function loadBooksList() {
     const container = document.getElementById("sectionsContainer");
     if (!container) return;
 
     try {
         const response = await fetch("./data/books-list.json");
-        if (!response.ok) throw new Error("تعذر جلب البيانات");
+        if (!response.ok) throw new Error("تعذر جلب قائمة الكتب");
         
         const data = await response.json();
         allBooks = Array.isArray(data) ? data : (data.books || []);
         
-        updateFavoritesCount();
-        renderView();
+        renderCategorizedBooks(allBooks);
     } catch (error) {
-        console.error(error);
-        container.innerHTML = "<p style='text-align: center; color: #ef4444;'>تعذر تحميل المكتبة، تأكد من الاتصال أو الملفات.</p>";
+        console.error("خطأ:", error);
+        container.innerHTML = "<p style='text-align: center; color: #e74c3c;'>جاري تحميل المكتبة...</p>";
     }
 }
 
-function switchMainView(mode) {
-    currentMode = mode;
-    document.getElementById('tabAll').classList.toggle('active', mode === 'all');
-    document.getElementById('tabFav').classList.toggle('active', mode === 'favorites');
-    renderView();
-}
-
-function renderView() {
-    if (currentMode === 'favorites') {
-        const favs = getFavorites();
-        const favBooks = allBooks.filter(b => {
-            let id = (b.file || b.id || "").toString().replace(/\.json$/i, '').trim();
-            return favs.includes(id);
-        });
-        renderCategorized(favBooks);
-    } else {
-        renderCategorized(allBooks);
-    }
-}
-
-function renderCategorized(books) {
+function renderCategorizedBooks(books) {
     const container = document.getElementById("sectionsContainer");
     if (!container) return;
     container.innerHTML = "";
 
     if (!books || books.length === 0) {
-        container.innerHTML = "<p style='text-align: center; padding: 40px; color: var(--text-secondary);'>لا توجد عناصر مطابقة للعرض.</p>";
+        container.innerHTML = "<p style='text-align: center; padding: 30px; color: var(--text-secondary);'>لا توجد نتائج مطابقة للبحث.</p>";
         return;
     }
 
     const categories = {};
-    books.forEach(b => {
-        const cat = (b && b.category) ? b.category.trim() : 'عام';
+    books.forEach(book => {
+        const cat = (book && book.category) ? book.category.trim() : 'عام';
         if (!categories[cat]) categories[cat] = [];
-        categories[cat].push(b);
+        categories[cat].push(book);
     });
 
-    const iconMap = {
-        'المصابيح والأذكار': '📿',
-        'دروس ومحاضرات الصلاة': '🕌',
-        'دروس ومحاضرات الصيام': '🌙',
-        'العبادات والفقه': '📖',
-        'أسماء الله الحسنى': '✨',
-        'الشخصيات الإسلامية والتراجم': '📜'
-    };
+    Object.keys(categories).forEach((catName) => {
+        const catGroup = document.createElement("section");
+        catGroup.className = "category-group";
 
-    Object.keys(categories).forEach(catName => {
-        const section = document.createElement("section");
-        section.className = "category-group";
-        const icon = iconMap[catName] || '📚';
+        const iconMap = {
+            'المصابيح والأذكار': '📿',
+            'دروس ومحاضرات الصلاة': '🕌',
+            'دروس ومحاضرات الصيام': '🌙',
+            'العبادات والفقه': '📖',
+            'أسماء الله الحسنى': '✨',
+            'الشخصيات الإسلامية والتراجم': '📜'
+        };
 
-        section.innerHTML = `
+        const catIcon = iconMap[catName] || '📚';
+
+        catGroup.innerHTML = `
             <div class="category-header">
-                <h2><span>${icon}</span> ${catName}</h2>
-                <span class="count-pill">${categories[catName].length} عناصر</span>
+                <h2><span>${catIcon}</span> ${catName}</h2>
+                <span class="count-badge">${categories[catName].length} عنصراً</span>
             </div>
             <div class="books-grid">
-                ${categories[catName].map(b => buildCard(b)).join('')}
+                ${categories[catName].map(book => createBookCardHTML(book)).join('')}
             </div>
         `;
-        container.appendChild(section);
+
+        container.appendChild(catGroup);
     });
 }
 
-function buildCard(book) {
+function createBookCardHTML(book) {
     if (!book) return "";
-    let fileId = (book.file || book.id || "").toString().replace(/\.json$/i, '').trim();
+    let fileName = (book.file || book.id || "").toString().replace(/\.json$/i, '').trim();
     let title = book.title || "عنوان غير مسمى";
     let author = book.author || 'الشيخ أحمد البسفي';
-    let desc = book.description ? book.description.substring(0, 80) + '...' : 'مرجع إيماني متميز...';
-    
-    const favs = getFavorites();
-    const isFav = favs.includes(fileId);
+    let desc = book.description ? book.description.substring(0, 85) + '...' : 'مرجع إيماني متميز...';
 
     return `
-        <div class="book-card">
+        <a href="reader.html?book=${encodeURIComponent(fileName)}" class="book-card">
             <div class="card-body">
-                <div class="card-top">
-                    <a href="reader.html?book=${encodeURIComponent(fileId)}" style="text-decoration:none; color:inherit; flex-grow:1;">
-                        <h3>${title}</h3>
-                    </a>
-                    <button class="fav-interactive-btn" onclick="toggleFav('${fileId}', event)" title="المفضلة">
-                        ${isFav ? '⭐' : '☆'}
-                    </button>
-                </div>
+                <h3>${title}</h3>
                 <p class="book-author">${author}</p>
                 <p class="book-desc">${desc}</p>
             </div>
             <div class="card-footer">
-                <a href="reader.html?book=${encodeURIComponent(fileId)}" class="read-link">قراءة الورد ➔</a>
+                <span class="read-action">اقرأ الآن ➔</span>
             </div>
-        </div>
+        </a>
     `;
 }
 
-function getFavorites() {
-    try {
-        return JSON.parse(localStorage.getItem("libraryFavs")) || [];
-    } catch(e) { return []; }
-}
-
-function toggleFav(id, event) {
-    if (event) event.stopPropagation();
-    let favs = getFavorites();
-    if (favs.includes(id)) {
-        favs = favs.filter(i => i !== id);
-    } else {
-        favs.push(id);
-    }
-    localStorage.setItem("libraryFavs", JSON.stringify(favs));
-    updateFavoritesCount();
-    renderView();
-}
-
-function updateFavoritesCount() {
-    const el = document.getElementById("favCount");
-    if (el) el.innerText = getFavorites().length;
-}
-
 function setupSearch() {
-    const input = document.getElementById("searchInput");
-    if (!input) return;
+    const searchInput = document.getElementById("searchInput");
+    if (!searchInput) return;
 
-    input.addEventListener("input", (e) => {
-        const q = e.target.value.trim().toLowerCase();
-        if (!q) {
-            renderView();
+    searchInput.addEventListener("input", (e) => {
+        const query = e.target.value.trim().toLowerCase();
+        if (!query) {
+            renderCategorizedBooks(allBooks);
             return;
         }
 
-        const list = currentMode === 'favorites' 
-            ? allBooks.filter(b => getFavorites().includes((b.file || b.id || "").toString().replace(/\.json$/i, '').trim()))
-            : allBooks;
-
-        const filtered = list.filter(b => {
-            if (!b) return false;
-            return (b.title || "").toLowerCase().includes(q) ||
-                   (b.description || "").toLowerCase().includes(q) ||
-                   (b.category || "").toLowerCase().includes(q);
+        const filtered = allBooks.filter(book => {
+            if (!book) return false;
+            const t = (book.title || "").toLowerCase();
+            const d = (book.description || "").toLowerCase();
+            const c = (book.category || "").toLowerCase();
+            return t.includes(query) || d.includes(query) || c.includes(query);
         });
 
-        renderCategorized(filtered);
+        renderCategorizedBooks(filtered);
     });
 }
 
 function checkContinueReading() {
     try {
-        const last = JSON.parse(localStorage.getItem("lastBookRead"));
-        const sec = document.getElementById("continueReadingSection");
-        if (last && last.id && sec) {
-            document.getElementById("continueBookTitle").innerText = last.title || "";
-            document.getElementById("continueBookBtn").href = `reader.html?book=${encodeURIComponent(last.id)}`;
-            sec.style.display = "flex";
+        const lastBook = JSON.parse(localStorage.getItem("lastReadBook"));
+        const section = document.getElementById("continueReadingSection");
+        if (lastBook && lastBook.id && section) {
+            document.getElementById("continueBookTitle").innerText = lastBook.title || "";
+            document.getElementById("continueBookBtn").href = `reader.html?book=${encodeURIComponent(lastBook.id)}`;
+            section.style.display = "block";
         }
-    } catch(e) {}
+    } catch(e) {
+        console.error(e);
+    }
 }
 
 function initTheme() {
-    const toggle = document.getElementById("themeToggle");
-    const saved = localStorage.getItem("theme") || "light";
-    document.body.setAttribute("data-theme", saved);
+    const themeToggle = document.getElementById("themeToggle");
+    const savedTheme = localStorage.getItem("theme") || "light";
+    document.body.setAttribute("data-theme", savedTheme);
 
-    if (toggle) {
-        toggle.addEventListener("click", () => {
-            const curr = document.body.getAttribute("data-theme");
-            const next = curr === "dark" ? "light" : "dark";
-            document.body.setAttribute("data-theme", next);
-            localStorage.setItem("theme", next);
+    if (themeToggle) {
+        themeToggle.addEventListener("click", () => {
+            const currentTheme = document.body.getAttribute("data-theme");
+            const newTheme = currentTheme === "dark" ? "light" : "dark";
+            document.body.setAttribute("data-theme", newTheme);
+            localStorage.setItem("theme", newTheme);
         });
     }
 }
