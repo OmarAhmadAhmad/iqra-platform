@@ -3,29 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="pageTitle">قراءة الورد - مكتبة الطريقة الجامعة</title>
+    <title id="pageTitle">قراءة الكتاب - مكتبة الطريقة الجامعة</title>
     <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
-<body class="reader-body">
+<body>
 
-    <!-- شريط التقدم النوراني في القراءة -->
-    <div id="progressBar" class="reading-progress-line"></div>
-
-    <!-- هيدر القراءة العائم -->
-    <header class="reader-floating-header">
-        <a href="index.html" class="float-back-btn">← المكتبة</a>
-        <h2 id="bookTitle" class="float-title">جاري التحميل...</h2>
-        <div class="header-actions-group">
-            <button id="favoriteBtn" class="float-fav-btn" title="المفضلة">⭐</button>
-            <button id="shareBtn" class="float-share-btn" title="مشاركة النص">📲</button>
-        </div>
-    </header>
-
-    <main class="reader-viewport">
-        <div class="reader-paper-sheet">
-            <div id="bookContent" class="book-text-content">
-                <p style="text-align: center; color: var(--text-secondary); padding: 50px;">جاري إعداد محتوى الورد...</p>
+    <main class="main-container" style="padding-top: 20px;">
+        <div class="reader-container">
+            <div class="reader-header">
+                <h2 id="bookTitle">جاري التحميل...</h2>
+                <a href="index.html" class="back-link">← العودة للمكتبة</a>
+            </div>
+            
+            <div id="bookContent" class="book-content">
+                <p style="text-align: center; color: var(--text-secondary);">جاري تحميل محتوى الكتاب...</p>
             </div>
         </div>
     </main>
