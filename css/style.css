@@ -1,26 +1,27 @@
-@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;600;700;800;900&display=swap');
+/* css/style.css - التصميم الخبير المتكامل للموبايل والشاشات */
+
+@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;600;700&display=swap');
 
 :root {
-    --bg-color: #f6f8f7;
+    --bg-color: #fcfbfa;
     --card-bg: #ffffff;
-    --text-main: #0f172a;
-    --text-secondary: #64748b;
-    --accent-color: #0d5c53;
-    --accent-gradient: linear-gradient(135deg, #0d5c53, #147b70);
-    --border-color: #e2e8f0;
-    --shadow: 0 10px 25px -5px rgba(13, 92, 83, 0.08);
-    --radius: 18px;
+    --text-main: #2b2b2b;
+    --text-secondary: #666666;
+    --accent-color: #1b4d3e;
+    --accent-hover: #12352a;
+    --border-color: #e6e4df;
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 [data-theme="dark"] {
-    --bg-color: #0b0f19;
-    --card-bg: #131c2e;
-    --text-main: #f8fafc;
-    --text-secondary: #94a3b8;
-    --accent-color: #2dd4bf;
-    --accent-gradient: linear-gradient(135deg, #0f766e, #14b8a6);
-    --border-color: #1e293b;
-    --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4);
+    --bg-color: #141817;
+    --card-bg: #1c2220;
+    --text-main: #e2dfdb;
+    --text-secondary: #a39e93;
+    --accent-color: #4db6ac;
+    --accent-hover: #26a69a;
+    --border-color: #2a3330;
+    --shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 * {
@@ -29,369 +30,353 @@
     padding: 0;
 }
 
-body.app-body {
+body {
     background-color: var(--bg-color);
     color: var(--text-main);
     font-family: 'Cairo', sans-serif;
+    line-height: 1.9;
     direction: rtl;
-    padding-bottom: 90px;
+    padding: 15px;
 }
 
-/* الهيدر العلوي */
-.app-top-nav {
+.app-header {
+    text-align: center;
+    margin-bottom: 25px;
+    padding: 25px 15px;
     background: var(--card-bg);
-    border-bottom: 1px solid var(--border-color);
-    padding: 16px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    position: sticky;
-    top: 0;
-    z-index: 100;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    max-width: 1000px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
-.nav-brand {
-    display: flex;
-    align-items: center;
-    gap: 12px;
+.badge-offline {
+    display: inline-block;
+    background: rgba(27, 77, 62, 0.1);
+    color: var(--accent-color);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-bottom: 12px;
 }
 
-.brand-icon {
-    font-size: 1.5rem;
-    background: rgba(13, 92, 83, 0.1);
-    padding: 8px;
-    border-radius: 12px;
+.app-header h1 {
+    color: var(--accent-color);
+    font-size: 1.8rem;
+    margin-bottom: 5px;
+    font-weight: 700;
 }
 
-.nav-brand h1 {
+.subtitle {
     font-size: 1.15rem;
     color: var(--accent-color);
-    font-weight: 800;
+    font-weight: 700;
+    margin-bottom: 12px;
 }
 
-.nav-brand p {
-    font-size: 0.75rem;
+.disclaimer-box {
+    background: rgba(27, 77, 62, 0.05);
+    border-right: 3px solid var(--accent-color);
+    padding: 10px 15px;
+    border-radius: 6px;
+    max-width: 650px;
+    margin: 10px auto 15px auto;
+    font-size: 0.85rem;
     color: var(--text-secondary);
+    line-height: 1.6;
+    text-align: right;
 }
 
-.theme-circle-btn {
-    background: var(--bg-color);
-    border: 1px solid var(--border-color);
-    width: 38px;
-    height: 38px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 1rem;
+.controls-container {
     display: flex;
-    align-items: center;
     justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin: 20px 0 10px 0;
+    flex-wrap: wrap;
 }
 
-.main-viewport {
-    max-width: 800px;
-    margin: 0 auto;
-    padding: 20px 16px;
-}
-
-.search-bar-modern {
+.search-box {
     position: relative;
-    margin-bottom: 20px;
+    width: 380px;
+    max-width: 100%;
 }
 
-.search-bar-modern input {
+.search-box input {
     width: 100%;
-    padding: 14px 20px 14px 48px;
-    border-radius: 14px;
+    padding: 11px 15px 11px 40px;
+    border-radius: 10px;
     border: 1px solid var(--border-color);
-    background: var(--card-bg);
+    background: var(--bg-color);
     color: var(--text-main);
-    font-size: 0.92rem;
+    font-size: 0.95rem;
     outline: none;
-    box-shadow: var(--shadow);
-    transition: border-color 0.2s;
+    transition: all 0.2s;
 }
 
-.search-bar-modern input:focus {
+.search-box input:focus {
     border-color: var(--accent-color);
+    box-shadow: 0 0 0 3px rgba(27, 77, 62, 0.1);
 }
 
-.search-bar-modern .search-icon {
+.search-icon {
     position: absolute;
-    left: 18px;
+    left: 15px;
     top: 50%;
     transform: translateY(-50%);
     opacity: 0.5;
 }
 
-/* كارت الورد العائم */
-.hero-continue-card {
-    background: var(--accent-gradient);
+button.theme-btn {
+    padding: 11px 18px;
+    border: none;
+    background: var(--accent-color);
     color: white;
-    border-radius: var(--radius);
-    padding: 20px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+}
+
+.main-container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.continue-section {
+    margin-bottom: 25px;
+}
+
+.continue-card {
+    background: var(--accent-color);
+    color: white;
+    border-radius: 14px;
+    padding: 18px 22px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 25px;
-    box-shadow: var(--shadow);
+    box-shadow: 0 4px 12px rgba(27, 77, 62, 0.25);
+    flex-wrap: wrap;
+    gap: 12px;
 }
 
-.badge-reading {
-    font-size: 0.75rem;
-    background: rgba(255,255,255,0.2);
-    padding: 3px 10px;
-    border-radius: 20px;
-    display: inline-block;
-    margin-bottom: 6px;
+.continue-tag {
+    font-size: 0.8rem;
+    opacity: 0.9;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.continue-card h4 {
+    font-size: 1.1rem;
     font-weight: 700;
 }
 
-.hero-continue-card h3 {
-    font-size: 1.1rem;
-    font-weight: 800;
-}
-
-.hero-action-btn {
+.continue-btn {
     background: white;
     color: var(--accent-color);
     text-decoration: none;
-    padding: 9px 16px;
-    border-radius: 10px;
-    font-weight: 800;
-    font-size: 0.85rem;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    transition: transform 0.2s;
 }
 
-/* الأقسام والبطاقات الشبكية */
-.library-sections-space {
+.continue-btn:hover {
+    transform: scale(1.03);
+}
+
+.sections-container {
     display: flex;
     flex-direction: column;
-    gap: 25px;
+    gap: 30px;
 }
 
-.category-block {
+.category-group {
     background: var(--card-bg);
     border: 1px solid var(--border-color);
-    border-radius: var(--radius);
-    padding: 20px;
+    border-radius: 16px;
+    padding: 22px;
     box-shadow: var(--shadow);
 }
 
-.category-title-bar {
+.category-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 16px;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 10px;
+    border-bottom: 2px solid var(--border-color);
+    padding-bottom: 12px;
+    margin-bottom: 20px;
 }
 
-.category-title-bar h2 {
-    font-size: 1.18rem;
+.category-header h2 {
+    font-size: 1.3rem;
     color: var(--accent-color);
-    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
 }
 
-.books-masonry-grid {
+.count-badge {
+    background: rgba(27, 77, 62, 0.08);
+    color: var(--accent-color);
+    font-size: 0.8rem;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-weight: bold;
+}
+
+.books-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-    gap: 15px;
+    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+    gap: 18px;
 }
 
-.book-item-card {
+.book-card {
     background: var(--bg-color);
     border: 1px solid var(--border-color);
-    border-radius: 14px;
-    padding: 16px;
+    border-radius: 12px;
+    padding: 18px;
+    text-decoration: none;
+    color: inherit;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    transition: transform 0.2s, border-color 0.2s;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
-.book-item-card:hover {
-    transform: translateY(-2px);
+.book-card:hover {
+    transform: translateY(-3px);
     border-color: var(--accent-color);
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
 }
 
-.item-top-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    margin-bottom: 8px;
-}
-
-.book-item-card h3 {
-    font-size: 0.98rem;
-    color: var(--text-main);
-    font-weight: 800;
+.book-card h3 {
+    color: var(--accent-color);
+    font-size: 1.1rem;
+    margin-bottom: 6px;
+    font-weight: 700;
     line-height: 1.4;
 }
 
-.star-btn-pure {
-    background: none;
-    border: none;
-    cursor: pointer;
-    font-size: 1.2rem;
+.book-author {
+    font-size: 0.82rem;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
 }
 
-.book-item-card p {
-    font-size: 0.8rem;
+.book-desc {
+    font-size: 0.85rem;
     color: var(--text-secondary);
     line-height: 1.5;
-    margin-bottom: 14px;
+    margin-bottom: 12px;
 }
 
-.read-link-btn {
+.read-action {
     color: var(--accent-color);
-    text-decoration: none;
-    font-weight: 800;
-    font-size: 0.85rem;
-}
-
-/* Bottom Nav */
-.bottom-nav-bar {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    background: var(--card-bg);
-    border-top: 1px solid var(--border-color);
-    display: flex;
-    justify-content: space-around;
-    padding: 10px 0;
-    z-index: 1000;
-}
-
-.b-nav-item {
-    background: none;
-    border: none;
-    color: var(--text-secondary);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 4px;
-    font-family: 'Cairo', sans-serif;
-    font-size: 0.78rem;
     font-weight: 700;
-    cursor: pointer;
-    padding: 6px 20px;
-    border-radius: 12px;
+    font-size: 0.88rem;
 }
 
-.b-nav-item.active {
-    color: var(--accent-color);
-    background: rgba(13, 92, 83, 0.08);
-}
-
-/* القارئ الفاخر */
-body.reader-body {
-    background-color: var(--bg-color);
-    font-family: 'Amiri', serif;
-}
-
-.reading-progress-line {
-    position: fixed;
-    top: 0;
-    right: 0;
-    height: 4px;
-    background: var(--accent-color);
-    width: 0%;
-    z-index: 2000;
-}
-
-.reader-floating-header {
+.reader-container {
     background: var(--card-bg);
-    border-bottom: 1px solid var(--border-color);
-    padding: 12px 16px;
+    padding: 35px 25px;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+}
+
+.reader-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    position: sticky;
-    top: 0;
-    z-index: 1000;
+    margin-bottom: 30px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 15px;
+    flex-wrap: wrap;
+    gap: 12px;
 }
 
-.header-actions-group {
-    display: flex;
-    gap: 8px;
-}
-
-.float-back-btn, .float-fav-btn, .float-share-btn {
-    background: var(--bg-color);
-    border: 1px solid var(--border-color);
-    color: var(--text-main);
-    padding: 6px 12px;
-    border-radius: 10px;
-    font-family: 'Cairo', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 700;
-    cursor: pointer;
+.back-link {
     text-decoration: none;
-}
-
-.float-title {
-    font-family: 'Cairo', sans-serif;
-    font-size: 0.98rem;
     color: var(--accent-color);
-    font-weight: 800;
-    text-align: center;
-    max-width: 55%;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.reader-viewport {
-    max-width: 750px;
-    margin: 20px auto;
-    padding: 0 15px;
-}
-
-.reader-paper-sheet {
-    background: var(--card-bg);
+    font-weight: 700;
+    font-size: 0.9rem;
+    background: var(--bg-color);
+    padding: 7px 14px;
+    border-radius: 8px;
     border: 1px solid var(--border-color);
-    border-radius: var(--radius);
-    padding: 35px 28px;
-    box-shadow: var(--shadow);
 }
 
-.book-text-content {
-    font-size: 1.35rem;
+.reader-header h2 {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--accent-color);
+}
+
+.book-content {
+    font-family: 'Amiri', serif;
+    font-size: 1.3rem;
     line-height: 2.3;
     color: var(--text-main);
     text-align: justify;
 }
 
-.book-text-content h3 {
+.book-content h3 {
     font-family: 'Cairo', sans-serif;
     color: var(--accent-color);
-    font-size: 1.28rem;
+    font-size: 1.35rem;
     margin-top: 35px;
-    margin-bottom: 15px;
-    font-weight: 800;
+    margin-bottom: 12px;
+    font-weight: 700;
     border-right: 4px solid var(--accent-color);
     padding-right: 12px;
 }
 
-.book-text-content p {
-    margin-bottom: 22px;
+.book-content p {
+    margin-bottom: 20px;
     text-indent: 25px;
 }
 
-.book-text-content .highlight-box {
+.book-content .highlight-box {
     background: var(--bg-color);
     border: 1px solid var(--border-color);
-    padding: 12px;
-    border-radius: 10px;
-    margin: 20px 0;
-    text-align: center;
-    font-family: 'Cairo', sans-serif;
-    font-size: 1.05rem;
-    font-weight: 800;
+    padding: 12px 18px;
+    border-radius: 8px;
+    margin: 18px 0;
+    font-weight: bold;
     color: var(--accent-color);
+    font-family: 'Cairo', sans-serif;
+    text-align: center;
+    font-size: 1.1rem;
+}
+
+.app-footer {
+    text-align: center;
+    margin-top: 40px;
+    padding: 20px;
+    color: var(--text-secondary);
+    border-top: 1px solid var(--border-color);
+    font-size: 0.88rem;
 }
 
 @media (max-width: 600px) {
-    .reader-paper-sheet { padding: 20px 15px; }
-    .book-text-content { font-size: 1.18rem; line-height: 2.1; }
+    body {
+        padding: 8px;
+    }
+    .reader-container {
+        padding: 20px 15px;
+    }
+    .book-content {
+        font-size: 1.15rem;
+        line-height: 2.1;
+    }
+    .app-header h1 {
+        font-size: 1.5rem;
+    }
 }
