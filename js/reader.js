@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 });
 
-// دالة تشغيل وعرض ملفات الـ PDF والأوراد التفاعلية
+// دالة تشغيل وعرض ملفات الـ PDF عبر عارض المتصفح المدمج لمنع تقطيع وحراف الحروف العربية
 function initPdfViewer(pdfUrl, bookTitleText, pdfFileName) {
     const wirdsNavBar = document.getElementById('wirdsNavBar');
     const contentDiv = document.getElementById('bookContent');
@@ -90,126 +90,39 @@ function initPdfViewer(pdfUrl, bookTitleText, pdfFileName) {
         wirdsNavBar.style.display = 'flex';
         if (pdfFileName.includes('فيض')) {
             wirdsNavBar.innerHTML = `
-                <button class="wird-btn" onclick="goToWird(1)">المقدمة</button>
-                <button class="wird-btn" onclick="goToWird(10)">ورد الصباح</button>
-                <button class="wird-btn" onclick="goToWird(25)">الصلوات الإبراهيمية</button>
-                <button class="wird-btn" onclick="goToWird(40)">حزب الجمعة</button>
-                <button class="wird-btn" onclick="goToWird(60)">الخاتمة</button>
+                <button class="wird-btn" onclick="goToPdfPage(1)" style="padding: 6px 12px; background: var(--accent-color); color: #fff; border: none; border-radius: 6px; cursor: pointer;">المقدمة</button>
+                <button class="wird-btn" onclick="goToPdfPage(10)" style="padding: 6px 12px; background: var(--accent-color); color: #fff; border: none; border-radius: 6px; cursor: pointer;">ورد الصباح</button>
+                <button class="wird-btn" onclick="goToPdfPage(25)" style="padding: 6px 12px; background: var(--accent-color); color: #fff; border: none; border-radius: 6px; cursor: pointer;">الصلوات الإبراهيمية</button>
+                <button class="wird-btn" onclick="goToPdfPage(40)" style="padding: 6px 12px; background: var(--accent-color); color: #fff; border: none; border-radius: 6px; cursor: pointer;">حزب الجمعة</button>
+                <button class="wird-btn" onclick="goToPdfPage(60)" style="padding: 6px 12px; background: var(--accent-color); color: #fff; border: none; border-radius: 6px; cursor: pointer;">الخاتمة</button>
             `;
         } else {
             wirdsNavBar.innerHTML = `
-                <button class="wird-btn" onclick="goToWird(14)">الإثنين (حزب 1)</button>
-                <button class="wird-btn" onclick="goToWird(48)">الثلاثاء (حزب 2)</button>
-                <button class="wird-btn" onclick="goToWird(82)">الأربعاء (حزب 3)</button>
-                <button class="wird-btn" onclick="goToWird(116)">الخميس (حزب 4)</button>
-                <button class="wird-btn" onclick="goToWird(150)">الجمعة (حزب 5)</button>
-                <button class="wird-btn" onclick="goToWird(184)">السبت (حزب 6)</button>
-                <button class="wird-btn" onclick="goToWird(218)">الأحد (حزب 7)</button>
+                <button class="wird-btn" onclick="goToPdfPage(14)" style="padding: 6px 12px; background: var(--accent-color); color: #fff; border: none; border-radius: 6px; cursor: pointer;">الإثنين (حزب 1)</button>
+                <button class="wird-btn" onclick="goToPdfPage(48)" style="padding: 6px 12px; background: var(--accent-color); color: #fff; border: none; border-radius: 6px; cursor: pointer;">الثلاثاء (حزب 2)</button>
+                <button class="wird-btn" onclick="goToPdfPage(82)" style="padding: 6px 12px; background: var(--accent-color); color: #fff; border: none; border-radius: 6px; cursor: pointer;">الأربعاء (حزب 3)</button>
+                <button class="wird-btn" onclick="goToPdfPage(116)" style="padding: 6px 12px; background: var(--accent-color); color: #fff; border: none; border-radius: 6px; cursor: pointer;">الخميس (حزب 4)</button>
+                <button class="wird-btn" onclick="goToPdfPage(150)" style="padding: 6px 12px; background: var(--accent-color); color: #fff; border: none; border-radius: 6px; cursor: pointer;">الجمعة (حزب 5)</button>
+                <button class="wird-btn" onclick="goToPdfPage(184)" style="padding: 6px 12px; background: var(--accent-color); color: #fff; border: none; border-radius: 6px; cursor: pointer;">السبت (حزب 6)</button>
+                <button class="wird-btn" onclick="goToPdfPage(218)" style="padding: 6px 12px; background: var(--accent-color); color: #fff; border: none; border-radius: 6px; cursor: pointer;">الأحد (حزب 7)</button>
             `;
         }
     }
 
-    let pdfDoc = null,
-        pageNum = 1,
-        pageRendering = false,
-        pageNumPending = null,
-        scale = 1.3;
-
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    
-    contentDiv.innerHTML = '';
-    
-    const viewerContainer = document.createElement('div');
-    viewerContainer.id = 'pdf-viewer-container';
-    viewerContainer.style.cssText = "display: flex; justify-content: center; overflow-x: auto; width: 100%;";
-    viewerContainer.appendChild(canvas);
-    contentDiv.appendChild(viewerContainer);
-
-    const controlsDiv = document.createElement('div');
-    controlsDiv.className = 'pdf-controls';
-    controlsDiv.style.cssText = "margin-top: 20px; display: flex; gap: 10px; align-items: center; justify-content: center; flex-wrap: wrap;";
-    controlsDiv.innerHTML = `
-        <button class="control-btn" id="prev-page" style="padding: 8px 14px; background: var(--accent-color); color: #fff; border: none; border-radius: 6px; cursor: pointer;">الصفحة السابقة</button>
-        <button class="control-btn" id="zoom-out" style="padding: 8px 12px; background: var(--accent-color); color: #fff; border: none; border-radius: 6px; cursor: pointer;">- تصبير</button>
-        <span style="font-weight: bold;">صفحة <span id="page-num">1</span> من <span id="page-count">1</span></span>
-        <button class="control-btn" id="zoom-in" style="padding: 8px 12px; background: var(--accent-color); color: #fff; border: none; border-radius: 6px; cursor: pointer;">+ تكبير</button>
-        <button class="control-btn" id="next-page" style="padding: 8px 14px; background: var(--accent-color); color: #fff; border: none; border-radius: 6px; cursor: pointer;">الصفحة التالية</button>
+    // عرض الـ PDF بجودة أصلية كاملة ومنع تقطيع الحروف تماماً عبر عنصر الـ iframe
+    contentDiv.innerHTML = `
+        <div style="width: 100%; height: 80vh; position: relative;">
+            <iframe id="pdfFrame" src="${pdfUrl}#toolbar=1&view=FitH" style="width: 100%; height: 100%; border: none; border-radius: 8px;" title="${bookTitleText}"></iframe>
+        </div>
     `;
-    contentDiv.appendChild(controlsDiv);
 
-    pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
-
-    function renderPage(num) {
-        pageRendering = true;
-        pdfDoc.getPage(num).then(function(page) {
-            let viewport = page.getViewport({ scale: scale });
-            canvas.height = viewport.height;
-            canvas.width = viewport.width;
-
-            let renderContext = { canvasContext: ctx, viewport: viewport };
-            let renderTask = page.render(renderContext);
-
-            renderTask.promise.then(function() {
-                pageRendering = false;
-                if (pageNumPending !== null) {
-                    renderPage(pageNumPending);
-                    pageNumPending = null;
-                }
-            });
-        });
-
-        document.getElementById('page-num').textContent = num;
-    }
-
-    function queueRenderPage(num) {
-        if (pageRendering) {
-            pageNumPending = num;
-        } else {
-            renderPage(num);
-        }
-    }
-
-    document.getElementById('prev-page').addEventListener('click', () => {
-        if (pageNum <= 1) return;
-        pageNum--;
-        queueRenderPage(pageNum);
-    });
-
-    document.getElementById('next-page').addEventListener('click', () => {
-        if (pageNum >= pdfDoc.numPages) return;
-        pageNum++;
-        queueRenderPage(pageNum);
-    });
-
-    document.getElementById('zoom-in').addEventListener('click', () => {
-        scale += 0.2;
-        queueRenderPage(pageNum);
-    });
-
-    document.getElementById('zoom-out').addEventListener('click', () => {
-        if (scale > 0.6) {
-            scale -= 0.2;
-            queueRenderPage(pageNum);
-        }
-    });
-
-    window.goToWird = function(targetPage) {
-        if (pdfDoc && targetPage <= pdfDoc.numPages) {
-            pageNum = targetPage;
-            queueRenderPage(pageNum);
-            viewerContainer.scrollTo({ top: 0, behavior: 'smooth' });
+    // دالة الانتقال للأوراد والصفحات داخل الـ Iframe
+    window.goToPdfPage = function(pageNum) {
+        const iframe = document.getElementById('pdfFrame');
+        if (iframe) {
+            iframe.src = `${pdfUrl}#page=${pageNum}&toolbar=1&view=FitH`;
         }
     };
-
-    pdfjsLib.getDocument(pdfUrl).promise.then(function(pdfDoc_) {
-        pdfDoc = pdfDoc_;
-        document.getElementById('page-count').textContent = pdfDoc.numPages;
-        renderPage(pageNum);
-    }).catch(function(error) {
-        console.error('خطأ في تحميل الـ PDF:', error);
-        contentDiv.innerHTML = `<p style="text-align: center; color: #b22222; padding: 20px;">تعذر تحميل الملف. تأكد من وجود ملف الـ PDF محلياً داخل مجلد data/ بالاسم الصحيح.</p>`;
-    });
 }
 
 // دالة تنسيق الكتب النصية (JSON) الفقرة تلو الأخرى
