@@ -6,6 +6,14 @@ document.addEventListener("DOMContentLoaded", () => {
     checkContinueReading();
 });
 
+// حل مشكلة العودة للخلف بدون تحديث (bfcache) وطهور رسالة التحميل المعلقة
+window.addEventListener("pageshow", (event) => {
+    if (event.persisted) {
+        loadBooksList();
+        checkContinueReading();
+    }
+});
+
 let allBooks = [];
 
 async function loadBooksList() {
