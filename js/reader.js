@@ -1,23 +1,32 @@
-// js/reader.js - العارض المحترف للأوراد والـ PDF المحلي
 document.addEventListener("DOMContentLoaded", () => {
     const urlParams = new URLSearchParams(window.location.search);
-    const bookFile = decodeURIComponent(urlParams.get('file') || urlParams.get('book') || '');
+    let bookFile = urlParams.get('file') || urlParams.get('book') || '';
+    
+    // فك التشفير إذا كانت الرموز بالعربية
+    try {
+        bookFile = decodeURIComponent(bookFile);
+    } catch(e) {}
 
-    // التحقق هل الملف PDF أم JSON نصي
+    // معالجة الأخطاء الذكية: إذا فتح المستخدم الصفحة بدون تحديد كتاب، نعرض الكتاب الأول تلقائياً
+    if (!bookFile || bookFile === 'null' || bookFile === 'undefined') {
+        console.warn("لم يتم تحديد كتاب، فتح كتاب التمهيد التلقائي.");
+        bookFile = 'book-1.json';
+    }
+
     const isPdf = bookFile.endsWith('.pdf') || bookFile.includes('دلائل') || bookFile.includes('فيض');
 
     if (isPdf) {
         let pdfPath = 'data/' + bookFile;
-        // ضمان الاسم الافتراضي إذا لزم الأمر
         if (!bookFile.endsWith('.pdf')) {
             if (bookFile.includes('فيض')) pdfPath = 'data/فيض المنان.pdf';
             else pdfPath = 'data/دلائل الخيرات.pdf';
         }
         initPdfViewer(pdfPath, bookFile);
     } else {
-        // تشغيل الكتب النصية العادية JSON
-        initJsonReader(bookFile || 'book-1.json');
+        initJsonReader(bookFile);
     }
+
+    setupFullscreen();
 });
 
 function initPdfViewer(pdfUrl, bookFile) {
@@ -29,11 +38,11 @@ function initPdfViewer(pdfUrl, bookFile) {
         if (wirdsNavBar) {
             wirdsNavBar.style.display = 'flex';
             wirdsNavBar.innerHTML = `
-                <button class="wird-btn" onclick="goToWird(1)">مقدمة كتاب فيض المنان</button>
-                <button class="wird-btn" onclick="goToWird(10)">ورد الصباح والاستفتاح</button>
-                <button class="wird-btn" onclick="goToWird(25)">ورد الصلوات الإبراهيمية</button>
-                <button class="wird-btn" onclick="goToWird(40)">حزب الجمعة المباركة</button>
-                <button class="wird-btn" onclick="goToWird(60)">خاتمة الأوراد والأدعية</button>
+                <button class="wird-btn" onclick="goToWird(1)">المقدمة</button>
+                <button class="wird-btn" onclick="goToWird(10)">ورد الصباح</button>
+                <button class="wird-btn" onclick="goToWird(25)">الصلوات الإبراهيمية</button>
+                <button class="wird-btn" onclick="goToWird(40)">حزب الجمعة</button>
+                <button class="wird-btn" onclick="goToWird(60)">الخاتمة</button>
             `;
         }
     } else {
@@ -41,13 +50,13 @@ function initPdfViewer(pdfUrl, bookFile) {
         if (wirdsNavBar) {
             wirdsNavBar.style.display = 'flex';
             wirdsNavBar.innerHTML = `
-                <button class="wird-btn" onclick="goToWird(14)">ورد الإثنين (الحزب 1)</button>
-                <button class="wird-btn" onclick="goToWird(48)">ورد الثلاثاء (الحزب 2)</button>
-                <button class="wird-btn" onclick="goToWird(82)">ورد الأربعاء (الحزب 3)</button>
-                <button class="wird-btn" onclick="goToWird(116)">ورد الخميس (الحزب 4)</button>
-                <button class="wird-btn" onclick="goToWird(150)">ورد الجمعة (الحزب 5)</button>
-                <button class="wird-btn" onclick="goToWird(184)">ورد السبت (الحزب 6)</button>
-                <button class="wird-btn" onclick="goToWird(218)">ورد الأحد (الحزب 7)</button>
+                <button class="wird-btn" onclick="goToWird(14)">الإثنين (حزب 1)</button>
+                <button class="wird-btn" onclick="goToWird(48)">الثلاثاء (حزب 2)</button>
+                <button class="wird-btn" onclick="goToWird(82)">الأربعاء (حزب 3)</button>
+                <button class="wird-btn" onclick="goToWird(116)">الخميس (حزب 4)</button>
+                <button class="wird-btn" onclick="goToWird(150)">الجمعة (حزب 5)</button>
+                <button class="wird-btn" onclick="goToWird(184)">السبت (حزب 6)</button>
+                <button class="wird-btn" onclick="goToWird(218)">الأحد (حزب 7)</button>
             `;
         }
     }
@@ -73,9 +82,11 @@ function initPdfViewer(pdfUrl, bookFile) {
     const controlsDiv = document.createElement('div');
     controlsDiv.className = 'pdf-controls';
     controlsDiv.innerHTML = `
-        <button class="control-btn" id="prev-page">الصفحة السابقة</button>
+        <button class="control-btn" id="prev-page">السابقة</button>
+        <button class="control-btn" id="zoom-out" title="تصغير">-</button>
         <span>صفحة <span id="page-num">1</span> من <span id="page-count">1</span></span>
-        <button class="control-btn" id="next-page">الصفحة التالية</button>
+        <button class="control-btn" id="zoom-in" title="تكبير">+</button>
+        <button class="control-btn" id="next-page">التالية</button>
     `;
     bookContentEl.appendChild(controlsDiv);
 
@@ -123,6 +134,18 @@ function initPdfViewer(pdfUrl, bookFile) {
         queueRenderPage(pageNum);
     });
 
+    document.getElementById('zoom-in').addEventListener('click', () => {
+        scale += 0.2;
+        queueRenderPage(pageNum);
+    });
+
+    document.getElementById('zoom-out').addEventListener('click', () => {
+        if (scale > 0.6) {
+            scale -= 0.2;
+            queueRenderPage(pageNum);
+        }
+    });
+
     window.goToWird = function(targetPage) {
         if (pdfDoc && targetPage <= pdfDoc.numPages) {
             pageNum = targetPage;
@@ -141,7 +164,7 @@ function initPdfViewer(pdfUrl, bookFile) {
         renderPage(pageNum);
     }).catch(function(error) {
         console.error('خطأ في تحميل الـ PDF:', error);
-        bookContentEl.innerHTML = `<p style="text-align: center; color: #b22222; padding: 20px;">تعذر تحميل الكتاب. تأكد من وجود ملف الـ PDF محلياً داخل مجلد data على GitHub بالاسم الصحيح.</p>`;
+        bookContentEl.innerHTML = `<p style="text-align: center; color: #b22222; padding: 20px;">تعذر تحميل الكتاب. تأكد من وجود ملف الـ PDF داخل مجلد data على GitHub بالاسم الصحيح.</p>`;
     });
 }
 
@@ -154,8 +177,28 @@ function initJsonReader(fileName) {
             
             let bookContentEl = document.getElementById('bookContent');
             if (bookContentEl) {
-                bookContentEl.innerHTML = data.content || '<p>لا يوجد محتوى متوفر بهذا الكتاب حالياً.</p>';
+                bookContentEl.innerHTML = `<div class="json-text-content">${data.content || '<p>لا يوجد محتوى متوفر بهذا الكتاب حالياً.</p>'}</div>`;
             }
         })
-        .catch(err => console.error("خطأ في جلب الكتاب النصي:", err));
+        .catch(err => {
+            console.error("خطأ في جلب الكتاب النصي:", err);
+            let bookContentEl = document.getElementById('bookContent');
+            if (bookContentEl) {
+                bookContentEl.innerHTML = `<p style="text-align: center; padding: 30px;">تعذر جلب ملف الكتاب النصي.</p>`;
+            }
+        });
+}
+
+function setupFullscreen() {
+    const btn = document.getElementById('fullscreenBtn');
+    if (!btn) return;
+    btn.addEventListener('click', () => {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen();
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            }
+        }
+    });
 }
