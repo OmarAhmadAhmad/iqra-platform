@@ -2,15 +2,13 @@ document.addEventListener("DOMContentLoaded", () => {
     const urlParams = new URLSearchParams(window.location.search);
     let bookFile = urlParams.get('file') || urlParams.get('book') || '';
     
-    // فك التشفير إذا كانت الرموز بالعربية
     try {
         bookFile = decodeURIComponent(bookFile);
     } catch(e) {}
 
-    // معالجة الأخطاء الذكية: إذا فتح المستخدم الصفحة بدون تحديد كتاب، نعرض الكتاب الأول تلقائياً
+    // المعالجة التلقائية لتفادي الشاشة البيضاء في حال لم يُحدد ملف
     if (!bookFile || bookFile === 'null' || bookFile === 'undefined') {
-        console.warn("لم يتم تحديد كتاب، فتح كتاب التمهيد التلقائي.");
-        bookFile = 'book-1.json';
+        bookFile = 'دلائل الخيرات.pdf';
     }
 
     const isPdf = bookFile.endsWith('.pdf') || bookFile.includes('دلائل') || bookFile.includes('فيض');
@@ -164,7 +162,7 @@ function initPdfViewer(pdfUrl, bookFile) {
         renderPage(pageNum);
     }).catch(function(error) {
         console.error('خطأ في تحميل الـ PDF:', error);
-        bookContentEl.innerHTML = `<p style="text-align: center; color: #b22222; padding: 20px;">تعذر تحميل الكتاب. تأكد من وجود ملف الـ PDF داخل مجلد data على GitHub بالاسم الصحيح.</p>`;
+        bookContentEl.innerHTML = `<p style="text-align: center; color: #b22222; padding: 20px;">تعذر تحميل الملف. تأكد من رفع ملفات الـ PDF داخل مجلد data على GitHub بأسمائها الصحيحة (دلائل الخيرات.pdf / فيض المنان.pdf).</p>`;
     });
 }
 
@@ -177,14 +175,14 @@ function initJsonReader(fileName) {
             
             let bookContentEl = document.getElementById('bookContent');
             if (bookContentEl) {
-                bookContentEl.innerHTML = `<div class="json-text-content">${data.content || '<p>لا يوجد محتوى متوفر بهذا الكتاب حالياً.</p>'}</div>`;
+                bookContentEl.innerHTML = `<div class="json-text-content">${data.content || '<p>محتوى الكتاب قيد التجهيز.</p>'}</div>`;
             }
         })
         .catch(err => {
             console.error("خطأ في جلب الكتاب النصي:", err);
             let bookContentEl = document.getElementById('bookContent');
             if (bookContentEl) {
-                bookContentEl.innerHTML = `<p style="text-align: center; padding: 30px;">تعذر جلب ملف الكتاب النصي.</p>`;
+                bookContentEl.innerHTML = `<p style="text-align: center; padding: 30px;">تنبيه: لا يمكن جلب ملفات JSON النصية بفتح الملف محلياً (file://). يُرجى رفعه على GitHub Pages لتفعيل العرض النصي الشامل.</p>`;
             }
         });
 }
