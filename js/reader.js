@@ -1,20 +1,43 @@
+// js/reader.js - العارض المحترف للأوراد والـ PDF المحلي
 document.addEventListener("DOMContentLoaded", () => {
     const urlParams = new URLSearchParams(window.location.search);
-    const pdfParam = urlParams.get('pdf');
-    const bookFile = urlParams.get('book') || urlParams.get('file') || '';
+    const bookFile = decodeURIComponent(urlParams.get('file') || urlParams.get('book') || '');
 
-    // روابط التحميل المباشر الرسمية لتجاوز قيود درايف وعرض الـ PDF بسلاسة
-    const bookSources = {
-        'dalael.json': 'https://docs.google.com/uc?export=download&id=1dcbaGpxEYaJQYnpx-wv-yGPTiy1mUoEc',
-        'fayd-almanan.json': 'https://docs.google.com/uc?export=download&id=15F43ORYaPJKKyZYoFTyJgycE4PX0OSv1'
-    };
+    // التحقق هل الملف PDF أم JSON نصي
+    const isPdf = bookFile.endsWith('.pdf') || bookFile.includes('دلائل') || bookFile.includes('فيض');
 
-    let pdfUrl = pdfParam || bookSources[bookFile] || bookSources['dalael.json'];
+    if (isPdf) {
+        let pdfPath = 'data/' + bookFile;
+        // ضمان الاسم الافتراضي إذا لزم الأمر
+        if (!bookFile.endsWith('.pdf')) {
+            if (bookFile.includes('فيض')) pdfPath = 'data/فيض المنان.pdf';
+            else pdfPath = 'data/دلائل الخيرات.pdf';
+        }
+        initPdfViewer(pdfPath, bookFile);
+    } else {
+        // تشغيل الكتب النصية العادية JSON
+        initJsonReader(bookFile || 'book-1.json');
+    }
+});
 
+function initPdfViewer(pdfUrl, bookFile) {
     const wirdsNavBar = document.getElementById('wirdsNavBar');
-    
-    // إعداد أزرار الأوراد اليومية لكل كتاب ديناميكياً
-    if (bookFile.includes('dalael') || pdfUrl.includes('1dcbaGpxEYaJQYnpx')) {
+    let bookTitleText = "دلائل الخيرات وشوارق الأنوار";
+
+    if (pdfUrl.includes('فيض') || bookFile.includes('فيض')) {
+        bookTitleText = "كتاب فيض المنان - الشيخ جابر البغدادي";
+        if (wirdsNavBar) {
+            wirdsNavBar.style.display = 'flex';
+            wirdsNavBar.innerHTML = `
+                <button class="wird-btn" onclick="goToWird(1)">مقدمة كتاب فيض المنان</button>
+                <button class="wird-btn" onclick="goToWird(10)">ورد الصباح والاستفتاح</button>
+                <button class="wird-btn" onclick="goToWird(25)">ورد الصلوات الإبراهيمية</button>
+                <button class="wird-btn" onclick="goToWird(40)">حزب الجمعة المباركة</button>
+                <button class="wird-btn" onclick="goToWird(60)">خاتمة الأوراد والأدعية</button>
+            `;
+        }
+    } else {
+        bookTitleText = "دلائل الخيرات وشوارق الأنوار";
         if (wirdsNavBar) {
             wirdsNavBar.style.display = 'flex';
             wirdsNavBar.innerHTML = `
@@ -25,17 +48,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 <button class="wird-btn" onclick="goToWird(150)">ورد الجمعة (الحزب 5)</button>
                 <button class="wird-btn" onclick="goToWird(184)">ورد السبت (الحزب 6)</button>
                 <button class="wird-btn" onclick="goToWird(218)">ورد الأحد (الحزب 7)</button>
-            `;
-        }
-    } else if (bookFile.includes('fayd') || pdfUrl.includes('15F43ORYaPJKKyZYoFTyJgycE4PX0OSv1')) {
-        if (wirdsNavBar) {
-            wirdsNavBar.style.display = 'flex';
-            wirdsNavBar.innerHTML = `
-                <button class="wird-btn" onclick="goToWird(1)">مقدمة كتاب فيض المنان</button>
-                <button class="wird-btn" onclick="goToWird(10)">ورد الصباح والاستفتاح</button>
-                <button class="wird-btn" onclick="goToWird(25)">ورد الصلوات الإبراهيمية</button>
-                <button class="wird-btn" onclick="goToWird(40)">حزب الجمعة المباركة</button>
-                <button class="wird-btn" onclick="goToWird(60)">خاتمة الأوراد والأدعية</button>
             `;
         }
     }
@@ -76,10 +88,7 @@ document.addEventListener("DOMContentLoaded", () => {
             canvas.height = viewport.height;
             canvas.width = viewport.width;
 
-            let renderContext = {
-                canvasContext: ctx,
-                viewport: viewport
-            };
+            let renderContext = { canvasContext: ctx, viewport: viewport };
             let renderTask = page.render(renderContext);
 
             renderTask.promise.then(function() {
@@ -127,17 +136,26 @@ document.addEventListener("DOMContentLoaded", () => {
         document.getElementById('page-count').textContent = pdfDoc.numPages;
         
         let titleEl = document.getElementById('bookTitle');
-        if (titleEl) {
-            if (bookFile.includes('fayd') || pdfUrl.includes('15F43ORYaPJKKyZYoFTyJgycE4PX0OSv1')) {
-                titleEl.textContent = "كتاب فيض المنان - الشيخ جابر البغدادي";
-            } else {
-                titleEl.textContent = "دلائل الخيرات وشوارق الأنوار";
-            }
-        }
+        if (titleEl) titleEl.textContent = bookTitleText;
         
         renderPage(pageNum);
     }).catch(function(error) {
         console.error('خطأ في تحميل الـ PDF:', error);
-        bookContentEl.innerHTML = `<p style="text-align: center; color: #b22222; padding: 20px;">تعذر تحميل الكتاب. تأكد من إعدادات مشاركة جوجل درايف للملفين (أي شخص لديه الرابط).</p>`;
+        bookContentEl.innerHTML = `<p style="text-align: center; color: #b22222; padding: 20px;">تعذر تحميل الكتاب. تأكد من وجود ملف الـ PDF محلياً داخل مجلد data على GitHub بالاسم الصحيح.</p>`;
     });
-});
+}
+
+function initJsonReader(fileName) {
+    fetch(`data/${fileName}`)
+        .then(res => res.json())
+        .then(data => {
+            let titleEl = document.getElementById('bookTitle');
+            if (titleEl) titleEl.textContent = data.title || 'قراءة الكتاب';
+            
+            let bookContentEl = document.getElementById('bookContent');
+            if (bookContentEl) {
+                bookContentEl.innerHTML = data.content || '<p>لا يوجد محتوى متوفر بهذا الكتاب حالياً.</p>';
+            }
+        })
+        .catch(err => console.error("خطأ في جلب الكتاب النصي:", err));
+}
