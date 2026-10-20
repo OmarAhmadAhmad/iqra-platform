@@ -16,44 +16,71 @@
 </head>
 <body>
 
-    <header class="app-header">
-        <div class="header-content">
-            <span class="badge-offline">🔒 مرجع إيماني - يعمل أوفلاين 100%</span>
-            <h1>مكتبة الطريقة الجامعة</h1>
-            <p class="subtitle">للشيخ أحمد البسفي الأول بن مصطفى</p>
-            
-            <div class="disclaimer-box">
-                <p>💡 <b>تنويه هام:</b> هذا التطبيق مجهود شخصي للاستخدام اليومي ونشر الذكر والفكر، وليس إصداراً رسمياً عن الشيخ، حفظاً لأمانة النقل والجمع.</p>
-            </div>
-        </div>
+    <!-- زر فتح الفهرس الجانبي (للهواتف والأجهزة الصغيرة) -->
+    <button class="menu-toggle-btn" onclick="toggleSidebar()">☰ الفهرس والتصنيفات</button>
 
-        <div class="controls-container">
-            <div class="search-box">
-                <span class="search-icon">🔍</span>
-                <input type="text" id="searchInput" placeholder="ابحث السريع في كافة الكتب، المصابيح، والأذكار..." autocomplete="off">
+    <div class="app-layout">
+        <!-- الفهرس الجانبي القابل للطي للتصنيفات والمفضلة -->
+        <aside class="sidebar" id="appSidebar">
+            <div class="sidebar-header">
+                <h2>📚 الفهرس والتصنيفات</h2>
+                <button class="close-sidebar" onclick="toggleSidebar()">✕</button>
             </div>
-            <button id="themeToggle" class="theme-btn" title="تغيير المظهر">🌓</button>
-        </div>
-    </header>
-
-    <main class="main-container">
-        <div id="continueReadingSection" class="continue-section" style="display: none;">
-            <div class="continue-card">
-                <div class="continue-info">
-                    <span class="continue-tag">🔖 متابعة القراءة</span>
-                    <h4 id="continueBookTitle">اسم الكتاب</h4>
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" onclick="filterCategory('all', event)">🏠 جميع الأقسام والكتب</a>
+                <a href="#" class="nav-item" onclick="filterCategory('favorites', event)">⭐ الكتب المفضلة</a>
+                <hr>
+                <span class="nav-section-title">الأقسام والكتيبات:</span>
+                <div id="categoriesList">
+                    <!-- يتم تعبئة القائمة تلقائياً من الملفات -->
                 </div>
-                <a id="continueBookBtn" href="#" class="continue-btn">استكمل الآن ➔</a>
-            </div>
+            </nav>
+        </aside>
+
+        <!-- المحتوى الرئيسي للمكتبة -->
+        <div class="main-wrapper">
+            <header class="app-header">
+                <div class="header-content">
+                    <span class="badge-offline">🔒 مرجع إيماني - يعمل أوفلاين 100%</span>
+                    <h1>مكتبة الطريقة الجامعة</h1>
+                    <p class="subtitle">للشيخ أحمد البسفي الأول بن مصطفى</p>
+                    
+                    <div class="disclaimer-box">
+                        <p>💡 <b>تنويه هام:</b> هذا التطبيق مجهود شخصي للاستخدام اليومي ونشر الذكر والفكر، وليس إصداراً رسمياً عن الشيخ، حفظاً لأمانة النقل والجمع.</p>
+                    </div>
+                </div>
+
+                <div class="controls-container">
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="searchInput" placeholder="ابحث السريع في كافة الكتب، المصابيح، والأذكار..." autocomplete="off">
+                    </div>
+                    <button id="themeToggle" class="theme-btn" title="تغيير المظهر">🌓</button>
+                </div>
+            </header>
+
+            <main class="main-container">
+                <!-- كارت استكمال القراءة -->
+                <div id="continueReadingSection" class="continue-section" style="display: none;">
+                    <div class="continue-card">
+                        <div class="continue-info">
+                            <span class="continue-tag">🔖 متابعة القراءة</span>
+                            <h4 id="continueBookTitle">اسم الكتاب</h4>
+                        </div>
+                        <a id="continueBookBtn" href="#" class="continue-btn">استكمل الآن ➔</a>
+                    </div>
+                </div>
+
+                <!-- حاوية عرض الكتب والأقسام المفهرسة -->
+                <div id="sectionsContainer" class="sections-container"></div>
+            </main>
+
+            <footer class="app-footer">
+                <p>مكتبة الطريقة الجامعة (مجهود شخصي) &copy; 2026</p>
+                <p style="font-size: 0.8rem; margin-top: 5px; opacity: 0.75;">صممت لتجربة قراءة سلسة ومريحة بدون إنترنت</p>
+            </footer>
         </div>
-
-        <div id="sectionsContainer" class="sections-container"></div>
-    </main>
-
-    <footer class="app-footer">
-        <p>مكتبة الطريقة الجامعة (مجهود شخصي) &copy; 2026</p>
-        <p style="font-size: 0.8rem; margin-top: 5px; opacity: 0.75;">صممت لتجربة قراءة سلسة ومريحة بدون إنترنت</p>
-    </footer>
+    </div>
 
     <script src="js/app.js"></script>
 
