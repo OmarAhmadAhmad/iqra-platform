@@ -1,4 +1,4 @@
-// js/app.js - إدارة الفهرس، الأقسام، ومتابعة القراءة
+// js/app.js - إدارة الفهرس، الأقسام، ومتابعة القراءة (مع حماية تامة ضد فشل التحميل)
 document.addEventListener("DOMContentLoaded", () => {
     initTheme();
     loadBooksList();
@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     checkContinueReading();
 });
 
-// حل مشكلة العودة للخلف بدون تحديث (bfcache) وطهور رسالة التحميل المعلقة
+// حل مشكلة العودة للخلف بدون تحديث (bfcache)
 window.addEventListener("pageshow", (event) => {
     if (event.persisted) {
         loadBooksList();
@@ -16,22 +16,41 @@ window.addEventListener("pageshow", (event) => {
 
 let allBooks = [];
 
+// قائمة احتياطية مدمجة تظهر فوراً إذا تعذر قراءة ملف الـ JSON لضمان عدم توقف التطبيق أبداً
+const fallbackBooks = [
+  { "id": 1, "title": "الصلاة ركن الإسلام الثاني (الجزء الأول)", "author": "أحمد مصطفى محمد مصطفى", "category": "العبادات والفقه", "file": "book-1.json", "description": "كتاب تربوي إيماني يبين أهمية الصلاة، روحها وصورتها، شجرة الدين." },
+  { "id": 74, "file": "دلائل الخيرات.pdf", "title": "دلائل الخيرات وشوارق الأنوار", "author": "الإمام سيدي محمد بن سليمان الجزولي", "description": "الصلاة على النبي ﷺ مقسمة على أحزاب وأوراد أيام الأسبوع السبعة.", "category": "أوراد وأذكار" },
+  { "id": 75, "file": "فيض المنان.pdf", "title": "فيض المنان", "author": "الشيخ جابر البغدادي", "description": "مجموعة الأوراد والصلوات والأدعية المباركة للشيخ جابر البغدادي.", "category": "أوراد وأذكار" }
+];
+
 async function loadBooksList() {
     const container = document.getElementById("sectionsContainer");
     if (!container) return;
 
-    try {
-        const response = await fetch("./data/books-list.json");
-        if (!response.ok) throw new Error("تعذر جلب قائمة الكتب");
-        
-        const data = await response.json();
-        allBooks = Array.isArray(data) ? data : (data.books || []);
-        
-        renderCategorizedBooks(allBooks);
-    } catch (error) {
-        console.error("خطأ:", error);
-        container.innerHTML = "<p style='text-align: center; color: #e74c3c;'>جاري تحميل المكتبة...</p>";
+    // محاولة جلب ملف الفهرس من المسارات المحتملة
+    const possiblePaths = ["./data/books-list.json", "data/books-list.json", "/books-list.json"];
+    let fetchedData = null;
+
+    for (let path of possiblePaths) {
+        try {
+            const response = await fetch(path);
+            if (response.ok) {
+                fetchedData = await response.json();
+                break;
+            }
+        } catch (e) {
+            // محاولة المسار التالي بصمت
+        }
     }
+
+    if (fetchedData) {
+        allBooks = Array.isArray(fetchedData) ? fetchedData : (fetchedData.books || []);
+    } else {
+        console.warn("تعذر جلب ملف الفهرس الخارجي، جاري استخدام الفهرس الاحتياطي المدمج...");
+        allBooks = fallbackBooks;
+    }
+
+    renderCategorizedBooks(allBooks);
 }
 
 function renderCategorizedBooks(books) {
@@ -40,7 +59,7 @@ function renderCategorizedBooks(books) {
     container.innerHTML = "";
 
     if (!books || books.length === 0) {
-        container.innerHTML = "<p style='text-align: center; padding: 30px; color: var(--text-secondary);'>لا توجد نتائج مطابقة للبحث.</p>";
+        container.innerHTML = "<p style='text-align: center; padding: 30px; color: var(--text-secondary);'>لا توجد نتائج مطابقة.</p>";
         return;
     }
 
