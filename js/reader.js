@@ -1,40 +1,53 @@
 document.addEventListener("DOMContentLoaded", () => {
+    // 1. استخراج اسم الملف بدقة مهما كانت طريقة كتابة الـ URL
     const urlParams = new URLSearchParams(window.location.search);
-    let bookFile = urlParams.get('file') || urlParams.get('book') || '';
-    
-    // فك التشفير للأسماء العربية والمسارات
+    let rawFile = urlParams.get('file') || urlParams.get('book') || urlParams.get('pdf') || '';
+
+    // فك التشفير للأسماء العربية
     try {
-        bookFile = decodeURIComponent(bookFile);
-    } catch(e) {}
-
-    // حماية قوية: إذا لم يتم تمرير أي كتاب في الرابط، نقوم بتوجيهه افتراضياً إلى كتاب دلائل الخيرات أو أول كتاب لتجنب أي شاشة فارغة
-    if (!bookFile || bookFile === 'null' || bookFile === 'undefined' || bookFile.trim() === '') {
-        console.warn("لم يتم تحديد كتاب في الرابط، جاري تحميل الكتاب الافتراضي...");
-        bookFile = "دلائل الخيرات.pdf"; // الكتاب الافتراضي للحماية
+        rawFile = decodeURIComponent(rawFile);
+    } catch (e) {
+        console.error(e);
     }
 
-    const isPdf = bookFile.endsWith('.pdf') || bookFile.includes('دلائل') || bookFile.includes('فيض');
+    // 2. معالجة جذرية: إن كانت الصفحة مفتوحة مباشرة أو بدون بارامتر، اختر دلائل الخيرات افتراضياً
+    if (!rawFile || rawFile === 'null' || rawFile === 'undefined' || rawFile.trim() === '') {
+        rawFile = 'دلائل الخيرات.pdf';
+    }
 
-    if (isPdf) {
-        let pdfPath = 'data/' + bookFile;
-        if (!bookFile.endsWith('.pdf')) {
-            if (bookFile.includes('فيض')) pdfPath = 'data/فيض المنان.pdf';
-            else pdfPath = 'data/دلائل الخيرات.pdf';
-        }
-        initPdfViewer(pdfPath, bookFile);
+    // 3. مطابقة الملف والمسار
+    let pdfFileName = '';
+    let bookTitleText = '';
+
+    if (rawFile.includes('فيض') || rawFile.includes('fayd')) {
+        pdfFileName = 'فيض المنان.pdf';
+        bookTitleText = 'كتاب فيض المنان - الشيخ جابر البغدادي';
+    } else if (rawFile.includes('دلائل') || rawFile.includes('dalael') || rawFile.endsWith('.pdf')) {
+        pdfFileName = 'دلائل الخيرات.pdf';
+        bookTitleText = 'دلائل الخيرات وشوارق الأنوار';
     } else {
-        initJsonReader(bookFile);
+        // للكتب النصية JSON
+        initJsonReader(rawFile);
+        return;
     }
 
+    // مسار الـ PDF المحلي المباشر في مجلد data/
+    const finalPdfUrl = `data/${pdfFileName}`;
+    
+    // تشغيل العارض المباشر
+    loadPdfDocument(finalPdfUrl, bookTitleText, pdfFileName);
     setupFullscreen();
 });
 
-function initPdfViewer(pdfUrl, bookFile) {
-    const wirdsNavBar = document.getElementById('wirdsNavBar');
-    let bookTitleText = "دلائل الخيرات وشوارق الأنوار";
+// دالة عرض الـ PDF المباشرة والأوراد
+function loadPdfDocument(pdfUrl, titleText, pdfFileName) {
+    const titleEl = document.getElementById('bookTitle');
+    if (titleEl) titleEl.textContent = titleText;
 
-    if (pdfUrl.includes('فيض') || bookFile.includes('فيض')) {
-        bookTitleText = "كتاب فيض المنان - الشيخ جابر البغدادي";
+    const wirdsNavBar = document.getElementById('wirdsNavBar');
+    
+    // شريط الأوراد اليومية
+    if (pdfFileName.includes('فيض')) {
         if (wirdsNavBar) {
             wirdsNavBar.style.display = 'flex';
             wirdsNavBar.innerHTML = `
@@ -46,7 +59,6 @@ function initPdfViewer(pdfUrl, bookFile) {
             `;
         }
     } else {
-        bookTitleText = "دلائل الخيرات وشوارق الأنوار";
         if (wirdsNavBar) {
             wirdsNavBar.style.display = 'flex';
             wirdsNavBar.innerHTML = `
@@ -157,14 +169,13 @@ function initPdfViewer(pdfUrl, bookFile) {
     pdfjsLib.getDocument(pdfUrl).promise.then(function(pdfDoc_) {
         pdfDoc = pdfDoc_;
         document.getElementById('page-count').textContent = pdfDoc.numPages;
-        
-        let titleEl = document.getElementById('bookTitle');
-        if (titleEl) titleEl.textContent = bookTitleText;
-        
         renderPage(pageNum);
     }).catch(function(error) {
-        console.error('خطأ في تحميل الـ PDF:', error);
-        bookContentEl.innerHTML = `<p style="text-align: center; color: #b22222; padding: 20px;">تعذر تحميل الكتاب. تأكد من وجود ملف الـ PDF محلياً داخل مجلد data على GitHub بالاسم الصحيح.</p>`;
+        console.error('خطأ التحميل:', error);
+        bookContentEl.innerHTML = `<p style="text-align: center; color: #b22222; padding: 30px;">
+            تعذر تحميل الكتاب.<br>تأكد من أن اسم الملف في مجلد data/ ينتهي بـ (.pdf) ومكتوب بالدقة التالية:<br>
+            <b>data/دلائل الخيرات.pdf</b> أو <b>data/فيض المنان.pdf</b>
+        </p>`;
     });
 }
 
@@ -177,14 +188,13 @@ function initJsonReader(fileName) {
             
             let bookContentEl = document.getElementById('bookContent');
             if (bookContentEl) {
-                bookContentEl.innerHTML = `<div class="json-text-content">${data.content || '<p>لا يوجد محتوى متوفر بهذا الكتاب حالياً.</p>'}</div>`;
+                bookContentEl.innerHTML = `<div class="json-text-content">${data.content || '<p>محتوى الكتاب قيد التجهيز.</p>'}</div>`;
             }
         })
         .catch(err => {
-            console.error("خطأ في جلب الكتاب النصي:", err);
             let bookContentEl = document.getElementById('bookContent');
             if (bookContentEl) {
-                bookContentEl.innerHTML = `<p style="text-align: center; padding: 30px;">تعذر جلب ملف الكتاب النصي.</p>`;
+                bookContentEl.innerHTML = `<p style="text-align: center; padding: 30px;">يرجى رفع المشروع على GitHub Pages لقراءة الملفات النصية.</p>`;
             }
         });
 }
@@ -195,10 +205,8 @@ function setupFullscreen() {
     btn.addEventListener('click', () => {
         if (!document.fullscreenElement) {
             document.documentElement.requestFullscreen();
-        } else {
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
-            }
+        } else if (document.exitFullscreen) {
+            document.exitFullscreen();
         }
     });
 }
