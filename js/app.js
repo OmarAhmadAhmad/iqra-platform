@@ -381,7 +381,7 @@ let allBooksData = [
     "author": "أحمد مصطفى محمد مصطفى (أحمد البسفي)",
     "category": "المصابيح والأذكار",
     "file": "misbah-al-dukhool.json",
-    "description": "مصباح الدخول كامل نصاً حرفياً للتعليم والحفظ - أذكار الدخول للمنزل، المسجد، السوق، والبلدان."
+    "description": "مصباح الدخول كامل نصاً حرفياً للتعليم والحفظ."
   },
   {
     "id": 49,
@@ -389,7 +389,7 @@ let allBooksData = [
     "author": "أحمد مصطفى محمد مصطفى (أحمد البسفي)",
     "category": "المصابيح والأذكار",
     "file": "misbah-al-dai.json",
-    "description": "مصباح الداعي كامل نصاً حرفياً للتعليم والحفظ - أدعية وحفظ اللسان والأذن والقلم والزي."
+    "description": "مصباح الداعي كامل نصاً حرفياً للتعليم والحفظ."
   },
   {
     "id": 50,
@@ -397,7 +397,7 @@ let allBooksData = [
     "author": "أحمد مصطفى محمد مصطفى (أحمد البسفي)",
     "category": "المصابيح والأذكار",
     "file": "misbah-al-dawa.json",
-    "description": "مصباح الدعوة كامل نصاً حرفياً للتعليم والحفظ - الكلمات الثماني ومراتب الطريقة الجامعة."
+    "description": "مصباح الدعوة كامل نصاً حرفياً للتعليم والحفظ."
   },
   {
     "id": 51,
@@ -405,7 +405,7 @@ let allBooksData = [
     "author": "أحمد مصطفى محمد مصطفى (أحمد البسفي)",
     "category": "المصابيح والأذكار",
     "file": "misbah-al-safar.json",
-    "description": "مصباح السفر كامل نصاً حرفياً للتعليم والحفظ - أذكار النهوض والركوب ودخول البلدان."
+    "description": "مصباح السفر كامل نصاً حرفياً للتعليم والحفظ."
   },
   {
     "id": 52,
@@ -413,7 +413,7 @@ let allBooksData = [
     "author": "أحمد مصطفى محمد مصطفى (أحمد البسفي)",
     "category": "المصابيح والأذكار",
     "file": "misbah-al-sual.json",
-    "description": "النص الكامل للمصباح الثاني والأربعون (مصباح السؤال) الخاص بالطريقة الجامعة."
+    "description": "النص الكامل للمصباح الثاني والأربعون (مصباح السؤال)."
   },
   {
     "id": 53,
@@ -421,7 +421,7 @@ let allBooksData = [
     "author": "أحمد مصطفى محمد مصطفى (أحمد البسفي)",
     "category": "المصابيح والأذكار",
     "file": "misbah-al-sabah-wal-masaa.json",
-    "description": "مصباح الصباح والمساء كامل نصاً حرفياً للتعليم والحفظ - 18 بنداً."
+    "description": "مصباح الصباح والمساء كامل نصاً حرفياً للتعليم والحفظ."
   },
   {
     "id": 54,
@@ -429,7 +429,7 @@ let allBooksData = [
     "author": "أحمد مصطفى محمد مصطفى (أحمد البسفي)",
     "category": "المصابيح والأذكار",
     "file": "misbah-al-sabah.json",
-    "description": "مصباح الصباح كامل نصاً حرفياً للتعليم والحفظ - 14 بنداً."
+    "description": "مصباح الصباح كامل نصاً حرفياً للتعليم والحفظ."
   },
   {
     "id": 55,
@@ -437,7 +437,7 @@ let allBooksData = [
     "author": "أحمد مصطفى محمد مصطفى (أحمد البسفي)",
     "category": "المصابيح والأذكار",
     "file": "misbah-al-masaa.json",
-    "description": "مصباح المساء كامل نصاً حرفياً للتعليم والحفظ - 14 بنداً."
+    "description": "مصباح المساء كامل نصاً حرفياً للتعليم والحفظ."
   },
   {
     "id": 56,
@@ -445,7 +445,7 @@ let allBooksData = [
     "author": "أحمد مصطفى محمد مصطفى (أحمد البسفي)",
     "category": "المصابيح والأذكار",
     "file": "misbah-al-akl-wal-shurb.json",
-    "description": "مصباح الأكل والشرب كامل نصاً حرفياً للتعليم والحفظ - 19 بنداً."
+    "description": "مصباح الأكل والشرب كامل نصاً حرفياً للتعليم والحفظ."
   },
   {
     "id": 57,
@@ -453,7 +453,7 @@ let allBooksData = [
     "author": "أحمد مصطفى محمد مصطفى (أحمد البسفي)",
     "category": "المصابيح والأذكار",
     "file": "misbah-al-malbas.json",
-    "description": "مصباح الملبس كامل نصاً حرفياً للتعليم والحفظ - 12 بنداً."
+    "description": "مصباح الملبس كامل نصاً حرفياً للتعليم والحفظ."
   },
   {
     "id": 58,
@@ -461,7 +461,7 @@ let allBooksData = [
     "author": "أحمد مصطفى محمد مصطفى (أحمد البسفي)",
     "category": "المصابيح والأذكار",
     "file": "misbah-al-mawt.json",
-    "description": "مصباح الموت كامل نصاً حرفياً للتعليم والحفظ - 18 بنداً."
+    "description": "مصباح الموت كامل نصاً حرفياً للتعليم والحفظ."
   },
   {
     "id": 59,
@@ -469,7 +469,7 @@ let allBooksData = [
     "author": "أحمد مصطفى محمد مصطفى (أحمد البسفي)",
     "category": "المصابيح والأذكار",
     "file": "misbah-al-nafs.json",
-    "description": "مصباح النفس كامل نصاً حرفياً للتعليم والحفظ - تزكية النفس وشكر الله."
+    "description": "مصباح النفس كامل نصاً حرفياً للتعليم والحفظ."
   },
   {
     "id": 60,
@@ -477,7 +477,7 @@ let allBooksData = [
     "author": "أحمد مصطفى محمد مصطفى (أحمد البسفي)",
     "category": "المصابيح والأذكار",
     "file": "misbah-al-noor.json",
-    "description": "مصباح النور كامل نصاً حرفياً للتعليم والحفظ - أدعية النور والقرآن الكريم."
+    "description": "مصباح النور كامل نصاً حرفياً للتعليم والحفظ."
   },
   {
     "id": 61,
@@ -493,7 +493,7 @@ let allBooksData = [
     "author": "أحمد مصطفى محمد مصطفى (أحمد البسفي)",
     "category": "المصابيح والأذكار",
     "file": "misbah-al-hadra.json",
-    "description": "النص الكامل للمصباح الأربعون (مصباح الحضرة الجامعة) - أوراد اسم الذكر والختام."
+    "description": "النص الكامل للمصباح الأربعون (مصباح الحضرة الجامعة)."
   },
   {
     "id": 63,
@@ -613,7 +613,6 @@ document.addEventListener("DOMContentLoaded", () => {
     setupThemeToggle();
 });
 
-// بناء تبويبات تصنيف أعلى الصفحة
 function buildCategoryTabs() {
     const tabsContainer = document.getElementById('categoryTabs');
     if (!tabsContainer) return;
@@ -679,9 +678,7 @@ function renderBooks(booksList) {
     container.innerHTML = '';
 
     if (booksList.length === 0) {
-        container.innerHTML = `<div class="empty-state">
-            <p>لا توجد كتب في هذا القسم حالياً.</p>
-        </div>`;
+        container.innerHTML = `<div class="empty-state"><p>لا توجد كتب في هذا القسم حالياً.</p></div>`;
         return;
     }
 
