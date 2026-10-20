@@ -3,37 +3,41 @@ document.addEventListener("DOMContentLoaded", () => {
     const pdfParam = urlParams.get('pdf');
     const bookFile = urlParams.get('book') || urlParams.get('file') || '';
 
-    // قائمة الروابط المباشرة للكتب
+    // روابط وكلاء لتجاوز قيود CORS الخاصة بجوجل درايف وعرض الـ PDF بسلاسة
     const bookSources = {
-        'dalael.json': 'https://lh3.googleusercontent.com/d/1dcbaGpxEYaJQYnpx-wv-yGPTiy1mUoEc',
-        'fayd-almanan.json': 'https://lh3.googleusercontent.com/d/15F43ORYaPJKKyZYoFTyJgycE4PX0OSv1'
+        'dalael.json': 'https://corsproxy.io/?' + encodeURIComponent('https://lh3.googleusercontent.com/d/1dcbaGpxEYaJQYnpx-wv-yGPTiy1mUoEc'),
+        'fayd-almanan.json': 'https://corsproxy.io/?' + encodeURIComponent('https://lh3.googleusercontent.com/d/15F43ORYaPJKKyZYoFTyJgycE4PX0OSv1')
     };
 
-    let pdfUrl = pdfParam || bookSources[bookFile] || 'https://lh3.googleusercontent.com/d/1dcbaGpxEYaJQYnpx-wv-yGPTiy1mUoEc';
+    let pdfUrl = pdfParam ? ('https://corsproxy.io/?' + encodeURIComponent(pdfParam)) : (bookSources[bookFile] || bookSources['dalael.json']);
 
-    // ضبط خريطة الأوراد اليومية للكتابين
     const wirdsNavBar = document.getElementById('wirdsNavBar');
     
+    // إعداد أزرار الأوراد اليومية لكل كتاب
     if (bookFile.includes('dalael') || pdfUrl.includes('1dcbaGpxEYaJQYnpx')) {
-        wirdsNavBar.style.display = 'flex';
-        wirdsNavBar.innerHTML = `
-            <button class="wird-btn" onclick="goToWird(14)">ورد الإثنين (الحزب 1)</button>
-            <button class="wird-btn" onclick="goToWird(48)">ورد الثلاثاء (الحزب 2)</button>
-            <button class="wird-btn" onclick="goToWird(82)">ورد الأربعاء (الحزب 3)</button>
-            <button class="wird-btn" onclick="goToWird(116)">ورد الخميس (الحزب 4)</button>
-            <button class="wird-btn" onclick="goToWird(150)">ورد الجمعة (الحزب 5)</button>
-            <button class="wird-btn" onclick="goToWird(184)">ورد السبت (الحزب 6)</button>
-            <button class="wird-btn" onclick="goToWird(218)">ورد الأحد (الحزب 7)</button>
-        `;
+        if (wirdsNavBar) {
+            wirdsNavBar.style.display = 'flex';
+            wirdsNavBar.innerHTML = `
+                <button class="wird-btn" onclick="goToWird(14)">ورد الإثنين (الحزب 1)</button>
+                <button class="wird-btn" onclick="goToWird(48)">ورد الثلاثاء (الحزب 2)</button>
+                <button class="wird-btn" onclick="goToWird(82)">ورد الأربعاء (الحزب 3)</button>
+                <button class="wird-btn" onclick="goToWird(116)">ورد الخميس (الحزب 4)</button>
+                <button class="wird-btn" onclick="goToWird(150)">ورد الجمعة (الحزب 5)</button>
+                <button class="wird-btn" onclick="goToWird(184)">ورد السبت (الحزب 6)</button>
+                <button class="wird-btn" onclick="goToWird(218)">ورد الأحد (الحزب 7)</button>
+            `;
+        }
     } else if (bookFile.includes('fayd') || pdfUrl.includes('15F43ORYaPJKKyZYoFTyJgycE4PX0OSv1')) {
-        wirdsNavBar.style.display = 'flex';
-        wirdsNavBar.innerHTML = `
-            <button class="wird-btn" onclick="goToWird(1)">مقدمة كتاب فيض المنان</button>
-            <button class="wird-btn" onclick="goToWird(10)">ورد الصباح والاستفتاح</button>
-            <button class="wird-btn" onclick="goToWird(25)">ورد الصلوات الإبراهيمية</button>
-            <button class="wird-btn" onclick="goToWird(40)">حزب الجمعة المباركة</button>
-            <button class="wird-btn" onclick="goToWird(60)">خاتمة الأوراد والأدعية</button>
-        `;
+        if (wirdsNavBar) {
+            wirdsNavBar.style.display = 'flex';
+            wirdsNavBar.innerHTML = `
+                <button class="wird-btn" onclick="goToWird(1)">مقدمة كتاب فيض المنان</button>
+                <button class="wird-btn" onclick="goToWird(10)">ورد الصباح والاستفتاح</button>
+                <button class="wird-btn" onclick="goToWird(25)">ورد الصلوات الإبراهيمية</button>
+                <button class="wird-btn" onclick="goToWird(40)">حزب الجمعة المباركة</button>
+                <button class="wird-btn" onclick="goToWird(60)">خاتمة الأوراد والأدعية</button>
+            `;
+        }
     }
 
     let pdfDoc = null,
@@ -46,6 +50,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const ctx = canvas.getContext('2d');
     
     const bookContentEl = document.getElementById('bookContent');
+    if (!bookContentEl) return;
     bookContentEl.innerHTML = '';
     
     const viewerContainer = document.createElement('div');
@@ -121,15 +126,18 @@ document.addEventListener("DOMContentLoaded", () => {
         pdfDoc = pdfDoc_;
         document.getElementById('page-count').textContent = pdfDoc.numPages;
         
-        if (bookFile.includes('fayd') || pdfUrl.includes('15F43ORYaPJKKyZYoFTyJgycE4PX0OSv1')) {
-            document.getElementById('bookTitle').textContent = "كتاب فيض المنان - الشيخ جابر البغدادي";
-        } else {
-            document.getElementById('bookTitle').textContent = "دلائل الخيرات وشوارق الأنوار";
+        let titleEl = document.getElementById('bookTitle');
+        if (titleEl) {
+            if (bookFile.includes('fayd') || pdfUrl.includes('15F43ORYaPJKKyZYoFTyJgycE4PX0OSv1')) {
+                titleEl.textContent = "كتاب فيض المنان - الشيخ جابر البغدادي";
+            } else {
+                titleEl.textContent = "دلائل الخيرات وشوارق الأنوار";
+            }
         }
         
         renderPage(pageNum);
     }).catch(function(error) {
         console.error('خطأ في تحميل الـ PDF:', error);
-        bookContentEl.innerHTML = `<p style="text-align: center; color: #b22222; padding: 20px;">تعذر تحميل الكتاب. يرجى التأكد من الاتصال بالإنترنت أو مراجعة رابط جوجل درايف.</p>`;
+        bookContentEl.innerHTML = `<p style="text-align: center; color: #b22222; padding: 20px;">تعذر تحميل الكتاب. تأكد من أن إذن المشاركة في جوجل درايف مضبوط على (أي شخص لديه الرابط).</p>`;
     });
 });
