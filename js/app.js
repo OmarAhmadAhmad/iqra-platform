@@ -1,8 +1,9 @@
+// js/app.js - المراجعة الشاملة النهائية لـ 75 كتاباً + الأوراد
 let allBooksData = [
   {
     "id": 1,
     "title": "الصلاة ركن الإسلام الثاني (الجزء الأول)",
-    "author": "أحمد مصطفى محمد مصطفى",
+    "author": "أحمد مصطفى محمد مصطفى (أحمد البسفي)",
     "category": "العبادات والفقه",
     "file": "book-1.json",
     "description": "كتاب تربوي إيماني يبين أهمية الصلاة، روحها وصورتها، شجرة الدين، وضرورة الطهارة وأسرار الأذان."
@@ -381,7 +382,7 @@ let allBooksData = [
     "author": "أحمد مصطفى محمد مصطفى (أحمد البسفي)",
     "category": "المصابيح والأذكار",
     "file": "misbah-al-dukhool.json",
-    "description": "مصباح الدخول كامل نصاً حرفياً للتعليم والحفظ."
+    "description": "مصباح الدخول كامل نصاً حرفياً للتعليم والحفظ - أذكار الدخول للمنزل، المسجد، السوق، والبلدان."
   },
   {
     "id": 49,
@@ -389,7 +390,7 @@ let allBooksData = [
     "author": "أحمد مصطفى محمد مصطفى (أحمد البسفي)",
     "category": "المصابيح والأذكار",
     "file": "misbah-al-dai.json",
-    "description": "مصباح الداعي كامل نصاً حرفياً للتعليم والحفظ."
+    "description": "مصباح الداعي كامل نصاً حرفياً للتعليم والحفظ - أدعية وحفظ اللسان والأذن والقلم والزي."
   },
   {
     "id": 50,
@@ -397,7 +398,7 @@ let allBooksData = [
     "author": "أحمد مصطفى محمد مصطفى (أحمد البسفي)",
     "category": "المصابيح والأذكار",
     "file": "misbah-al-dawa.json",
-    "description": "مصباح الدعوة كامل نصاً حرفياً للتعليم والحفظ."
+    "description": "مصباح الدعوة كامل نصاً حرفياً للتعليم والحفظ - الكلمات الثماني ومراتب الطريقة الجامعة."
   },
   {
     "id": 51,
@@ -405,7 +406,7 @@ let allBooksData = [
     "author": "أحمد مصطفى محمد مصطفى (أحمد البسفي)",
     "category": "المصابيح والأذكار",
     "file": "misbah-al-safar.json",
-    "description": "مصباح السفر كامل نصاً حرفياً للتعليم والحفظ."
+    "description": "مصباح السفر كامل نصاً حرفياً للتعليم والحفظ - أذكار النهوض والركوب ودخول البلدان."
   },
   {
     "id": 52,
@@ -413,7 +414,7 @@ let allBooksData = [
     "author": "أحمد مصطفى محمد مصطفى (أحمد البسفي)",
     "category": "المصابيح والأذكار",
     "file": "misbah-al-sual.json",
-    "description": "النص الكامل للمصباح الثاني والأربعون (مصباح السؤال)."
+    "description": "النص الكامل للمصباح الثاني والأربعون (مصباح السؤال) الخاص بالطريقة الجامعة."
   },
   {
     "id": 53,
@@ -421,7 +422,7 @@ let allBooksData = [
     "author": "أحمد مصطفى محمد مصطفى (أحمد البسفي)",
     "category": "المصابيح والأذكار",
     "file": "misbah-al-sabah-wal-masaa.json",
-    "description": "مصباح الصباح والمساء كامل نصاً حرفياً للتعليم والحفظ."
+    "description": "مصباح الصباح والمساء كامل نصاً حرفياً للتعليم والحفظ - 18 بنداً."
   },
   {
     "id": 54,
@@ -429,7 +430,7 @@ let allBooksData = [
     "author": "أحمد مصطفى محمد مصطفى (أحمد البسفي)",
     "category": "المصابيح والأذكار",
     "file": "misbah-al-sabah.json",
-    "description": "مصباح الصباح كامل نصاً حرفياً للتعليم والحفظ."
+    "description": "مصباح الصباح كامل نصاً حرفياً للتعليم والحفظ - 14 بنداً."
   },
   {
     "id": 55,
@@ -437,7 +438,7 @@ let allBooksData = [
     "author": "أحمد مصطفى محمد مصطفى (أحمد البسفي)",
     "category": "المصابيح والأذكار",
     "file": "misbah-al-masaa.json",
-    "description": "مصباح المساء كامل نصاً حرفياً للتعليم والحفظ."
+    "description": "مصباح المساء كامل نصاً حرفياً للتعليم والحفظ - 14 بنداً."
   },
   {
     "id": 56,
@@ -445,7 +446,7 @@ let allBooksData = [
     "author": "أحمد مصطفى محمد مصطفى (أحمد البسفي)",
     "category": "المصابيح والأذكار",
     "file": "misbah-al-akl-wal-shurb.json",
-    "description": "مصباح الأكل والشرب كامل نصاً حرفياً للتعليم والحفظ."
+    "description": "مصباح الأكل والشرب كامل نصاً حرفياً للتعليم والحفظ - 19 بنداً."
   },
   {
     "id": 57,
@@ -453,7 +454,7 @@ let allBooksData = [
     "author": "أحمد مصطفى محمد مصطفى (أحمد البسفي)",
     "category": "المصابيح والأذكار",
     "file": "misbah-al-malbas.json",
-    "description": "مصباح الملبس كامل نصاً حرفياً للتعليم والحفظ."
+    "description": "مصباح الملبس كامل نصاً حرفياً للتعليم والحفظ - 12 بنداً."
   },
   {
     "id": 58,
@@ -461,7 +462,7 @@ let allBooksData = [
     "author": "أحمد مصطفى محمد مصطفى (أحمد البسفي)",
     "category": "المصابيح والأذكار",
     "file": "misbah-al-mawt.json",
-    "description": "مصباح الموت كامل نصاً حرفياً للتعليم والحفظ."
+    "description": "مصباح الموت كامل نصاً حرفياً للتعليم والحفظ - 18 بنداً."
   },
   {
     "id": 59,
@@ -469,7 +470,7 @@ let allBooksData = [
     "author": "أحمد مصطفى محمد مصطفى (أحمد البسفي)",
     "category": "المصابيح والأذكار",
     "file": "misbah-al-nafs.json",
-    "description": "مصباح النفس كامل نصاً حرفياً للتعليم والحفظ."
+    "description": "مصباح النفس كامل نصاً حرفياً للتعليم والحفظ - تزكية النفس وشكر الله."
   },
   {
     "id": 60,
@@ -477,7 +478,7 @@ let allBooksData = [
     "author": "أحمد مصطفى محمد مصطفى (أحمد البسفي)",
     "category": "المصابيح والأذكار",
     "file": "misbah-al-noor.json",
-    "description": "مصباح النور كامل نصاً حرفياً للتعليم والحفظ."
+    "description": "مصباح النور كامل نصاً حرفياً للتعليم والحفظ - أدعية النور والقرآن الكريم."
   },
   {
     "id": 61,
@@ -493,7 +494,7 @@ let allBooksData = [
     "author": "أحمد مصطفى محمد مصطفى (أحمد البسفي)",
     "category": "المصابيح والأذكار",
     "file": "misbah-al-hadra.json",
-    "description": "النص الكامل للمصباح الأربعون (مصباح الحضرة الجامعة)."
+    "description": "النص الكامل للمصباح الأربعون (مصباح الحضرة الجامعة) - أوراد اسم الذكر والختام."
   },
   {
     "id": 63,
@@ -588,9 +589,8 @@ let allBooksData = [
     "title": "دلائل الخيرات وشوارق الأنوار",
     "author": "الإمام سيدي محمد بن سليمان الجزولي",
     "category": "أوراد وأذكار",
-    "file": "dalael.json",
-    "description": "الصلاة على النبي ﷺ مقسمة على أحزاب وأوراد أيام الأسبوع السبعة.",
-    "pdfUrl": "https://lh3.googleusercontent.com/d/1dcbaGpxEYaJQYnpx-wv-yGPTiy1mUoEc",
+    "file": "دلائل الخيرات.pdf",
+    "description": "الصلاة على النبي ﷺ مقسمة على أحزاب وأوراد أيام الأسبوع السبعة كاملة.",
     "isLatest": true
   },
   {
@@ -598,9 +598,8 @@ let allBooksData = [
     "title": "فيض المنان",
     "author": "الشيخ جابر البغدادي",
     "category": "أوراد وأذكار",
-    "file": "fayd-almanan.json",
-    "description": "مجموعة الأوراد والصلوات والأدعية المباركة للشيخ جابر البغدادي.",
-    "pdfUrl": "https://lh3.googleusercontent.com/d/15F43ORYaPJKKyZYoFTyJgycE4PX0OSv1",
+    "file": "فيض المنان.pdf",
+    "description": "مجموعة الأوراد والصلوات والأدعية المباركة للشيخ جابر البغدادي كاملة.",
     "isLatest": true
   }
 ];
@@ -666,7 +665,6 @@ function renderBooks(booksList) {
         return;
     }
 
-    // تجميع الكتب حسب التصنيف لتظهر مرتبة داخل أقسام
     let grouped = {};
     booksList.forEach(book => {
         let cat = book.category || 'عام';
@@ -710,7 +708,7 @@ function renderBooks(booksList) {
                 </div>
             `;
             
-            card.onclick = () => openBookReader(book.file, book.pdfUrl);
+            card.onclick = () => openBookReader(book.file);
             grid.appendChild(card);
         });
 
@@ -744,12 +742,8 @@ function toggleSidebar() {
     if (sidebar) sidebar.classList.toggle('open');
 }
 
-function openBookReader(fileName, pdfUrl) {
-    if (pdfUrl) {
-        window.location.href = `reader.html?pdf=${encodeURIComponent(pdfUrl)}&book=${fileName}`;
-    } else {
-        window.location.href = `reader.html?file=${fileName}`;
-    }
+function openBookReader(fileName) {
+    window.location.href = `reader.html?file=${encodeURIComponent(fileName)}`;
 }
 
 function setupSearch() {
