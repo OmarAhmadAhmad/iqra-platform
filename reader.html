@@ -3,95 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title id="pageTitle">قراءة الكتاب - مكتبة الطريقة الجامعة</title>
+    <title>عرض الكتاب والأوراد</title>
     <link rel="stylesheet" href="css/style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
-    <style>
-        .wirds-nav-bar {
-            background-color: var(--primary-color, #1b4d3e);
-            color: white;
-            padding: 10px;
-            display: flex;
-            overflow-x: auto;
-            gap: 8px;
-            white-space: nowrap;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            margin-bottom: 15px;
-            border-radius: 8px;
-            display: none;
-        }
-        .wird-btn {
-            background-color: rgba(255, 255, 255, 0.15);
-            color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3);
-            padding: 6px 12px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 13px;
-            font-family: 'Cairo', sans-serif;
-            transition: all 0.3s;
-        }
-        .wird-btn:hover, .wird-btn.active {
-            background-color: #d4af37;
-            color: #1b4d3e;
-            font-weight: bold;
-            border-color: #d4af37;
-        }
-        #pdf-viewer-container {
-            width: 100%;
-            overflow: auto;
-            text-align: center;
-            padding: 15px 0;
-            background-color: rgba(0,0,0,0.03);
-            border-radius: 8px;
-            margin-top: 10px;
-        }
-        canvas {
-            max-width: 100%;
-            height: auto;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-            border-radius: 4px;
-        }
-        .pdf-controls {
-            margin-top: 15px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            padding: 10px;
-            background: rgba(0,0,0,0.02);
-            border-radius: 8px;
-        }
-        .control-btn {
-            background-color: var(--primary-color, #1b4d3e);
-            color: white;
-            border: none;
-            padding: 6px 14px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-family: 'Cairo', sans-serif;
-        }
-    </style>
 </head>
-<body>
-
-    <main class="main-container" style="padding-top: 20px;">
-        <div class="reader-container">
-            <div class="reader-header">
-                <h2 id="bookTitle">جاري التحميل...</h2>
-                <a href="index.html" class="back-link">← العودة للمكتبة</a>
-            </div>
-
-            <!-- شريط الأوراد التفاعلي الديناميكي -->
-            <div class="wirds-nav-bar" id="wirdsNavBar">
-                <!-- يتم تحميل أزرار الأوراد حسب الكتاب المفتوح -->
-            </div>
-            
-            <div id="bookContent" class="book-content">
-                <p style="text-align: center; color: var(--text-secondary, #64748b);">جاري تحميل محتوى الكتاب...</p>
-            </div>
+<body class="reader-body">
+    <header class="reader-header">
+        <a href="index.html" class="back-btn">← العودة للمكتبة</a>
+        <h2 id="bookTitle">جاري تحميل الكتاب...</h2>
+        <div class="header-tools">
+            <button id="fullscreenBtn" class="tool-icon-btn" title="ملء الشاشة">⛶</button>
         </div>
+    </header>
+
+    <!-- شريط الأوراد اليومية (يظهر تلقائياً مع دلائل الخيرات وفيض المنان) -->
+    <nav id="wirdsNavBar" class="wirds-navbar" style="display: none;"></nav>
+
+    <main id="bookContent" class="reader-container">
+        <div class="loading-spinner">جاري التجهيز...</div>
     </main>
 
     <script src="js/reader.js"></script>
