@@ -655,5 +655,22 @@
     "file": "hilyat-rasool-allah.json",
     "description": "تفصيل وصف حلية رسول الله صلى الله عليه وسلم وصفاته الخلقية والخلقية والشمائل الشريفة مستندة إلى وصف هند بن أبي هالة.",
     "coverColor": "#1b4d3e"
+  },
+  {
+    "file": "dalael.json",
+    "title": "دلائل الخيرات وشوارق الأنوار",
+    "author": "الإمام سيدي محمد بن سليمان الجزولي",
+    "description": "الصلاة على النبي ﷺ مقسمة على أحزاب وأوراد أيام الأسبوع السبعة.",
+    "category": "أوراد وأذكار",
+    "pdfUrl": "https://lh3.googleusercontent.com/d/1dcbaGpxEYaJQYnpx-wv-yGPTiy1mUoEc"
+  },
+  {
+    "file": "fayd-almanan.json",
+    "title": "فيض المنان",
+    "author": "الشيخ جابر البغدادي",
+    "description": "مجموعة الأوراد والصلوات والأدعية المباركة للشيخ جابر البغدادي.",
+    "category": "أوراد وأذكار",
+    "pdfUrl": "https://lh3.googleusercontent.com/d/15F43ORYaPJKKyZYoFTyJgycE4PX0OSv1"
   }
+]
 ]
