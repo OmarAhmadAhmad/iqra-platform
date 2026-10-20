@@ -3,17 +3,17 @@ document.addEventListener("DOMContentLoaded", () => {
     const pdfParam = urlParams.get('pdf');
     const bookFile = urlParams.get('book') || urlParams.get('file') || '';
 
-    // روابط وكلاء لتجاوز قيود CORS الخاصة بجوجل درايف وعرض الـ PDF بسلاسة
+    // روابط التحميل المباشر الرسمية لتجاوز قيود درايف وعرض الـ PDF بسلاسة
     const bookSources = {
-        'dalael.json': 'https://corsproxy.io/?' + encodeURIComponent('https://lh3.googleusercontent.com/d/1dcbaGpxEYaJQYnpx-wv-yGPTiy1mUoEc'),
-        'fayd-almanan.json': 'https://corsproxy.io/?' + encodeURIComponent('https://lh3.googleusercontent.com/d/15F43ORYaPJKKyZYoFTyJgycE4PX0OSv1')
+        'dalael.json': 'https://docs.google.com/uc?export=download&id=1dcbaGpxEYaJQYnpx-wv-yGPTiy1mUoEc',
+        'fayd-almanan.json': 'https://docs.google.com/uc?export=download&id=15F43ORYaPJKKyZYoFTyJgycE4PX0OSv1'
     };
 
-    let pdfUrl = pdfParam ? ('https://corsproxy.io/?' + encodeURIComponent(pdfParam)) : (bookSources[bookFile] || bookSources['dalael.json']);
+    let pdfUrl = pdfParam || bookSources[bookFile] || bookSources['dalael.json'];
 
     const wirdsNavBar = document.getElementById('wirdsNavBar');
     
-    // إعداد أزرار الأوراد اليومية لكل كتاب
+    // إعداد أزرار الأوراد اليومية لكل كتاب ديناميكياً
     if (bookFile.includes('dalael') || pdfUrl.includes('1dcbaGpxEYaJQYnpx')) {
         if (wirdsNavBar) {
             wirdsNavBar.style.display = 'flex';
@@ -138,6 +138,6 @@ document.addEventListener("DOMContentLoaded", () => {
         renderPage(pageNum);
     }).catch(function(error) {
         console.error('خطأ في تحميل الـ PDF:', error);
-        bookContentEl.innerHTML = `<p style="text-align: center; color: #b22222; padding: 20px;">تعذر تحميل الكتاب. تأكد من أن إذن المشاركة في جوجل درايف مضبوط على (أي شخص لديه الرابط).</p>`;
+        bookContentEl.innerHTML = `<p style="text-align: center; color: #b22222; padding: 20px;">تعذر تحميل الكتاب. تأكد من إعدادات مشاركة جوجل درايف للملفين (أي شخص لديه الرابط).</p>`;
     });
 });
