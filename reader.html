@@ -3,24 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>عرض الكتاب والأوراد</title>
+    <title id="pageTitle">قراءة الكتاب - مكتبة الطريقة الجامعة</title>
     <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <!-- مكتبة PDF.js لعرض ملفات الـ PDF محلياً وسلاسة -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
 </head>
-<body class="reader-body">
-    <header class="reader-header">
-        <a href="index.html" class="back-btn">← العودة للمكتبة</a>
-        <h2 id="bookTitle">جاري تحميل الكتاب...</h2>
-        <div class="header-tools">
-            <button id="fullscreenBtn" class="tool-icon-btn" title="ملء الشاشة">⛶</button>
+<body>
+
+    <main class="main-container" style="padding-top: 20px;">
+        <div class="reader-container">
+            <div class="reader-header">
+                <h2 id="bookTitle">جاري التحميل...</h2>
+                <a href="index.html" class="back-link">← العودة للمكتبة</a>
+            </div>
+            
+            <!-- شريط الأوراد التفاعلي (يظهر ديناميكياً لدلائل الخيرات وفيض المنان) -->
+            <nav id="wirdsNavBar" class="wirds-navbar" style="display: none; margin-bottom: 20px; gap: 8px; overflow-x: auto; padding-bottom: 10px;"></nav>
+
+            <div id="bookContent" class="book-content">
+                <p style="text-align: center; color: var(--text-secondary);">جاري تحميل محتوى الكتاب...</p>
+            </div>
         </div>
-    </header>
-
-    <!-- شريط الأوراد اليومية (يظهر تلقائياً مع دلائل الخيرات وفيض المنان) -->
-    <nav id="wirdsNavBar" class="wirds-navbar" style="display: none;"></nav>
-
-    <main id="bookContent" class="reader-container">
-        <div class="loading-spinner">جاري التجهيز...</div>
     </main>
 
     <script src="js/reader.js"></script>
