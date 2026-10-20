@@ -1,146 +1,161 @@
-// js/app.js - إدارة الفهرس، الأقسام، ومتابعة القراءة
+let allBooksData = [];
+let currentFilter = 'all';
+
 document.addEventListener("DOMContentLoaded", () => {
-    initTheme();
     loadBooksList();
     setupSearch();
-    checkContinueReading();
 });
 
-let allBooks = [];
-
 async function loadBooksList() {
-    const container = document.getElementById("sectionsContainer");
-    if (!container) return;
-
     try {
-        const response = await fetch("./data/books-list.json");
-        if (!response.ok) throw new Error("تعذر جلب قائمة الكتب");
+        let response = await fetch('data/books-list.json');
+        if (!response.ok) throw new Error('تعذر تحميل قائمة الكتب');
         
-        const data = await response.json();
-        allBooks = Array.isArray(data) ? data : (data.books || []);
-        
-        renderCategorizedBooks(allBooks);
+        let booksMeta = await response.json();
+        allBooksData = booksMeta.map((b, index) => ({
+            ...b,
+            id: b.file,
+            isLatest: index === booksMeta.length - 1
+        }));
+
+        buildCategoriesSidebar();
+        renderBooks(allBooksData);
     } catch (error) {
-        console.error("خطأ:", error);
-        container.innerHTML = "<p style='text-align: center; color: #e74c3c;'>جاري تحميل المكتبة...</p>";
+        console.error('خطأ في تحميل المكتبة:', error);
     }
 }
 
-function renderCategorizedBooks(books) {
-    const container = document.getElementById("sectionsContainer");
-    if (!container) return;
-    container.innerHTML = "";
+function buildCategoriesSidebar() {
+    const categoriesListEl = document.getElementById('categoriesList');
+    if (!categoriesListEl) return;
 
-    if (!books || books.length === 0) {
-        container.innerHTML = "<p style='text-align: center; padding: 30px; color: var(--text-secondary);'>لا توجد نتائج مطابقة للبحث.</p>";
+    let categories = [...new Set(allBooksData.map(b => b.category || 'عام'))];
+    categoriesListEl.innerHTML = '';
+
+    categories.forEach(cat => {
+        let count = allBooksData.filter(b => (b.category || 'عام') === cat).length;
+        let item = document.createElement('a');
+        item.href = '#';
+        item.className = 'nav-item';
+        item.innerHTML = `📁 ${cat} <span style="float: left; font-size: 0.8rem; opacity: 0.7;">(${count})</span>`;
+        item.onclick = (e) => filterCategory(cat, e);
+        categoriesListEl.appendChild(item);
+    });
+}
+
+function filterCategory(category, event) {
+    if (event) event.preventDefault();
+    currentFilter = category;
+
+    document.querySelectorAll('.sidebar-nav .nav-item').forEach(el => el.classList.remove('active'));
+    if (event && event.currentTarget) event.currentTarget.classList.add('active');
+
+    let filtered = [];
+    if (category === 'all') {
+        filtered = allBooksData;
+    } else if (category === 'favorites') {
+        let favs = getFavorites();
+        filtered = allBooksData.filter(b => favs.includes(b.id));
+    } else {
+        filtered = allBooksData.filter(b => (b.category || 'عام') === category);
+    }
+
+    renderBooks(filtered);
+
+    if (window.innerWidth <= 768) {
+        toggleSidebar();
+    }
+}
+
+function renderBooks(booksList) {
+    const container = document.getElementById('sectionsContainer');
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    if (booksList.length === 0) {
+        container.innerHTML = `<p style="text-align: center; color: #64748b; padding: 40px;">لا توجد كتب في هذا القسم حالياً.</p>`;
         return;
     }
 
-    const categories = {};
-    books.forEach(book => {
-        const cat = (book && book.category) ? book.category.trim() : 'عام';
-        if (!categories[cat]) categories[cat] = [];
-        categories[cat].push(book);
-    });
+    let favorites = getFavorites();
+    let grid = document.createElement('div');
+    grid.className = 'books-grid';
 
-    Object.keys(categories).forEach((catName) => {
-        const catGroup = document.createElement("section");
-        catGroup.className = "category-group";
-
-        const iconMap = {
-            'المصابيح والأذكار': '📿',
-            'دروس ومحاضرات الصلاة': '🕌',
-            'دروس ومحاضرات الصيام': '🌙',
-            'العبادات والفقه': '📖',
-            'أسماء الله الحسنى': '✨',
-            'الشخصيات الإسلامية والتراجم': '📜'
-        };
-
-        const catIcon = iconMap[catName] || '📚';
-
-        catGroup.innerHTML = `
-            <div class="category-header">
-                <h2><span>${catIcon}</span> ${catName}</h2>
-                <span class="count-badge">${categories[catName].length} عنصراً</span>
+    booksList.forEach(book => {
+        let isFav = favorites.includes(book.id);
+        let card = document.createElement('div');
+        card.className = 'book-card';
+        card.innerHTML = `
+            ${book.isLatest ? '<span class="latest-badge">✨ أحدث إضافة</span>' : ''}
+            <div>
+                <h3>${book.title}</h3>
+                ${book.author ? `<p class="author">${book.author}</p>` : ''}
+                ${book.description ? `<p class="desc">${book.description}</p>` : ''}
             </div>
-            <div class="books-grid">
-                ${categories[catName].map(book => createBookCardHTML(book)).join('')}
+            <div class="card-actions">
+                <button class="read-btn" onclick="openBookReader('${book.file}', '${book.pdfUrl || ''}')">اقرأ الآن ←</button>
+                <button class="fav-btn ${isFav ? 'active' : ''}" onclick="toggleFavorite('${book.id}', event)" title="إضافة للمفضلة">
+                    ${isFav ? '❤️' : '🤍'}
+                </button>
             </div>
         `;
-
-        container.appendChild(catGroup);
+        grid.appendChild(card);
     });
+
+    container.appendChild(grid);
 }
 
-function createBookCardHTML(book) {
-    if (!book) return "";
-    let fileName = (book.file || book.id || "").toString().replace(/\.json$/i, '').trim();
-    let title = book.title || "عنوان غير مسمى";
-    let author = book.author || 'الشيخ أحمد البسفي';
-    let desc = book.description ? book.description.substring(0, 85) + '...' : 'مرجع إيماني متميز...';
+function getFavorites() {
+    let favs = localStorage.getItem('app_favorites');
+    return favs ? JSON.parse(favs) : [];
+}
 
-    return `
-        <a href="reader.html?book=${encodeURIComponent(fileName)}" class="book-card">
-            <div class="card-body">
-                <h3>${title}</h3>
-                <p class="book-author">${author}</p>
-                <p class="book-desc">${desc}</p>
-            </div>
-            <div class="card-footer">
-                <span class="read-action">اقرأ الآن ➔</span>
-            </div>
-        </a>
-    `;
+function toggleFavorite(bookId, event) {
+    event.stopPropagation();
+    let favs = getFavorites();
+    let index = favs.indexOf(bookId);
+
+    if (index > -1) {
+        favs.splice(index, 1);
+    } else {
+        favs.push(bookId);
+    }
+
+    localStorage.setItem('app_favorites', JSON.stringify(favs));
+    renderBooks(currentFilter === 'all' ? allBooksData : allBooksData.filter(b => getFavorites().includes(b.id)));
+}
+
+function toggleSidebar() {
+    const sidebar = document.getElementById('appSidebar');
+    if (sidebar) sidebar.classList.toggle('open');
+}
+
+function openBookReader(fileName, pdfUrl) {
+    if (pdfUrl) {
+        window.location.href = `reader.html?pdf=${encodeURIComponent(pdfUrl)}&book=${fileName}`;
+    } else {
+        window.location.href = `reader.html?file=${fileName}`;
+    }
 }
 
 function setupSearch() {
-    const searchInput = document.getElementById("searchInput");
-    if (!searchInput) return;
+    const input = document.getElementById('searchInput');
+    if (!input) return;
 
-    searchInput.addEventListener("input", (e) => {
-        const query = e.target.value.trim().toLowerCase();
+    input.addEventListener('input', (e) => {
+        let query = e.target.value.trim().toLowerCase();
         if (!query) {
-            renderCategorizedBooks(allBooks);
+            renderBooks(allBooksData);
             return;
         }
 
-        const filtered = allBooks.filter(book => {
-            if (!book) return false;
-            const t = (book.title || "").toLowerCase();
-            const d = (book.description || "").toLowerCase();
-            const c = (book.category || "").toLowerCase();
-            return t.includes(query) || d.includes(query) || c.includes(query);
-        });
+        let filtered = allBooksData.filter(b => 
+            b.title.toLowerCase().includes(query) || 
+            (b.author && b.author.toLowerCase().includes(query)) ||
+            (b.description && b.description.toLowerCase().includes(query))
+        );
 
-        renderCategorizedBooks(filtered);
+        renderBooks(filtered);
     });
-}
-
-function checkContinueReading() {
-    try {
-        const lastBook = JSON.parse(localStorage.getItem("lastReadBook"));
-        const section = document.getElementById("continueReadingSection");
-        if (lastBook && lastBook.id && section) {
-            document.getElementById("continueBookTitle").innerText = lastBook.title || "";
-            document.getElementById("continueBookBtn").href = `reader.html?book=${encodeURIComponent(lastBook.id)}`;
-            section.style.display = "block";
-        }
-    } catch(e) {
-        console.error(e);
-    }
-}
-
-function initTheme() {
-    const themeToggle = document.getElementById("themeToggle");
-    const savedTheme = localStorage.getItem("theme") || "light";
-    document.body.setAttribute("data-theme", savedTheme);
-
-    if (themeToggle) {
-        themeToggle.addEventListener("click", () => {
-            const currentTheme = document.body.getAttribute("data-theme");
-            const newTheme = currentTheme === "dark" ? "light" : "dark";
-            document.body.setAttribute("data-theme", newTheme);
-            localStorage.setItem("theme", newTheme);
-        });
-    }
 }
