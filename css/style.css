@@ -1,6 +1,6 @@
 /* css/style.css - التصميم الخبير المتكامل للموبايل والشاشات */
 
-@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Cairo:wght@400;600;700;800;900&display=swap');
 
 :root {
     --bg-color: #fcfbfa;
@@ -37,6 +37,105 @@ body {
     line-height: 1.9;
     direction: rtl;
     padding: 15px;
+}
+
+/* تخطيط التطبيق والفهرس الجانبي (Sidebar) */
+.app-layout {
+    display: flex;
+    min-height: 100vh;
+}
+
+.sidebar {
+    width: 280px;
+    background-color: var(--card-bg);
+    color: var(--text-main);
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    transition: transform 0.3s ease;
+    z-index: 1000;
+    box-shadow: -2px 0 10px rgba(0,0,0,0.05);
+    border-left: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+}
+
+.sidebar-header {
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.sidebar-header h2 {
+    font-size: 1.15rem;
+    margin: 0;
+    color: var(--accent-color);
+}
+
+.close-sidebar {
+    background: none;
+    border: none;
+    color: var(--text-main);
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: none;
+}
+
+.sidebar-nav {
+    padding: 15px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.nav-item {
+    display: block;
+    color: var(--text-secondary);
+    text-decoration: none;
+    padding: 10px 12px;
+    border-radius: 8px;
+    margin-bottom: 6px;
+    transition: all 0.2s;
+    font-size: 0.95rem;
+}
+
+.nav-item:hover, .nav-item.active {
+    background-color: var(--accent-color);
+    color: white;
+    font-weight: bold;
+}
+
+.nav-section-title {
+    display: block;
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin: 15px 0 10px 0;
+    text-transform: uppercase;
+}
+
+.menu-toggle-btn {
+    display: none;
+    position: fixed;
+    top: 15px;
+    right: 15px;
+    background-color: var(--accent-color);
+    color: white;
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    z-index: 1100;
+    cursor: pointer;
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+    box-shadow: var(--shadow);
+}
+
+.main-wrapper {
+    flex: 1;
+    margin-right: 280px;
+    width: calc(100% - 280px);
 }
 
 .app-header {
@@ -247,6 +346,7 @@ button.theme-btn {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    position: relative;
     transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
 
@@ -256,12 +356,26 @@ button.theme-btn {
     box-shadow: 0 6px 15px rgba(0, 0, 0, 0.05);
 }
 
+/* شارة أحدث إضافة */
+.latest-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background-color: #b91c1c;
+    color: white;
+    font-size: 0.7rem;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-weight: bold;
+}
+
 .book-card h3 {
     color: var(--accent-color);
     font-size: 1.1rem;
     margin-bottom: 6px;
     font-weight: 700;
     line-height: 1.4;
+    padding-left: 50px;
 }
 
 .book-author {
@@ -277,10 +391,33 @@ button.theme-btn {
     margin-bottom: 12px;
 }
 
+.card-actions {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 10px;
+}
+
 .read-action {
     color: var(--accent-color);
     font-weight: 700;
     font-size: 0.88rem;
+}
+
+/* زر المفضلة */
+.fav-btn {
+    background: none;
+    border: 1px solid var(--border-color);
+    font-size: 1.1rem;
+    cursor: pointer;
+    padding: 6px 10px;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+.fav-btn.active {
+    background-color: #fef2f2;
+    border-color: #f87171;
 }
 
 .reader-container {
@@ -363,6 +500,25 @@ button.theme-btn {
     color: var(--text-secondary);
     border-top: 1px solid var(--border-color);
     font-size: 0.88rem;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(100%);
+    }
+    .sidebar.open {
+        transform: translateX(0);
+    }
+    .main-wrapper {
+        margin-right: 0;
+        width: 100%;
+    }
+    .menu-toggle-btn {
+        display: block;
+    }
+    .close-sidebar {
+        display: block;
+    }
 }
 
 @media (max-width: 600px) {
