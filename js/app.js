@@ -1,29 +1,33 @@
-let allBooksData = [];
+let allBooksData = [
+    {
+        id: "dalael.json",
+        file: "dalael.json",
+        title: "دلائل الخيرات وشوارق الأنوار",
+        author: "الإمام سيدي محمد بن سليمان الجزولي",
+        description: "الصلاة على النبي ﷺ مقسمة على أحزاب وأوراد أيام الأسبوع السبعة.",
+        category: "أوراد وأذكار",
+        pdfUrl: "https://lh3.googleusercontent.com/d/1dcbaGpxEYaJQYnpx-wv-yGPTiy1mUoEc",
+        isLatest: true
+    },
+    {
+        id: "fayd-almanan.json",
+        file: "fayd-almanan.json",
+        title: "فيض المنان",
+        author": "الشيخ جابر البغدادي",
+        description: "مجموعة الأوراد والصلوات والأدعية المباركة للشيخ جابر البغدادي.",
+        category: "أوراد وأذكار",
+        pdfUrl: "https://lh3.googleusercontent.com/d/15F43ORYaPJKKyZYoFTyJgycE4PX0OSv1",
+        isLatest: false
+    }
+];
+
 let currentFilter = 'all';
 
 document.addEventListener("DOMContentLoaded", () => {
-    loadBooksList();
+    buildCategoriesSidebar();
+    renderBooks(allBooksData);
     setupSearch();
 });
-
-async function loadBooksList() {
-    try {
-        let response = await fetch('data/books-list.json');
-        if (!response.ok) throw new Error('تعذر تحميل قائمة الكتب');
-        
-        let booksMeta = await response.json();
-        allBooksData = booksMeta.map((b, index) => ({
-            ...b,
-            id: b.file,
-            isLatest: index === booksMeta.length - 1
-        }));
-
-        buildCategoriesSidebar();
-        renderBooks(allBooksData);
-    } catch (error) {
-        console.error('خطأ في تحميل المكتبة:', error);
-    }
-}
 
 function buildCategoriesSidebar() {
     const categoriesListEl = document.getElementById('categoriesList');
@@ -90,16 +94,19 @@ function renderBooks(booksList) {
             ${book.isLatest ? '<span class="latest-badge">✨ أحدث إضافة</span>' : ''}
             <div>
                 <h3>${book.title}</h3>
-                ${book.author ? `<p class="author">${book.author}</p>` : ''}
-                ${book.description ? `<p class="desc">${book.description}</p>` : ''}
+                ${book.author ? `<p class="book-author">${book.author}</p>` : ''}
+                ${book.description ? `<p class="book-desc">${book.description}</p>` : ''}
             </div>
             <div class="card-actions">
-                <button class="read-btn" onclick="openBookReader('${book.file}', '${book.pdfUrl || ''}')">اقرأ الآن ←</button>
+                <span class="read-action">اقرأ الآن ←</span>
                 <button class="fav-btn ${isFav ? 'active' : ''}" onclick="toggleFavorite('${book.id}', event)" title="إضافة للمفضلة">
                     ${isFav ? '❤️' : '🤍'}
                 </button>
             </div>
         `;
+        
+        // ربط الضغط على البطاقة لفتح العارض
+        card.onclick = () => openBookReader(book.file, book.pdfUrl);
         grid.appendChild(card);
     });
 
