@@ -1,4 +1,3 @@
-// قائمة الكتب شاملة كافة الكتيبات والمصابيح وكتابي دلائل الخيرات وفيض المنان
 let allBooksData = [
   {
     "id": 1,
@@ -82,7 +81,7 @@ let allBooksData = [
   },
   {
     "id": 11,
-    "title": "أحكام المريض، سجود السهو، الأذكار، وخاتمة ثمرات الصلاة (الكتاب الحادي عشر)",
+    "title": "أحكام المريض، سجود السهو، الأذكار، وخاتمة ثمرات الصلاة (الكتاب الحادي عشر والأخير)",
     "author": "أحمد مصطفى محمد مصطفى (أحمد البسفي)",
     "category": "دروس ومحاضرات الصلاة",
     "file": "book-11.json",
@@ -94,7 +93,7 @@ let allBooksData = [
     "author": "أحمد مصطفى محمد مصطفى (أحمد البسفي)",
     "category": "دروس ومحاضرات الصيام",
     "file": "fasting-book-1.json",
-    "description": "حقيقة العبادة والاحتياج الإلهي، علة التقوى، الوقاية من نار الدنيا والآخرة، لباس الروح، ووصايا النجاة."
+    "description": "حقيقة العبادة والاحتياج الإلهي، علة التقوى، الوقاية من نار الدنيا والآخرة، لباس الروح، ووصايا النجاة في زمن الفتن."
   },
   {
     "id": 13,
@@ -102,7 +101,7 @@ let allBooksData = [
     "author": "أحمد مصطفى محمد مصطفى (أحمد البسفي)",
     "category": "دروس ومحاضرات الصيام",
     "file": "fasting-book-2.json",
-    "description": "سماع القلب، مكان التقوى، خطورة أذى الجوارح واللسان، فلسفة التحول من الخشب للزجاج بالصيام."
+    "description": "سماع القلب، مكان التقوى، خطورة أذى الجوارح واللسان، فلسفة التحول من الخشب للزجاج بالصيام، واللقمة الحلال."
   },
   {
     "id": 14,
@@ -110,7 +109,7 @@ let allBooksData = [
     "author": "أحمد مصطفى محمد مصطفى (أحمد البسفي)",
     "category": "دروس ومحاضرات الصيام",
     "file": "fasting-book-3.json",
-    "description": "قاعدة الظروف الثلاثة، حقيقة ليلة القدر القلبية، زكاة الفطر، مراتب شجرة الدين، وصور الصيام الثلاثة."
+    "description": "قاعدة الظروف الثلاثة (المكان والزمان والحال)، حقيقة ليلة القدر القلبية، زكاة الفطر، مراتب شجرة الدين، وصور الصيام الثلاثة."
   },
   {
     "id": 15,
@@ -118,23 +117,23 @@ let allBooksData = [
     "author": "أحمد مصطفى محمد مصطفى (أحمد البسفي)",
     "category": "دروس ومحاضرات الصيام",
     "file": "fasting-book-4.json",
-    "description": "تفصيل التقوى ومحلها الصدري، أسرار كتابة الصيام، مراتب النور، تحذيرات النفاق ودعوات جبريل."
+    "description": "تفصيل التقوى ومحلها الصدري، أسرار كتابة الصيام، مراتب النور، تحذيرات النفاق ودعوات جبريل، والوجبة القرآنية للقلب."
   },
   {
     "id": 16,
-    "title": "قيام الليل، نفحات العشر الأواخر، ودوام الصلة بعد رمضان (الكتاب الخامس - الصيام)",
+    "title": "قيام الليل، نفحات العشر الأواخر، ودوام الصلة بعد رمضان (الكتاب الخامس والأخير - الصيام)",
     "author": "أحمد مصطفى محمد مصطفى (أحمد البسفي)",
     "category": "دروس ومحاضرات الصيام",
     "file": "fasting-book-5.json",
-    "description": "قيام الليل، فقه العطاء وإفطار الصائمين، العشر الأواخر والعتق من النار، وما بعد رمضان."
+    "description": "قيام الليل، فقه العطاء وإفطار الصائمين، العشر الأواخر والعتق من النار، وما بعد رمضان ودوام التقوى والاستقامة."
   },
   {
     "id": 17,
-    "title": "أسرار الزكاة والرزق الخفي.. حقيقة الغلاف والمضمون (الكتاب الأول - الزكاة)",
+    "title": "أسرار الزكاة والرزق الخفي.. حقيقة الغلاف والمضمون وشجرة الإيمان (الكتاب الأول - الزكاة)",
     "author": "أحمد مصطفى محمد مصطفى (أحمد البسفي)",
     "category": "دروس ومحاضرات الزكاة",
     "file": "zakat-book-1.json",
-    "description": "حقيقة العبادات كغلاف ومضمون، شجرة الإيمان والأخلاق، أسرار الزكاة والنمو والبركة، وقصة ثعلبة."
+    "description": "حقيقة العبادات كغلاف ومضمون، شجرة الإيمان والأخلاق، أسرار الزكاة والنمو والبركة، نجاسة الشح، وقصة ثعلبة والإخلاص."
   },
   {
     "id": 18,
@@ -142,31 +141,31 @@ let allBooksData = [
     "author": "أحمد مصطفى محمد مصطفى (أحمد البسفي)",
     "category": "دروس ومحاضرات الزكاة",
     "file": "zakat-book-2.json",
-    "description": "أركان الإسلام، مفهوم الزكاة الشامل، قانون العطاء الإلهي، ذم التبذير، وفلسفة شروط الزكاة."
+    "description": "أركان الإسلام، مفهوم الزكاة الشامل (عطاء الجيب واللسان والقلب)، قانون العطاء الإلهي، ذم التبذير، وفلسفة شروط الزكاة التربوية."
   },
   {
     "id": 19,
-    "title": "أسرار الإحرام، الطواف، الفطرة في عرفات، ورحلة السعي (الكتاب الأول - الحج)",
+    "title": "أسرار الإحرام، الطواف، الفطرة في عرفات، ورحلة السعي واليقين (الكتاب الأول - الحج)",
     "author": "أحمد مصطفى محمد مصطفى (أحمد البسفي)",
     "category": "دروس ومحاضرات الحج",
     "file": "hajj-book-1.json",
-    "description": "رحلة الموت الاختياري، إشارات الإحرام، الطواف والمركزية الكونية، جبل عرفات، وقصة السيدة هاجر."
+    "description": "رحلة الموت الاختياري، إشارات الإحرام، الطواف والمركزية الكونية، جبل عرفات، قصة السيدة هاجر واليقين."
   },
   {
     "id": 20,
-    "title": "رحلة السعي النفسية، حب الوطن، هدايات الأنبياء (الكتاب الثاني - الحج)",
+    "title": "رحلة السعي النفسية، حب الوطن، هدايات الأنبياء، والصحبة الصادقة (الكتاب الثاني - الحج)",
     "author": "أحمد مصطفى محمد مصطفى (أحمد البسفي)",
     "category": "دروس ومحاضرات الحج",
     "file": "hajj-book-2.json",
-    "description": "إشارات السعي الثلاثة، شروط القبول وحرمة الأموال، الوطن وعاء الدين، ودروس الهجرة النبوية."
+    "description": "إشارات السعي الثلاثة، شروط القبول وحرمة الأموال، الوطن وعاء الدين، دروس الهجرة النبوية وصحبة الغار."
   },
   {
     "id": 21,
-    "title": "حقيقة زيارة النبي، أسرار النية والإخلاص (الكتاب الثالث والأخير - الحج)",
+    "title": "حقيقة زيارة النبي، أسرار النية والإخلاص، ومعرفة القلوب (الكتاب الثالث والأخير - الحج)",
     "author": "أحمد مصطفى محمد مصطفى (أحمد البسفي)",
     "category": "دروس ومحاضرات الحج",
     "file": "hajj-book-3.json",
-    "description": "حقيقة زيارة النبي الحي، الأخلاق جوهر الدين، أسرار النية والإخلاص، وعلامات الحج المبرور."
+    "description": "حقيقة زيارة النبي الحي، الأخلاق جوهر الدين، أسرار النية والإخلاص، مشهد الصديق والفاروق، وعلامات الحج المبرور."
   },
   {
     "id": 22,
@@ -612,10 +611,8 @@ document.addEventListener("DOMContentLoaded", () => {
     buildCategoriesSidebar();
     renderBooks(allBooksData);
     setupSearch();
-    setupThemeToggle();
 });
 
-// بناء الفهرس الجانبي للتصنيفات
 function buildCategoriesSidebar() {
     const categoriesListEl = document.getElementById('categoriesList');
     if (!categoriesListEl) return;
@@ -634,7 +631,6 @@ function buildCategoriesSidebar() {
     });
 }
 
-// تصفية الكتب بحسب القسم أو المفضلة
 function filterCategory(category, event) {
     if (event) event.preventDefault();
     currentFilter = category;
@@ -659,7 +655,6 @@ function filterCategory(category, event) {
     }
 }
 
-// عرض الكتب مقسمة حسب التصنيفات في الواجهة
 function renderBooks(booksList) {
     const container = document.getElementById('sectionsContainer');
     if (!container) return;
@@ -667,11 +662,11 @@ function renderBooks(booksList) {
     container.innerHTML = '';
 
     if (booksList.length === 0) {
-        container.innerHTML = `<p style="text-align: center; color: var(--text-secondary); padding: 40px;">لا توجد كتب في هذا القسم حالياً.</p>`;
+        container.innerHTML = `<p style="text-align: center; color: #64748b; padding: 40px;">لا توجد كتب في هذا القسم حالياً.</p>`;
         return;
     }
 
-    // تجميع الكتب حسب التصنيف
+    // تجميع الكتب حسب التصنيف لتظهر مرتبة داخل أقسام
     let grouped = {};
     booksList.forEach(book => {
         let cat = book.category || 'عام';
@@ -684,11 +679,12 @@ function renderBooks(booksList) {
     for (let cat in grouped) {
         let groupDiv = document.createElement('div');
         groupDiv.className = 'category-group';
+        groupDiv.style.marginBottom = '30px';
         
         groupDiv.innerHTML = `
-            <div class="category-header">
-                <h2>📁 ${cat}</h2>
-                <span class="count-badge">${grouped[cat].length} عنصر</span>
+            <div class="category-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--border-color, #e6e4df); padding-bottom: 10px; margin-bottom: 15px;">
+                <h2 style="font-size: 1.2rem; color: var(--accent-color, #1b4d3e);">📁 ${cat}</h2>
+                <span class="count-badge" style="background: rgba(27, 77, 62, 0.08); color: var(--accent-color, #1b4d3e); padding: 3px 10px; border-radius: 12px; font-size: 0.8rem; font-weight: bold;">${grouped[cat].length} عنصر</span>
             </div>
         `;
 
@@ -703,12 +699,12 @@ function renderBooks(booksList) {
                 ${book.isLatest ? '<span class="latest-badge">✨ أحدث إضافة</span>' : ''}
                 <div>
                     <h3>${book.title}</h3>
-                    ${book.author ? `<p class="book-author">${book.author}</p>` : ''}
-                    ${book.description ? `<p class="book-desc">${book.description}</p>` : ''}
+                    ${book.author ? `<p class="book-author" style="font-size: 0.85rem; color: #666; margin-bottom: 6px;">${book.author}</p>` : ''}
+                    ${book.description ? `<p class="book-desc" style="font-size: 0.9rem; color: #444; line-height: 1.4;">${book.description}</p>` : ''}
                 </div>
-                <div class="card-actions">
-                    <span class="read-action">اقرأ الآن ←</span>
-                    <button class="fav-btn ${isFav ? 'active' : ''}" onclick="toggleFavorite('${book.file}', event)" title="إضافة للمفضلة">
+                <div class="card-actions" style="display: flex; justify-content: space-between; align-items: center; margin-top: 12px;">
+                    <span class="read-action" style="color: var(--accent-color, #1b4d3e); font-weight: bold; font-size: 0.88rem;">اقرأ الآن ←</span>
+                    <button class="fav-btn ${isFav ? 'active' : ''}" onclick="toggleFavorite('${book.file}', event)" title="إضافة للمفضلة" style="background: none; border: 1px solid #ccc; font-size: 1.1rem; cursor: pointer; padding: 5px 8px; border-radius: 6px;">
                         ${isFav ? '❤️' : '🤍'}
                     </button>
                 </div>
@@ -723,7 +719,6 @@ function renderBooks(booksList) {
     }
 }
 
-// إدارة المفضلة
 function getFavorites() {
     let favs = localStorage.getItem('app_favorites');
     return favs ? JSON.parse(favs) : [];
@@ -744,13 +739,11 @@ function toggleFavorite(bookFile, event) {
     filterCategory(currentFilter);
 }
 
-// التحكم بالفهرس الجانبي للموبايل
 function toggleSidebar() {
     const sidebar = document.getElementById('appSidebar');
     if (sidebar) sidebar.classList.toggle('open');
 }
 
-// فتح العارض
 function openBookReader(fileName, pdfUrl) {
     if (pdfUrl) {
         window.location.href = `reader.html?pdf=${encodeURIComponent(pdfUrl)}&book=${fileName}`;
@@ -759,7 +752,6 @@ function openBookReader(fileName, pdfUrl) {
     }
 }
 
-// البحث السريع
 function setupSearch() {
     const input = document.getElementById('searchInput');
     if (!input) return;
@@ -778,30 +770,5 @@ function setupSearch() {
         );
 
         renderBooks(filtered);
-    });
-}
-
-// زر تبديل المظهر (Dark / Light)
-function setupThemeToggle() {
-    const themeBtn = document.getElementById('themeToggle');
-    if (!themeBtn) return;
-
-    const savedTheme = localStorage.getItem('app_theme') || 'light';
-    if (savedTheme === 'dark') {
-        document.documentElement.setAttribute('data-theme', 'dark');
-        themeBtn.textContent = '☀️';
-    }
-
-    themeBtn.addEventListener('click', () => {
-        let current = document.documentElement.getAttribute('data-theme');
-        if (current === 'dark') {
-            document.documentElement.removeAttribute('data-theme');
-            localStorage.setItem('app_theme', 'light');
-            themeBtn.textContent = '🌓';
-        } else {
-            document.documentElement.setAttribute('data-theme', 'dark');
-            localStorage.setItem('app_theme', 'dark');
-            themeBtn.textContent = '☀️';
-        }
     });
 }
