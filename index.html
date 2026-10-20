@@ -16,11 +16,11 @@
 </head>
 <body>
 
-    <!-- زر فتح الفهرس الجانبي (للهواتف والأجهزة الصغيرة) -->
+    <!-- زر إظهار الفهرس الجانبي للشاشات الصغيرة -->
     <button class="menu-toggle-btn" onclick="toggleSidebar()">☰ الفهرس والتصنيفات</button>
 
     <div class="app-layout">
-        <!-- الفهرس الجانبي القابل للطي للتصنيفات والمفضلة -->
+        <!-- الفهرس الجانبي (Sidebar) -->
         <aside class="sidebar" id="appSidebar">
             <div class="sidebar-header">
                 <h2>📚 الفهرس والتصنيفات</h2>
@@ -32,7 +32,7 @@
                 <hr>
                 <span class="nav-section-title">الأقسام والكتيبات:</span>
                 <div id="categoriesList">
-                    <!-- يتم تعبئة القائمة تلقائياً من الملفات -->
+                    <!-- تعبئة الأقسام تلقائياً -->
                 </div>
             </nav>
         </aside>
@@ -60,7 +60,7 @@
             </header>
 
             <main class="main-container">
-                <!-- كارت استكمال القراءة -->
+                <!-- استكمال القراءة -->
                 <div id="continueReadingSection" class="continue-section" style="display: none;">
                     <div class="continue-card">
                         <div class="continue-info">
@@ -71,7 +71,7 @@
                     </div>
                 </div>
 
-                <!-- حاوية عرض الكتب والأقسام المفهرسة -->
+                <!-- شبكة عرض الكتب -->
                 <div id="sectionsContainer" class="sections-container"></div>
             </main>
 
