@@ -1,4 +1,4 @@
-// js/app.js - إدارة الفهرس، الأقسام، ومتابعة القراءة (مع حماية تامة ضد فشل التحميل)
+// js/app.js - إدارة الفهرس، الأقسام، ومتابعة القراءة
 document.addEventListener("DOMContentLoaded", () => {
     initTheme();
     loadBooksList();
@@ -6,51 +6,24 @@ document.addEventListener("DOMContentLoaded", () => {
     checkContinueReading();
 });
 
-// حل مشكلة العودة للخلف بدون تحديث (bfcache)
-window.addEventListener("pageshow", (event) => {
-    if (event.persisted) {
-        loadBooksList();
-        checkContinueReading();
-    }
-});
-
 let allBooks = [];
-
-// قائمة احتياطية مدمجة تظهر فوراً إذا تعذر قراءة ملف الـ JSON لضمان عدم توقف التطبيق أبداً
-const fallbackBooks = [
-  { "id": 1, "title": "الصلاة ركن الإسلام الثاني (الجزء الأول)", "author": "أحمد مصطفى محمد مصطفى", "category": "العبادات والفقه", "file": "book-1.json", "description": "كتاب تربوي إيماني يبين أهمية الصلاة، روحها وصورتها، شجرة الدين." },
-  { "id": 74, "file": "دلائل الخيرات.pdf", "title": "دلائل الخيرات وشوارق الأنوار", "author": "الإمام سيدي محمد بن سليمان الجزولي", "description": "الصلاة على النبي ﷺ مقسمة على أحزاب وأوراد أيام الأسبوع السبعة.", "category": "أوراد وأذكار" },
-  { "id": 75, "file": "فيض المنان.pdf", "title": "فيض المنان", "author": "الشيخ جابر البغدادي", "description": "مجموعة الأوراد والصلوات والأدعية المباركة للشيخ جابر البغدادي.", "category": "أوراد وأذكار" }
-];
 
 async function loadBooksList() {
     const container = document.getElementById("sectionsContainer");
     if (!container) return;
 
-    // محاولة جلب ملف الفهرس من المسارات المحتملة
-    const possiblePaths = ["./data/books-list.json", "data/books-list.json", "/books-list.json"];
-    let fetchedData = null;
-
-    for (let path of possiblePaths) {
-        try {
-            const response = await fetch(path);
-            if (response.ok) {
-                fetchedData = await response.json();
-                break;
-            }
-        } catch (e) {
-            // محاولة المسار التالي بصمت
-        }
+    try {
+        const response = await fetch("./data/books-list.json");
+        if (!response.ok) throw new Error("تعذر جلب قائمة الكتب");
+        
+        const data = await response.json();
+        allBooks = Array.isArray(data) ? data : (data.books || []);
+        
+        renderCategorizedBooks(allBooks);
+    } catch (error) {
+        console.error("خطأ:", error);
+        container.innerHTML = "<p style='text-align: center; color: #e74c3c;'>جاري تحميل المكتبة...</p>";
     }
-
-    if (fetchedData) {
-        allBooks = Array.isArray(fetchedData) ? fetchedData : (fetchedData.books || []);
-    } else {
-        console.warn("تعذر جلب ملف الفهرس الخارجي، جاري استخدام الفهرس الاحتياطي المدمج...");
-        allBooks = fallbackBooks;
-    }
-
-    renderCategorizedBooks(allBooks);
 }
 
 function renderCategorizedBooks(books) {
@@ -59,7 +32,7 @@ function renderCategorizedBooks(books) {
     container.innerHTML = "";
 
     if (!books || books.length === 0) {
-        container.innerHTML = "<p style='text-align: center; padding: 30px; color: var(--text-secondary);'>لا توجد نتائج مطابقة.</p>";
+        container.innerHTML = "<p style='text-align: center; padding: 30px; color: var(--text-secondary);'>لا توجد نتائج مطابقة للبحث.</p>";
         return;
     }
 
@@ -80,8 +53,7 @@ function renderCategorizedBooks(books) {
             'دروس ومحاضرات الصيام': '🌙',
             'العبادات والفقه': '📖',
             'أسماء الله الحسنى': '✨',
-            'الشخصيات الإسلامية والتراجم': '📜',
-            'أوراد وأذكار': '💫'
+            'الشخصيات الإسلامية والتراجم': '📜'
         };
 
         const catIcon = iconMap[catName] || '📚';
@@ -102,7 +74,7 @@ function renderCategorizedBooks(books) {
 
 function createBookCardHTML(book) {
     if (!book) return "";
-    let fileName = (book.file || book.id || "").toString().trim();
+    let fileName = (book.file || book.id || "").toString().replace(/\.json$/i, '').trim();
     let title = book.title || "عنوان غير مسمى";
     let author = book.author || 'الشيخ أحمد البسفي';
     let desc = book.description ? book.description.substring(0, 85) + '...' : 'مرجع إيماني متميز...';
@@ -114,7 +86,7 @@ function createBookCardHTML(book) {
                 <p class="book-author">${author}</p>
                 <p class="book-desc">${desc}</p>
             </div>
-            <div class="card-footer" style="margin-top: 12px;">
+            <div class="card-footer">
                 <span class="read-action">اقرأ الآن ➔</span>
             </div>
         </a>
