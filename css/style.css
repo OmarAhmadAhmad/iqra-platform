@@ -248,7 +248,6 @@ button.theme-btn {
     flex-direction: column;
     justify-content: space-between;
     transition: transform 0.15s ease, box-shadow 0.15s ease;
-    cursor: pointer;
 }
 
 .book-card:hover {
