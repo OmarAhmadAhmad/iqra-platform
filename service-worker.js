@@ -1,24 +1,22 @@
-const CACHE_NAME = 'tariqa-jami3a-v1';
-const ASSETS_TO_CACHE = [
+// service-worker.js - التخزين المؤقت المحدث للعمل أوفلاين
+const CACHE_NAME = 'islamic-library-v4';
+const assetsToCache = [
   './',
-  './index.html',
-  './reader.html',
-  './css/style.css',
-  './js/app.js',
-  './js/reader.js',
-  './manifest.json',
-  './data/books-list.json',
-  './data/دلائل الخيرات.pdf',
-  './data/فيض المنان.pdf'
+  'index.html',
+  'reader.html',
+  'css/style.css',
+  'js/app.js',
+  'js/reader.js',
+  'data/books-list.json',
+  'manifest.json'
 ];
 
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(CACHE_NAME).then((cache) => {
-      return cache.addAll(ASSETS_TO_CACHE);
-    })
+      return cache.addAll(assetsToCache);
+    }).then(() => self.skipWaiting())
   );
-  self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {
@@ -31,15 +29,14 @@ self.addEventListener('activate', (event) => {
           }
         })
       );
-    })
+    }).then(() => self.clients.claim())
   );
-  self.clients.claim();
 });
 
 self.addEventListener('fetch', (event) => {
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      return cachedResponse || fetch(event.request).catch(() => caches.match('./index.html'));
+    caches.match(event.request).then((response) => {
+      return response || fetch(event.request);
     })
   );
 });
