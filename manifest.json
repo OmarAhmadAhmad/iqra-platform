@@ -1,21 +1,14 @@
 {
-  "name": "مكتبة الطريقة الجامعة",
+  "name": "مكتبة الطريقة الجامعة - الشيخ أحمد البسفي",
   "short_name": "الطريقة الجامعة",
-  "description": "مكتبة رقمية وأوراد للشيخ أحمد البسفي الأول بن مصطفى تعمل بدون إنترنت",
-  "start_url": "./index.html",
+  "description": "مرجع قرائي إيماني لمجلس الذكر والدروس والمصابيح - مجهود شخصي غير رسمي",
+  "start_url": "index.html",
   "display": "standalone",
-  "background_color": "#1b4d3e",
+  "background_color": "#fcfbfa",
   "theme_color": "#1b4d3e",
-  "dir": "rtl",
-  "lang": "ar",
   "icons": [
     {
-      "src": "images/icon-192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "images/icon-512.png",
+      "src": "icon-512.png",
       "sizes": "512x512",
       "type": "image/png"
     }
